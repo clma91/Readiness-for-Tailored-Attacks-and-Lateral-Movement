@@ -42,8 +42,8 @@
     \def\arraystretch{2}
     \begin{tabular}{| p{4.5cm} | p{11.5cm} |} \hline
         \textbf{Beschreibung} & Redmine-Datenbank beschädigt oder inkonsistent\\ \hline
-        \textbf{Massnahme} & Wöchentliche CSV-Exports aller wichtigen Redmine-Komponenten  \\ \hline
-        \textbf{Verhalten bei Eintritt} & Je nach Fehler den Server neu aufsetzen, Redmine neu installieren, neusten CSV-Export in Redmine importieren \\ \hline 
+        \textbf{Massnahme} & Tägliches Redmine-DB-Backup welches in eine externe Cloud gespeichert wird\\ \hline
+        \textbf{Verhalten bei Eintritt} & Je nach Fehler den Server neu aufsetzen, Redmine neu installieren, aktuellstes DB-Backup einspielen\\ \hline 
     \end{tabular}
     \caption{R4 - Datenverlust Redmine}
 \end{table}
