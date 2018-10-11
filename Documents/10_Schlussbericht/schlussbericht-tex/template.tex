@@ -1,8 +1,7 @@
-\documentclass[a4paper, oneside, 11pt]{article}
-
+\documentclass[a4paper, oneside, 11pt]{report}
     \usepackage[T1]{fontenc}
     \usepackage[utf8]{inputenc}
-    \usepackage[english, nswissgerman]{babel}
+    \usepackage[nswissgerman, english]{babel}
     \usepackage[hyphens]{url}
     \usepackage[hidelinks]{hyperref}
     \usepackage{graphicx}
@@ -39,3 +38,17 @@
     % Multicolomns
     \usepackage{multicol}
     \setlength{\multicolsep}{2.0pt plus 2.0pt minus 1.5pt}% 50% of original values (above/below multicols)
+
+    \newcommand{\kapitel}[1]{
+        \stepcounter{chapter}\chapter*{#1}
+        \addcontentsline{toc}{chapter}{#1}
+        \markboth{\arabic{chapter} #1}{\arabic{chapter} #1}
+    }
+
+    \newcommand{\sectionroman}[1]{
+        \stepcounter{section}\section*{#1}
+        \addcontentsline{toc}{section}{#1}
+        \markboth{\arabic{section} #1}{\arabic{section} #1}
+    }
+
+    \renewcommand{\partname}{}

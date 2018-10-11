@@ -5,33 +5,31 @@
 
 \begin{document}
 
-\input{./sections/00_titlepage.tex}
-
-\newpage
-
-\begin{versionhistory}
-    \vhEntry{0.1}{03.10.18}{Claudio Mattes}{Initialer Draft}
-\end{versionhistory}
-
-
-\newpage
-\tableofcontents
-
-\newpage
-
-\input{./sections/01_abstract.tex}
-\input{./sections/02_task_definition.tex}
-\input{./sections/03_management_summary.tex}
-\setcounter{section}{0}
-\input{./sections/04_00_technical_report.tex}
-\input{./sections/04_01_introduction_overview.tex}
-\input{./sections/04_02_analysis.tex}
-\input{./sections/04_03_architecture.tex}
-\input{./sections/04_04_result.tex}
-\input{./sections/04_05_conclusion.tex}
-\input{./sections/05_glossary}
-
-\clearpage
-\input{appendix.tex}
+    \input{./sections/00_titlepage.tex}
+    \pagenumbering{Roman} 
+    \input{./sections/01_abstract.tex}
+    \newpage
+    \input{./sections/02_management_summary.tex}
+    \newpage
+    \input{./sections/03_task_definition.tex}
+    \newpage
+    \tableofcontents
+    \addcontentsline{toc}{chapter}{Contents}
+    \newpage
+    % \stepcounter{nopage}
+    \input{./sections/04_00_technical_report.tex}
+    \pagenumbering{arabic} 
+    \setcounter{chapter}{1}
+    \input{./sections/04_01_introduction_overview.tex}
+    \input{./sections/04_02_analysis.tex}
+    \input{./sections/04_03_architecture.tex}
+    \input{./sections/04_04_result.tex}
+    \input{./sections/04_05_conclusion.tex}
+    
+    \input{./sections/05_glossary}
+    \pagenumbering{Roman} 
+    \setcounter{page}{6}
+    \clearpage
+    \input{appendix.tex}
 
 \end{document}
