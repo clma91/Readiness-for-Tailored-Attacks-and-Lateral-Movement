@@ -9,6 +9,9 @@
     \usepackage{vhistory}
     \usepackage{float}
     \usepackage{pdfpages}
+    \usepackage{tcolorbox}
+    \usepackage{xcolor}
+    
     % Seitenränder
     \usepackage{geometry}
     \geometry{
@@ -32,8 +35,7 @@
         \begin{picture}
             (0,0) \put(-100,0){\includegraphics[width=0.2\linewidth]{./assets/logo/hsr.png}}
         \end{picture}}
-    \lfoot{\tiny \today \\ Version \VERSION}
-    \rfoot{\thepage}
+    \cfoot{\thepage}
 
     % Multicolomns
     \usepackage{multicol}
