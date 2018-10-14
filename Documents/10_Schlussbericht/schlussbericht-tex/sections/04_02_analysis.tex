@@ -6,7 +6,7 @@ BloodHound describes himself on his wiki page on GitHub as followed:
 \begin{quotation} \ \\
 \textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. \\
 BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} 
-%\cite{}
+\cite{blo2018}
 \end{quotation}
 \ \\
 BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
@@ -19,10 +19,44 @@ The most interesting part about BloodHound is the way they retrieve their data.
 %Lukas
 
 \subsection{Microsoft Security Complience Toolkit}
-%Claudio
+\subsubsection{Description}
+The Microsoft Security Complience Toolkit (SCT) \cite{SCT} allows security administrators to analyze their configured enterprise Group Policy Objects (GPO) in comparison to the Microsoft-recommended GPO baselines. The toolkit is handed with several baseline GPO's for different versions of Microsoft Windows Client and Servers:
 
-\subsection{Microsoft Monitoring Active Directory for Signs of Compromise}
-%Claudio und ein paar Worte zum Anhang
+\begin{itemize}
+    \item Windows 10 security baselines
+    \begin{itemize}
+        \item Windows 10 Version 1803 (April 2018 Update)
+        \item Windows 10 Version 1709 (Fall Creators Update)
+        \item Windows 10 Version 1703 (Creators Update)
+        \item Windows 10 Version 1607 (Anniversary Update)
+        \item Windows 10 Version 1511 (November Update)
+        \item Windows 10 Version 1507
+    \end{itemize}
+    \item Windows Server security baselines
+    \begin{itemize}
+        \item Windows Server 2016
+        \item Windows Server 2012 R2
+    \end{itemize}
+    \item Microsoft Office security baseline
+    \begin{itemize}
+        \item Office 2016
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Difficulties}
+The toolkit is very simple and could be understood and used without any difficulties. The handling is very intuitive and does not require much training. Please note, however, that the toolkit cannot be used with Windows 10 Home, since active directory support is not provided with this version.
+
+\subsubsection{Conclussion}
+This toolkit can be used for a very baseline GPO in enterprise environment. With the handed baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit gives also the ability to compare different local GPO's installed on different Clients or Servers to check their consistency. In addition the handed baselines can be used for building new GPO's.
+\\\\
+This toolkit is very interesting, but cannot be used to build on it. The reason for this is that the source code of the complete toolkit is not available. However, it can be used as additional help for checking the readiness of an enterprise environment.
+
+\subsection{Microsoft Monitoring Active Directory for Signs of Compromise
+}%Claudio und ein paar Worte zum Anhang
+\subsubsection{Description}
+This article \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. 
+
+\subsubsection{Conclussion}
 
 \subsection{MITRE ATT\&CK}
 %Claudio
