@@ -2,21 +2,28 @@
 This chapter describes the first step of this project, the research of published technical reports and tools which are considered interesting for this project.
 \subsection{BloodHound / SharpHound}
 %Lukas
-BloodHound describes himself on his wiki page on GitHub as followed:
+BloodHound describes itself on its wiki page on GitHub as follows:
 \begin{quotation} \ \\
 \textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. \\
+\ \\
 BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} 
 \cite{blo2018}
 \end{quotation}
 \ \\
 BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
-The most interesting part about BloodHound is the way they retrieve their data.
+The, for our project, most interesting part about BloodHound is the way they retrieve their data. \ \\
+\ \\
+Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project.
 
 \subsection{LogonTracer}
 %Claudio
 
 \subsection{WEFFLES}
 %Lukas
+WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralized server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected on could simply import the generated weffels.csv file into Excel an start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.\ \\
+\ \\
+WEFFELS will not be the product on which this project is based, but could become an important point of reference. 
+%Vilicht no persöliche ergänzig
 
 \subsection{Microsoft Security Complience Toolkit}
 \subsubsection{Description}
@@ -61,11 +68,17 @@ This article \cite{MSADSignsOfCompromise} is about configuration of an solid eve
 \subsection{MITRE ATT\&CK}
 %Claudio
 
-\subsection{JPCert - Detecting Lateral Movement through Tracking Event Logs}
+\subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}
 %Lukas
+This is a document the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so. \ \\
+\ \\
+This report is going to have a big impact on this project, it shows which logs have to be read in any case.
 
-\subsection{JPCert - Detecting Lateral Movement in APTs}
+\subsection{JPCERT/CC - Detecting Lateral Movement in APTs}
 %Lukas
+This document is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. \ \\
+\ \\
+This presentation contains interesting information which could be built into the project at a later point.
 
 \subsection{Test environment}
 A virtual network was set up on Azure-Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer. The following operating systems were installed in this test network: \\
