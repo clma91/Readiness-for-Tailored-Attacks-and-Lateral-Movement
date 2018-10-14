@@ -59,11 +59,14 @@ This toolkit can be used for a very baseline GPO in enterprise environment. With
 This toolkit is very interesting, but cannot be used to build on it. The reason for this is that the source code of the complete toolkit is not available. However, it can be used as additional help for checking the readiness of an enterprise environment.
 
 \subsection{Microsoft Monitoring Active Directory for Signs of Compromise
-}%Claudio und ein paar Worte zum Anhang
+}
 \subsubsection{Description}
-This article \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. 
+This article \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore the article describes how the policies can be read with powershell.
+\\\\
+To this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
 \subsubsection{Conclussion}
+Due to the fact that audit policies are an important setting for solid event logging, this article and appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
 
 \subsection{MITRE ATT\&CK}
 %Claudio
@@ -95,7 +98,7 @@ The network is structured as followed:\\
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{assets/testnetwork.png}
-    \caption{test environment}
+    \caption{Test Environment}
 \end{figure}
 \subsubsection{Users}
 Three different users were configured:
@@ -103,9 +106,9 @@ Three different users were configured:
     \centering
     \begin{tabular}{p{4cm} p{8cm}} \hline
         \textbf{Name} & \textbf{Permissions}  \\ \hline
-        alice & administration  \\ \hline
+        alice & administrator  \\ \hline
         bob & user  \\ \hline
         charlie & user  \\ \hline
     \end{tabular}
-    \caption{Angaben Lukas Kellenberger}
+    \caption{Test Environment Users}
 \end{table}
