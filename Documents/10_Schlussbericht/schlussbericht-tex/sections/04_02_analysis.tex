@@ -1,7 +1,16 @@
 \section{Analysis}
-
+This chapter describes the first step of this project, the research of published technical reports and tools which are considered interesting for this project.
 \subsection{BloodHound / SharpHound}
 %Lukas
+BloodHound describes himself on his wiki page on GitHub as followed:
+\begin{quotation} \ \\
+\textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. \\
+BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} 
+%\cite{}
+\end{quotation}
+\ \\
+BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
+The most interesting part about BloodHound is the way they retrieve their data.
 
 \subsection{LogonTracer}
 %Claudio
