@@ -42,19 +42,53 @@
     \usepackage{multicol}
     \setlength{\multicolsep}{2.0pt plus 2.0pt minus 1.5pt}% 50% of original values (above/below multicols)
 
+    % Chapter ohne Nummerierung, Eintrag in Inhaltsverzeichnis
     \newcommand{\kapitel}[1]{
         \stepcounter{chapter}\chapter*{#1}
         \addcontentsline{toc}{chapter}{#1}
         \markboth{\arabic{chapter} #1}{\arabic{chapter} #1}
     }
-
+    % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis
     \newcommand{\sectionroman}[1]{
         \stepcounter{section}\section*{#1}
         \addcontentsline{toc}{section}{#1}
         \markboth{\arabic{section} #1}{\arabic{section} #1}
     }
 
+    % Anpassung der Inhaltsverzeichnis-Tiefe, beginnend bei section
     \renewcommand{\partname}{}
     \renewcommand{\thesection}{\arabic{section}}
     \setcounter{secnumdepth}{3}
     \setcounter{tocdepth}{3}
+
+    % Code Listings
+    \usepackage{listings}
+    \usepackage{color}
+    \usepackage{beramono}
+
+    \definecolor{bluekeywords}{rgb}{0,0,1}
+    \definecolor{greencomments}{rgb}{0,0.5,0}
+    \definecolor{redstrings}{rgb}{0.64,0.08,0.08}
+    \definecolor{xmlcomments}{rgb}{0.5,0.5,0.5}
+    \definecolor{types}{rgb}{0.17,0.57,0.68}
+
+    \lstdefinestyle{visual-studio-style}{
+        language=[Sharp]C,
+        columns=flexible,
+        showstringspaces=false,
+        basicstyle=\footnotesize\ttfamily, 
+        commentstyle=\color{greencomments},
+        morekeywords={partial, var, value, get, set},
+        keywordstyle=\bfseries\color{bluekeywords},
+        stringstyle=\color{redstrings},
+        breaklines=true,
+        breakatwhitespace=true,
+        tabsize=4,
+        numbers=left,
+        numberstyle=\tiny\color{black},
+        frame=lines,
+        showspaces=false,
+        showtabs=false,
+        escapeinside={£}{£},
+    }
+    \lstset{style=visual-studio-style}
