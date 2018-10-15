@@ -85,7 +85,6 @@ This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC e
 \subsubsection{Conclusion}
 This presentation contains interesting information which could be built into the project at a later point.
 
-<<<<<<< HEAD
 \subsection{LogonTracer}
 \subsubsection{Description}
 JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: \ \\
@@ -108,7 +107,7 @@ The following figure shows a sample graph from the test environment:
     \label{fig:LogonTracerSample}
 \end{figure}
 \ \\
-To use the LogonTracer, there is only a .evtx-File (Windows XML Event Log - export of Windows event logs) needed to be uploaded. At best the export of the security event log of the domain controller to get as much information of the network as possible. With the built in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in.
+To use the LogonTracer, there is only a .evtx-File (Windows XML Event Log - export of Windows event logs) needed to be uploaded. At best the export of the security event log of the domain controller to get as much information of the network as possible. With the built in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
 \\\\
 In addition, LogonTracer provides a timeline for all or selected users to see when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
 \\\\
@@ -139,8 +138,8 @@ The LogonTracer is unique in its form and should not be underestimated for the d
 \\\\
 However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. However, approaches for reading the event log for further work could be used. And for a further detection of lateral movements this tool is extremely interesting.
 
-=======
->>>>>>> f0490837b646cfb2527fe4031b4932e3f09696b3
+\clearpage
+
 \subsection{Test environment}
 A virtual network was set up on Azure-Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer. The following operating systems were installed in this test network: \\
 \\
@@ -159,6 +158,8 @@ The network is structured as followed:\\
     \includegraphics[width=0.9\linewidth]{assets/testnetwork.png}
     \caption{Test Environment}
 \end{figure}
+
+\clearpage
 
 \subsubsection{User}
 Three different user were configured for the logfarm-network:
