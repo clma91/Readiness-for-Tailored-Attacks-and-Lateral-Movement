@@ -15,9 +15,6 @@ The, for our project, most interesting part about BloodHound is the way they ret
 \ \\
 Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project.
 
-\subsection{LogonTracer}
-%Claudio
-
 \subsection{WEFFLES}
 %Lukas
 WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralized server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected on could simply import the generated weffels.csv file into Excel an start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.\ \\
@@ -77,11 +74,21 @@ This is a document the Japan Computer Emergency Response Team Coordination Cente
 \\\\
 This report is going to have a big impact on this project, it shows which logs have to be read in any case.
 
-\subsection{JPCERT/CC - Detecting Lateral Movement in APTs}
+\subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
 %Lukas
 This document is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
 \\\\
 This presentation contains interesting information which could be built into the project at a later point.
+
+\subsection{LogonTracer}
+\subsubsection{Description}
+The LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer}
+
+\subsubsection{Difficulties}
+
+\subsubsection{Conclussion}
+
+
 \subsection{Test environment}
 A virtual network was set up on Azure-Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer. The following operating systems were installed in this test network: \\
 \\
