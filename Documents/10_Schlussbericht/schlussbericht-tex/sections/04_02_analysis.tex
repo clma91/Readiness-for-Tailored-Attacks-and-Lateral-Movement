@@ -25,9 +25,9 @@ WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threa
 WEFFELS will not be the product on which this project is based, but could become an important point of reference. 
 %Vilicht no persöliche ergänzig
 
-\subsection{Microsoft Security Complience Toolkit}
+\subsection{Microsoft Security Compliance Toolkit}
 \subsubsection{Description}
-The Microsoft Security Complience Toolkit (SCT) \cite{SCT} allows security administrators to analyze their configured enterprise Group Policy Objects (GPO) in comparison to the Microsoft-recommended GPO baselines. The toolkit is handed with several baseline GPO's for different versions of Microsoft Windows Client and Servers:
+The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security administrators to analyze their configured enterprise Group Policy Objects (GPO) in comparison to the Microsoft-recommended GPO baselines. The toolkit is handed with several baseline GPO's for different versions of Microsoft Windows Client and Servers:
 
 \begin{itemize}
     \item Windows 10 security baselines
@@ -73,16 +73,15 @@ Due to the fact that audit policies are an important setting for solid event log
 
 \subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}
 %Lukas
-This is a document the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so. \ \\
-\ \\
+This is a document the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so.
+\\\\
 This report is going to have a big impact on this project, it shows which logs have to be read in any case.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs}
 %Lukas
-This document is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. \ \\
-\ \\
+This document is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
+\\\\
 This presentation contains interesting information which could be built into the project at a later point.
-
 \subsection{Test environment}
 A virtual network was set up on Azure-Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer. The following operating systems were installed in this test network: \\
 \\
