@@ -83,7 +83,7 @@ This report is going to have a big impact on this project, it shows which logs h
 \subsubsection{Description}
 This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
 \subsubsection{Conclusion}
-This presentation contains interesting information which could be built into the project at a later point.
+This presentation contains interesting information which could be built into the project at a later point. The information this document contains are more suitable for monitoring purposes than for checking the readiness of a system.
 
 \subsection{LogonTracer}
 \subsubsection{Description}
@@ -182,4 +182,4 @@ After setting up the virtual machines on Azure, the developers tried to connect 
 After the virtual network has been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that all clients were receiving pings, but the ping-requests by Win10-Client remained unanswered. It turned out that,  for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting the ping-requests were answered positively.
 
 \paragraph{RDP connection for Bob and Charlie}\ \\
-Due to the fact that the user Alice owns administrator privileges, she was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin.
+Due to the fact that the user Alice owns administrator privileges, she was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
