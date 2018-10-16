@@ -64,9 +64,9 @@
 
 \subsection*{Fragen}
 \begin{itemize}
-    \item Recherche von Tools: Beschreibung, Schwierigkeiten und Schlussfolgerung? Oder zusätzlich auch noch Beschreibung von Umgang mit Tool?
-    \item Technologien
-
+    \item Technologie-Entscheid mit Powershell
+    \item Use-Cases
+    \item NRFs
 \end{itemize}
 
 \vspace{1cm}
@@ -76,6 +76,10 @@
     \centering
     \begin{tabular}{p{12cm} p{4cm}}
         \textbf{Was} & \textbf{Verantwortlichkeit} \\ \hline
+        Definition der Sprint Features & Team \\ \hline
+        Neuer Use Case ''Save Result'' mit Pfadangabe & Team \\ \hline
+        Ev. Domain Model & Team \\ \hline
+        Prototyping & Team (einzeln) \\ \hline
     \end{tabular}
 \end{table}
 
@@ -96,9 +100,22 @@
     \end{tabular}
 \end{table}
 
+\clearpage
+
 \subsection*{Beschlüsse (Diskussion)}
 \begin{itemize}
-\item 
+    \item NRFs
+    \begin{itemize}
+        \item NFR01: deliberately alter; Nebenbemerkung, dass das Tool Logs generieren wird
+        \item NFR02: any $\rightarrow$ significant
+        \item NFR04: minimal target version
+        \item Neues NFR: Tool läuft in One Go, aber kann auch in einzelnen Steps ausgeführt werden mit der Möglichkeit einzelne Steps zu Überspringen (Pausieren/Abbruch bei Performanceproblemen)
+    \end{itemize}
+    \item Welche Events wird das Tool werfen?
+    \item Storage Angaben für temporäre Files und den Export des Ergebnisses
+    \item ''Save Result'' Use Case
+    \item Ablauf Scripts/Use Cases: Zuerst Audit Policy auslesen \& analysieren und dann Event Log auslesen \& analysieren
+    \item rsop.msc
 \end{itemize}
 
 \end{document}
