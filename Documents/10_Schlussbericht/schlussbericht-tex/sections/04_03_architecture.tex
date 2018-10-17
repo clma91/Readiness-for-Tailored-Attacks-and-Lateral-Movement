@@ -8,29 +8,58 @@ This includes the coverage of use cases, non-functional requirements, technologi
 \subsection{Use Cases}
 A visual representation of the use cases with a use case diagram was deliberately omitted, because there is only one actor involved - the security advisor. The actor is not specifically mentioned in the use cases every time, because it is always the same.
 
-\subsubsection{UC01 - Read Event Logs}
+\subsubsection{UC01 - Read Resultant Set of Policies}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Event logs are read from the running system and saved in a temporary file.
+    The specified audit policies are read and saved in a temporary file.
+    \ \\
+    \paragraph{Precondition} \ \\
+    The system is running and the tool must possess administrator permissions.
+    \ \\
+    \paragraph{Main Success Scenario} 
+    \begin{enumerate}
+        \item Read the specified audit policies from the system
+        \item Save the needed information from the audit policies in a temporary file for analysis purposes.
+    \end{enumerate}   
+\end{tcolorbox}
+
+\subsubsection{UC02 - Analyse Audit Policies}
+\begin{tcolorbox}
+    \paragraph{Description} \ \\
+    The list which was created in UC01 is compared to a ''perfect settings''-list. Missing or wrong settings are going to be exported into a separate file.
+    \ \\
+    \paragraph{Precondition} \ \\
+    UC01 is fulfilled: the temporary file is available.
+    \ \\
+    \paragraph{Main Success Scenario} 
+    \begin{enumerate}
+        \item The temporary files can be read
+        \item Creates a list of incorrect settings
+    \end{enumerate}   
+\end{tcolorbox}
+\subsubsection{UC03 - Find Event Logs}
+\begin{tcolorbox}
+    \paragraph{Description} \ \\
+    Event logs are search by ID and marked in an external file as found or missing.
     \ \\
     \paragraph{Precondition} \ \\
     The system is running and must have valid event logs. The tool must possess administrator permissions.
     \ \\
     \paragraph{Main Success Scenario} 
     \begin{enumerate}
-        \item Read the specified event logs from the local system
-        \item Save the needed information from the event logs in a temporary file for analysis purposes.
+        \item Search for the specified event logs from the local system
+        \item Save the result from the search in a temporary file for analysis purposes.
     \end{enumerate}
 \end{tcolorbox}
 
 
-\subsubsection{UC02 - Analyse Event Logs}
+\subsubsection{UC04 - Analyse Found Event Logs}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The implemented logic analyzes, by defined event ids, which event occurred or is missing and creates a list of events that did not occurred or are not logged yet.
+    The implemented logic analyzes, by defined event ids, which events occurred or are missing and creates a list of events that did not occurred or are not logged yet.
     \ \\
     \paragraph{Precondition} \ \\
-    UC01 is fulfilled: the temporary file is available.
+    UC03 is fulfilled: the temporary file is available.
     \ \\
     \paragraph{Main Success Scenario} 
     \begin{enumerate}
@@ -40,49 +69,17 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \end{enumerate}   
 \end{tcolorbox}
 
-
-\subsubsection{UC03 - Read Audit Policies}
-\begin{tcolorbox}
-    \paragraph{Description} \ \\
-    The specified domain audit policies are read and saved in a temporary file.
-    \ \\
-    \paragraph{Precondition} \ \\
-    The system is running and the tool must possess administrator permissions.
-    \ \\
-    \paragraph{Main Success Scenario} 
-    \begin{enumerate}
-        \item Read the specified domain audit policies from the system
-        \item Save the needed information from the audit policies in a temporary file for analysis purposes.
-    \end{enumerate}   
-\end{tcolorbox}
-
-\subsubsection{UC04 - Analyse Audit Policies}
-\begin{tcolorbox}
-    \paragraph{Description} \ \\
-    Based on the list created in UC02, the implemented logic analyzes whether the missing events did not occur or never occurred due to the incorrect configuration. If this is not the case, the system checks whether the events are logged at all using the audit policy.
-    \ \\
-    \paragraph{Precondition} \ \\
-    UC02 and UC03 are fulfilled: the temporary files are available.
-    \ \\
-    \paragraph{Main Success Scenario} 
-    \begin{enumerate}
-        \item The temporary files can be read
-        \item The list with the defined audit policies is available
-        \item Creates a list of events where the logging is not configured
-    \end{enumerate}   
-\end{tcolorbox}
-
 \subsubsection{UC05 - Display missing or wrong system configuration}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Based on the list created in UC04 the user gets an overview of missing configurations which would improve the readiness of the system for a good attack detection.
+    Based on the list created in UC02 and UC04 the user gets an overview of missing configurations which would improve the readiness of the system for a good attack detection.
     \ \\
     \paragraph{Precondition} \ \\
-    The list from UC04 is available.
+    The lists from UC02 and UC04 are available.
     \ \\
     \paragraph{Main Success Scenario} 
     \begin{enumerate}
-        \item Displays a visual output of missing or wrong system configuration
+        \item Displays a visual output of missing or wrong system configurations
     \end{enumerate}   
 \end{tcolorbox}
 
@@ -95,10 +92,11 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \def\arraystretch{2}
     \begin{tabular}{| p{2.5cm} | p{13.5cm} |} \hline
         \textbf{NFR-No.} & \textbf{Description}  \\ \hline
-        NRF01 & The Toolkit must remain the system in the status quo. More specific the system must not change or remove any existing entry in the eventlog, registry as well as in the execution history. \\ \hline
-        NFR02 & The user must not notice any performance degradation from the system when using the Toolkit. \\ \hline
+        NRF01 & The Toolkit must remain the system in the status quo. More specific the system must not deliberately alter any existing entry in the event logs and registry. However, the tool may will produce new event logs.\\ \hline
+        NFR02 & The user must not notice significant performance degradation from the system when using the Toolkit. \\ \hline
         NFR03 & The Toolkit must be portable with no installation procedure before use. \\ \hline
-        NFR04 & The target version of the system for the Toolkit to run must be Microsoft Windows 10 Professional or Microsoft Server 2016. \\ \hline
+        NFR04 & The minimal target version of the system for the Toolkit to run must be Microsoft Windows 10 Professional or Microsoft Server 2016. \\ \hline
+        NFR05 & The Toolkit runs in one go, but can also be executed in single steps with the possibility to skip single steps (pause/abort in case of performance problems) \\ \hline
     \end{tabular}
     \caption{Non Functional Requirements}
 \end{table}
