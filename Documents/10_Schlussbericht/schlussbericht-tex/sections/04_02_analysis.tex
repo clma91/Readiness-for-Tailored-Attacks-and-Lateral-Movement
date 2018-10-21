@@ -121,12 +121,12 @@ During the test phase of LogonTracer some difficulties were detected. It's prett
     --publish=7474:7474 --publish=7687:7687 --publish=8080:8080 \
     -e LTHOSTNAME=[IP_Address] jpcertcc/docker-logontracer
 \end{lstlisting}
-The Problem here was that the parameter \lstinline|[IP_Address]| was not described well. If the command \lstinline|docker ps| was executed it always showed the following \lstinline|PORTS|:
+The Problem was that the parameter \lstinline|[IP_Address]| was not described well. If the command \lstinline|docker ps| was executed it always showed the following \lstinline|PORTS|:
 \begin{lstlisting}[caption=LogonTraceer: docker ps (PORTS)]
     PORTS
     0.0.0.0:7474->7474/tcp, 0.0.0.0:7687->7687/tcp, 7473/tcp, 0.0.0.0:8080->8080/tcp
 \end{lstlisting}
-After a lot of investigation and further tests it turned out that under \lstinline|PORTS| the ports resp. ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and after enough patience it can be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]|set to \lstinline|localhost| also solved this problem.
+After a lot of investigation and further tests it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and after enough patience it can be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
 
 \begin{lstlisting}[language=HTML,caption=LogonTracer: recommended docker run command]
     $ docker run --detach \
@@ -136,7 +136,7 @@ After a lot of investigation and further tests it turned out that under \lstinli
 \subsubsection{Conclussion}
 The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to the components available in the network can be easily visualized in graphical form.
 \\\\
-However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. However, approaches for reading the event log for further work could be used. And for a further detection of lateral movements this tool is extremely interesting.
+However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. And for a further detection of lateral movements this tool is extremely interesting.
 
 \clearpage
 
