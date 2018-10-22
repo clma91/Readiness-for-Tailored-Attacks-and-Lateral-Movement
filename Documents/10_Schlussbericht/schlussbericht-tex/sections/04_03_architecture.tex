@@ -72,7 +72,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC05 - Display missing or wrong system configuration}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Based on the list created in UC02 and UC04 the user gets an overview of missing configurations which would improve the readiness of the system for a good attack detection.
+    Based on the list created in UC02 and UC04 the user gets an overview of missing configurations (the result) which would improve the readiness of the system for a good attack detection.
     \ \\
     \paragraph{Precondition} \ \\
     The lists from UC02 and UC04 are available.
@@ -83,6 +83,20 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \end{enumerate}   
 \end{tcolorbox}
 
+\subsubsection{UC06 - Save Result to specific path}
+\begin{tcolorbox}
+    \paragraph{Description} \ \\
+    The actor has the possibility to save the overview from UC05 to a file in a specific path defined by the actor himself. This file contains the result from UC05 in a descriptive way.
+    \ \\
+    \paragraph{Precondition} \ \\
+    UC05 is fulfilled: the result, respectively the overview is available
+    \ \\
+    \paragraph{Main Success Scenario} 
+    \begin{enumerate}
+        \item A file is saved to a specific path with the result from UC05
+        \item The path can be defined by the actor
+    \end{enumerate}   
+\end{tcolorbox}
 
 
 \subsection{Non Functional Requirements}
@@ -102,3 +116,4 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \end{table}
 
 \subsection{Technologies}
+
