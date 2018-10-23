@@ -1,6 +1,5 @@
 function isSysmonInstalled {
-    $SystemRoot = "$env:systemroot"
-    $PathSysmon = $SystemRoot + '\System32\Winevt\Logs\Microsoft-Windows-Sysmon%4Operational.evtx';
+    $PathSysmon = $env:systemroot + '\System32\Winevt\Logs\Microsoft-Windows-Sysmon%4Operational.evtx';
 
     if(![System.IO.File]::Exists($PathSysmon)){
         Write-Host 'Sysmon is not installed';
