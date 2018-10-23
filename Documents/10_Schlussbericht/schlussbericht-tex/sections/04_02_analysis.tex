@@ -19,8 +19,6 @@ The, for our project, most interesting part about BloodHound is the way they ret
 %Lukas
 \subsubsection{Description}
 WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralized server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected one could simply import the generated weffels.csv file into Excel an start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
-\subsubsection{Difficulties}
-\fcolorbox{red}{yellow}{TODO: define difficulties}
 \subsubsection{Conclusion}
 WEFFELS will not be the product on which this project is based, but could become an important point of reference. 
 %Vilicht no persöliche ergänzig
@@ -54,8 +52,13 @@ The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security admin
 The toolkit is very simple and could be understood and used without any difficulties. The handling is very intuitive and does not require much training. Please note, however, that the toolkit cannot be used with Windows 10 Home, since active directory support is not provided with this version.
 
 \subsubsection{Conclusion}
-This toolkit can be used for a very baseline GPO in enterprise environment. With the handed baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit gives also the ability to compare different local GPO's installed on different Clients or Servers to check their consistency. In addition the handed baselines can be used for building new GPO's.
-\\\\
+This toolkit can be used for a very baseline GPO in enterprise environment. With the handed baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit gives also the ability to compare different local GPO's installed on different Clients or Servers to check their consistency. In addition the handed baselines can be used for building new GPO's. Furthermore, Microsoft delivers with the SCT a Local Group Policy Object Utility (LGPO.exe) to:
+\begin{itemize}
+    \item Import and apply policy settings
+    \item Export local policy to a GPO backup
+    \item Parse a registry.pol file to "LGPO text" format
+    \item Build a registry.pol file from "LGPO text"
+\end{itemize}
 This toolkit is very interesting, but cannot be used to build on it. The reason for this is that the source code of the complete toolkit is not available. However, it can be used as additional help for checking the readiness of an enterprise environment.
 
 \subsection{Microsoft Monitoring Active Directory for Signs of Compromise
