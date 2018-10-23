@@ -18,7 +18,6 @@
 \begin{table}[H]
     \centering
     \begin{tabular}{p{4cm} p{12cm}} \hline
-        Lukas Kellenberger & lukas.kellenberger@hsr.ch \\ \hline
         Claudio Mattes & claudio.mattes@hsr.ch \\ \hline
         Cyrill Brunschwiler & cyrill.brunschwiler@hsr.ch \\ \hline
     \end{tabular}
@@ -29,8 +28,6 @@
 \subsection*{Traktanden}
 \begin{itemize}
     \item Stand des Projekts
-    \item Unterstützungen
-    \item Recheck Use Cases \& NFRs
     \item Fragen
     \item Weiteres Vorgehen
 \end{itemize}
@@ -44,9 +41,11 @@
     \begin{tabular}{p{12cm} p{4cm}}
         \textbf{Arbeiten} & \textbf{Status} \\ \hline
         Research und Übersicht schaffen & Abgeschlossen \\ \hline
-        Schreiben der Dokumentation & in Bearbeitung \\ \hline
         Definition von Use Cases und NFRs & Abgeschlossen\\ \hline
-        Einarbeitung Powershell, einzelne Funktionen schreiben/testen & in Bearbeitung \\ \hline
+        Schreiben der Dokumentation & in Bearbeitung \\ \hline
+        Einarbeitung Powershell, einzelne Funktionen schreiben/testen & in Bearbeitung 
+        \\ \hline
+        PoC Sysmon-Detektion & Erreicht \\ \hline
     \end{tabular}
 \end{table}
 
@@ -65,9 +64,8 @@
 
 \subsection*{Fragen}
 \begin{itemize}
-    \item Use-Cases
-    \item NFRs
-    \item Domain Model (unserer Meinung nach lohnt es sich nicht ein objektorientierte Lösung anzustreben)
+    \item Cobalt Strike
+    \item Domain Model (unserer Meinung nach lohnt es sich nicht ein objektorientierte Lösung anzustreben, da es mehr Boilerplate wäre)
 \end{itemize}
 
 \vspace{1cm}
@@ -77,12 +75,17 @@
     \centering
     \begin{tabular}{p{12cm} p{4cm}}
         \textbf{Was} & \textbf{Verantwortlichkeit} \\ \hline
-        Definition der Sprint Features & Team \\ \hline
-        Neuer Use Case ''Save Result'' mit Pfadangabe & Team \\ \hline
-        Ev. Domain Model & Team \\ \hline
-        Prototyping & Team (einzeln) \\ \hline
+        Domain Model Ausarbeitung (Ist-Zustand) & Team \\ \hline
+        PoC Audit Policy & Claudio \\ \hline
+        PoC Event Log & Lukas \\ \hline
+        Dokumentation: Analyse fertigstellen & Team \\ \hline
+        Dokumentation: Technologie fertigstellen & Team \\ \hline
+        Ausarbeitung und Dokumentation Design des Tools & Team \\ \hline
+        Beginn Implementation & Team \\ \hline
     \end{tabular}
 \end{table}
+
+\clearpage
 
 \subsubsection*{Nächster Termin}
 
@@ -91,6 +94,8 @@
     Zeit: & 08:30 - 09:30 \\
     Ort: & Standort Alice \\
 \end{tabular}
+
+\vspace{1cm}
 
 \subsection*{Kommende Abwesenheiten}
 \begin{table}[H]
@@ -101,11 +106,21 @@
     \end{tabular}
 \end{table}
 
-\clearpage
+\vspace{1cm}
 
 \subsection*{Beschlüsse (Diskussion)}
 \begin{itemize}
-    \item 
+    \item Design des Tools
+    \item Neue Risikobeurteilung (Krankheit, Verzug)
+    \item Cobalt Strike wird keine Option sein
+    \item Sysmon-Tools (olafhartong/sysmon-modular, nshalabi/SysmonTools) zur Prävention und korrekter Konfiguration von Sysmon in Analyse aufnehmen
+    \item Transaction-Safety (was geschieht mit den Files, wenn das Tool abstürzt)
+    \item Domain Model zur Zeit im Soll-Zustand $\rightarrow$ Ist-Zustand mit Client/Server und Verify/Analyse-Prozess aufnehmen
+    \begin{itemize}
+        \item Für zukünftige Weiterentwicklung und richtige Herangehensweise
+    \end{itemize}
+    \item Gibt es ein Pattern für das Domain Model?
+    \item Objektorientierter Ansatz wird nicht verfolgt, da zu viel Boilerplate Code für das Tool entstehen sowie die Performanz darunter leiden würde
 \end{itemize}
 
 \end{document}
