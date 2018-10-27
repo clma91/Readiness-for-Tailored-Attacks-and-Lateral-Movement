@@ -4,10 +4,8 @@ This chapter describes the first step of this project, the research of published
 \subsubsection{Description}
 %Lukas
 BloodHound describes itself on its wiki page on GitHub as follows:
-\begin{quotation} \ \\
-\textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. \\
-\ \\
-BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} \cite{blo2018}
+\begin{quotation}
+    \textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} \cite{blo2018}
 \end{quotation}
 \subsubsection{Difficulties}
 BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
@@ -61,33 +59,6 @@ This toolkit can be used for a very baseline GPO in enterprise environment. With
 \end{itemize}
 This toolkit is very interesting, but cannot be used to build on it. The reason for this is that the source code of the complete toolkit is not available. However, it can be used as additional help for checking the readiness of an enterprise environment.
 
-\subsection{Microsoft Monitoring Active Directory for Signs of Compromise
-}
-\subsubsection{Description}
-This article \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore the article describes how the policies can be read with powershell.
-\\\\
-To this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
-
-\subsubsection{Conclussion}
-Due to the fact that audit policies are an important setting for solid event logging, this article and appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
-
-\subsection{MITRE ATT\&CK}
-%Claudio
-
-\subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}
-%Lukas
-\subsubsection{Description}
-This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so.
-\subsubsection{Conclusion}
-This report is going to have a big impact on this project, it shows which logs have to be read in any case. The checklist that is going to be used will base on this report.
-
-\subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
-%Lukas
-\subsubsection{Description}
-This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
-\subsubsection{Conclusion}
-This presentation contains interesting information which could be built into the project at a later point. The information this document contains are more suitable for monitoring purposes than for checking the readiness of a system.
-
 \subsection{LogonTracer}
 \subsubsection{Description}
 JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: \ \\
@@ -137,9 +108,65 @@ After a lot of investigation and further tests it turned out that under \lstinli
     -e LTHOSTNAME=localhost jpcertcc/docker-logontracer
 \end{lstlisting}
 \subsubsection{Conclussion}
-The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to the components available in the network can be easily visualized in graphical form.
+The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to the components available in the network can be visualized simply and graphically and conclusions can be drawn from it as to exactly what has happened.
 \\\\
 However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. And for a further detection of lateral movements this tool is extremely interesting.
+
+\clearpage
+
+\subsection{Microsoft Monitoring Active Directory for Signs of Compromise}
+\subsubsection{Description}
+This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore the article describes how the policies can be read with powershell.
+\\\\
+To this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
+
+\subsubsection{Conclussion}
+Due to the fact that audit policies are an important setting for solid event logging, this article and appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
+
+\subsection{MITRE ATT\&CK}
+\subsubsection{Description}
+MITRE ATT\&CK introduces itself on its website as follows:
+\begin{quotation}
+    \textit{''MITRE ATT\&CK™ is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. The ATT\&CK knowledge base is used as a foundation for the development of specific threat models and methodologies in the private sector, in government, and in the cybersecurity product and service community.''} \cite{MITRE}
+\end{quotation}
+The portal offers a variety of attacks and their patterns, which are currently known in different operating systems. MITRE ATT\&CK describes the attack in short words and then lists possibilities for detection and mitigation. Various attack tools are described on the portal as well. With which goal they are used and what effects they can have. In addition, the corresponding attacks are always cross-referenced. This is a great advantage for a quick search, especially when time is of the essence.
+
+\subsubsection{Conclusion}
+Although many attacks are described and how they can be detected and fended off, MITRE ATT\&CK is not quite suitable for our task. The readiness of a system to detect tailored attacks and lateral movements is only roughly described and would be associated with a time-consuming analysis in order to draw exact conclusions.
+
+\clearpage
+
+\subsection{sysmon-modular}
+\subsubsection{Description}
+With sysmon-modular a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are done by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/sysmon-modular/sysmon-modular.png}
+    \caption{Detectable attacks with sysmon-modular}\label{fig:sysmonmodular}
+\end{figure}
+
+\subsubsection{Conclusion}
+Sysmon-modular offers a very good basic configuration for Sysmon which is based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will probably not be included in the tool during this study, unless there are still enough time reserves for such an integration.
+
+\subsection{Sysmon Tools}
+\subsubsection{Description}
+
+\subsubsection{Conclusion}
+
+\subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
+%Lukas
+\subsubsection{Description}
+This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
+\subsubsection{Conclusion}
+This presentation contains interesting information which could be built into the project at a later point. The information this document contains are more suitable for monitoring purposes than for checking the readiness of a system.
+
+\subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}
+%Lukas
+\subsubsection{Description}
+This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so.
+\subsubsection{Conclusion}
+This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the given information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time.
 
 \clearpage
 
@@ -186,3 +213,31 @@ After the virtual network has been set up, the developers tested the connections
 
 \paragraph{RDP connection for Bob and Charlie}\ \\
 Due to the fact that the user Alice owns administrator privileges, she was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
+
+\clearpage
+
+\subsection{Domain Analysis}
+The following section describes the problem domain which is faced during this project. Despite the decision to not programm an object orientated solution, there are several things to be aware of and to think carefully through. For this reason building a domain model is a simple and  suitable  suitable technique to use for. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{assets/architecture/DomainModelSRI.png}
+    \caption{Domain Model}\label{fig:domainmodel}
+\end{figure}
+
+\subsubsection{Network}
+The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension the network is already considered in this domain model.
+
+\subsubsection{Computer}
+A computer illustrates a either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. A computer is a core component in our project, because the detection is done on a single client or server. 
+
+\subsubsection{Event}
+
+
+\subsubsection{AuditPolicy}
+
+\subsubsection{Required List}
+\paragraph{Actual List}
+
+\paragraph{Target List}
+
+\subsubsection{Analysis}
