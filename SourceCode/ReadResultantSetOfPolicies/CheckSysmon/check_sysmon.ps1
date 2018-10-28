@@ -1,13 +1,17 @@
 function isSysmonInstalled {
-    $PathSysmon = $env:systemroot + '\System32\Winevt\Logs\Microsoft-Windows-Sysmon%4Operational.evtx';
-    $ServiceName = 'Sysmon64'
-    $arrService = Get-Service -Name $ServiceName
+    $Service = $null
+    try {
+        $Service = Get-Service -Name Sysmon*
+        $result = Get-WinEvent -ListLog *Sysmon* -EA "Stop"
+    }
+    catch {
+        Write-Host 'Sysmon is not installed'
+        return $false
+    }
     
-    if(![System.IO.File]::Exists($PathSysmon)){
-        Write-Host 'Sysmon is not installed';
-        return $false;
-    } elseif ($arrService.Status -ne 'Running') {
+    if ($Service.Status -ne 'Running') {
         Write-Host 'Sysmon is installed but not running'
+        Write-Host $Service.Status
         return $true;
     } else {
         Write-Host 'Sysmon is installed';
