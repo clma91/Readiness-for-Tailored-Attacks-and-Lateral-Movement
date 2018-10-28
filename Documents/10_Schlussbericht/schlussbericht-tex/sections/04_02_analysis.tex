@@ -138,7 +138,7 @@ Although many attacks are described and how they can be detected and fended off,
 
 \subsection{sysmon-modular}
 \subsubsection{Description}
-With sysmon-modular a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are done by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
+With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are done by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
 
 \begin{figure}[H]
     \centering
@@ -150,9 +150,11 @@ With sysmon-modular a clean configuration of the Windows system service System M
 Sysmon-modular offers a very good basic configuration for Sysmon which is based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will probably not be included in the tool during this study, unless there are still enough time reserves for such an integration.
 
 \subsection{Sysmon Tools}
+% https://github.com/nshalabi/SysmonTools
 \subsubsection{Description}
-
+Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
 \subsubsection{Conclusion}
+This tool can also be a great help for detecting attacks and with the Sysmon Shell a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for the project ''Readiness for Tailored Attacks and Lateral Movement Detection''.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
 %Lukas
@@ -228,16 +230,24 @@ The following section describes the problem domain which is faced during this pr
 The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension the network is already considered in this domain model.
 
 \subsubsection{Computer}
-A computer illustrates a either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. A computer is a core component in our project, because the detection is done on a single client or server. 
+A computer illustrates a either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
 
 \subsubsection{Event}
-
+An event represents a single event log entry in simplified form.
 
 \subsubsection{AuditPolicy}
+AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies to be used:
+\begin{quotation}
+    \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}
+\end{quotation}
+A single audit policy setting represents one or more event IDs logged by this configuration.
 
 \subsubsection{Required List}
 \paragraph{Actual List}
+The actual list represents the current state of the system. It reflects the event log IDs that have occurred and the audit policies that have been set.
 
 \paragraph{Target List}
+The target list represents either the list of event logs or configured audit policies which must be present for a solid detection of attacks.
 
 \subsubsection{Analysis}
+Based on the required lists and the current state of the computer, the analysis shows which settings are missing in the audit policies.
