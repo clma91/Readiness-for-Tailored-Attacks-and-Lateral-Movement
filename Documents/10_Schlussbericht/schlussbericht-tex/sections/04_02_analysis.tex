@@ -11,15 +11,14 @@ BloodHound describes itself on its wiki page on GitHub as follows:
 BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
 
 \subsubsection{Conclusion}
-The, for our project, most interesting part about BloodHound is the way they retrieve their data. Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project.
+The, for our project, most interesting part about BloodHound is the way it retrieves its data. Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project. There its so called ingestor will be used to retrieve the data of a whole network instead of only a local computer.
 
 \subsection{WEFFLES}
-%Lukas
 \subsubsection{Description}
 WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralized server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected one could simply import the generated weffels.csv file into Excel an start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
 \subsubsection{Conclusion}
-WEFFELS will not be the product on which this project is based, but could become an important point of reference. 
-%Vilicht no persöliche ergänzig
+WEFFELS will not be the product on which this project is based, but could become an important point of reference. The installation guide and other WEFFELS-related documents collected by Jessica Payne provide a lot of information for reading and understanding logs, which will be very helpful for this project. Also an interesting part about WEFFLES and the Jessica Payne article is how she visualize  the logs, using Microsoft PowerBI.
+
 
 \subsection{Microsoft Security Compliance Toolkit}
 \subsubsection{Description}
