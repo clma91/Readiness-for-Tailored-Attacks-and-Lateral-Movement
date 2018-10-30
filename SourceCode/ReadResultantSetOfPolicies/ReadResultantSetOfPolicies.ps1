@@ -68,6 +68,8 @@ function readResultantSetOfPolicies {
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
+
+    Remove-Item $pathRSOPXML
 }
 
 readResultantSetOfPolicies
