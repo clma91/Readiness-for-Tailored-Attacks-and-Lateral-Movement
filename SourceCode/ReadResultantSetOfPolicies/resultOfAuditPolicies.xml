@@ -20,4 +20,5 @@
 	<AuditLogon>Failure</AuditLogon>
 	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
+	<Sysmon>Installed</Sysmon>
 </AuditPolicies>

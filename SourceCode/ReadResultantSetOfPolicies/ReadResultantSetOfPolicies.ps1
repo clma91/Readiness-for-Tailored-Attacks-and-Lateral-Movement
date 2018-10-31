@@ -1,13 +1,28 @@
 #Requires -RunAsAdministrator
 
-function readResultantSetOfPolicies {
+function IsSysmonInstalled {
+    $service = $null
+
+    try {
+        $service = Get-Service -Name Sysmon*
+    } catch {
+        return "NotInstalled"
+    }
+    
+    if ($service.Status -ne "Running") {
+        return "InstalledNotRunning"
+    } else {
+        return "Installed"
+    }
+}
+function ReadResultantSetOfPolicies {
     $resultXML = "resultOfAuditPolicies.xml"
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
-    $xmlWriter.Formatting = 'Indented'
+    $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
     $XmlWriter.IndentChar = "`t"
     $xmlWriter.WriteStartDocument()
-    $xmlWriter.WriteStartElement('AuditPolicies')
+    $xmlWriter.WriteStartElement("AuditPolicies")
     
 
     $currentPath = (Resolve-Path .\).Path
@@ -29,8 +44,8 @@ function readResultantSetOfPolicies {
 
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
         if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
-            $xmlWriter.WriteStartElement(($auditSettingSubcategoryName -replace (' ')))
-            $xmlWriter.WriteValue('NotConfigured')
+            $xmlWriter.WriteStartElement(($auditSettingSubcategoryName -replace (" ")))
+            $xmlWriter.WriteValue("NotConfigured")
             $xmlWriter.WriteEndElement()
         }
     }
@@ -44,25 +59,30 @@ function readResultantSetOfPolicies {
                 $auditSettingValue = 0;
             }
             $auditSubcategoryName = $auditSetting.SubcategoryName 
-            $xmlWriter.WriteStartElement(($auditSubcategoryName -replace (' ')))
+            $xmlWriter.WriteStartElement(($auditSubcategoryName -replace (" ")))
             switch ($auditSettingValue) {
                 NoAuditing {  
-                    $xmlWriter.WriteValue('NoAuditing')
+                    $xmlWriter.WriteValue("NoAuditing")
                 }
                 Success {
-                    $xmlWriter.WriteValue('Success')
+                    $xmlWriter.WriteValue("Success")
                 } 
                 Failure {
-                    $xmlWriter.WriteValue('Failure')
+                    $xmlWriter.WriteValue("Failure")
                 }
                 SuccessAndFailure {
-                    $xmlWriter.WriteValue('SuccessAndFailure')
+                    $xmlWriter.WriteValue("SuccessAndFailure")
                 }
                 Default {}
             }
             $xmlWriter.WriteEndElement()
         }    
     }
+
+    $isSysmonInstalled = IsSysmonInstalled
+    $xmlWriter.WriteStartElement("Sysmon")
+    $xmlWriter.WriteValue($isSysmonInstalled)
+    $xmlWriter.WriteEndElement()
 
     $xmlWriter.WriteEndElement()
     $xmlWriter.WriteEndDocument()
