@@ -5,7 +5,7 @@ This chapter describes the first step of this project, the research of published
 %Lukas
 BloodHound describes itself on its wiki page on GitHub as follows:
 \begin{quotation}
-    \textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.''} \cite{blo2018}
+    \textit{''BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a PowerShell/C\# ingestor. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attacks can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.'' \cite{blo2018}} 
 \end{quotation}
 \subsubsection{Difficulties}
 BloodHound was tested in the test environment describes later in this chapter. Both, the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
@@ -22,17 +22,12 @@ WEFFELS will not be the product on which this project is based, but could become
 
 \subsection{Microsoft Security Compliance Toolkit}
 \subsubsection{Description}
-The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security administrators to analyze their configured enterprise Group Policy Objects (GPO) in comparison to the Microsoft-recommended GPO baselines. The toolkit is handed with several baseline GPO's for different versions of Microsoft Windows Client and Servers:
+The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security administrators to analyse their configured enterprise Group Policy Objects (GPO) in comparison to the Microsoft-recommended GPO baselines. The toolkit is handed with several baseline GPO's for different versions of Microsoft Windows Client and Servers:
 
 \begin{itemize}
     \item Windows 10 security baselines
     \begin{itemize}
-        \item Windows 10 Version 1803 (April 2018 Update)
-        \item Windows 10 Version 1709 (Fall Creators Update)
-        \item Windows 10 Version 1703 (Creators Update)
-        \item Windows 10 Version 1607 (Anniversary Update)
-        \item Windows 10 Version 1511 (November Update)
-        \item Windows 10 Version 1507
+        \item Windows 10 Version 1803 (April 2018 Update), 1709 (Fall Creators Update), 1703 (Creators Update), 1607 (Anniversary Update), 1511 (November Update), 1507
     \end{itemize}
     \item Windows Server security baselines
     \begin{itemize}
@@ -60,7 +55,8 @@ This toolkit is very interesting, but cannot be used to build on it. The reason 
 
 \subsection{LogonTracer}
 \subsubsection{Description}
-JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: \ \\
+JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"[...] account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: 
+\ \\
 \begin{multicols}{2}
     \begin{itemize}
         \item 4624:Successful logon
@@ -70,36 +66,36 @@ JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a syst
         \item 4776:NTLM Authentication
         \item 4672:Assign special privileges
     \end{itemize}
-\end{multicols}
-\ \\
-The following figure shows a sample graph from the test environment:
+\end{multicols} \ \\
+The following figure depicts a sample graph of logins from different users in the test environment:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{assets/LogonTracer/LogonTrace_LogFarm.png}
+    \includegraphics[width=0.8\linewidth]{assets/LogonTracer/LogonTrace_LogFarm.png}
     \caption{LogonTracer: Sample Graph from Test Environment}
     \label{fig:LogonTracerSample}
 \end{figure}
 \ \\
-To use the LogonTracer, there is only a .evtx-File (Windows XML Event Log - export of Windows event logs) needed to be uploaded. At best the export of the security event log of the domain controller to get as much information of the network as possible. With the built in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
+To use the LogonTracer, there is only a .evtx-File (Windows XML Event Log - export of Windows event logs) needed to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
 \\\\
-In addition, LogonTracer provides a timeline for all or selected users to see when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
+In addition, LogonTracer provides a timeline for all or selected users to show when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
 \\\\
-The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment. Although only a small environment as described in the section was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment is accessible via public IP addresses in the cloud.
+The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
 \\\\
 Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in the figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
+
 \subsubsection{Difficulties}
-During the test phase of LogonTracer some difficulties were detected. It's pretty easy to get the docker container, but starting LogonTracer is a bit of a challenge. JPCERT/CC gives the following instructions for starting the docker container:
+During the test phase of LogonTracer some difficulties were faced. It's pretty easy to get the docker container, but starting LogonTracer was a bit of a challenge. JPCERT/CC gives the following instructions for starting the docker container:
 \begin{lstlisting}[language=HTML,caption=LogonTracer: given docker run command]
     $ docker run --detach \
     --publish=7474:7474 --publish=7687:7687 --publish=8080:8080 \
     -e LTHOSTNAME=[IP_Address] jpcertcc/docker-logontracer
 \end{lstlisting}
-The Problem was that the parameter \lstinline|[IP_Address]| was not described well. If the command \lstinline|docker ps| was executed it always showed the following \lstinline|PORTS|:
-\begin{lstlisting}[caption=LogonTraceer: docker ps (PORTS)]
+The problem was that the parameter \lstinline|[IP_Address]| was not described well. If the command \lstinline|docker ps| was executed it always showed the following \lstinline|PORTS|:
+\begin{lstlisting}[caption=LogonTracer: docker ps (PORTS)]
     PORTS
     0.0.0.0:7474->7474/tcp, 0.0.0.0:7687->7687/tcp, 7473/tcp, 0.0.0.0:8080->8080/tcp
 \end{lstlisting}
-After a lot of investigation and further tests it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and after enough patience it can be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
+After some time of investigation and further tests, it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and after enough patience it can be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
 
 \begin{lstlisting}[language=HTML,caption=LogonTracer: recommended docker run command]
     $ docker run --detach \
@@ -107,9 +103,9 @@ After a lot of investigation and further tests it turned out that under \lstinli
     -e LTHOSTNAME=localhost jpcertcc/docker-logontracer
 \end{lstlisting}
 \subsubsection{Conclussion}
-The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to the components available in the network can be visualized simply and graphically and conclusions can be drawn from it as to exactly what has happened.
+The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to various components, available in the network, can be visualized simply and graphically, hence conclusions can be drawn about what has happened.
 \\\\
-However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. And for a further detection of lateral movements this tool is extremely interesting.
+However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. As well for a further detection of lateral movements this tool is extremely interesting and to recommend.
 
 \clearpage
 
@@ -126,7 +122,7 @@ Due to the fact that audit policies are an important setting for solid event log
 \subsubsection{Description}
 MITRE ATT\&CK introduces itself on its website as follows:
 \begin{quotation}
-    \textit{''MITRE ATT\&CK™ is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. The ATT\&CK knowledge base is used as a foundation for the development of specific threat models and methodologies in the private sector, in government, and in the cybersecurity product and service community.''} \cite{MITRE}
+    \textit{''MITRE ATT\&CK™ is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. The ATT\&CK knowledge base is used as a foundation for the development of specific threat models and methodologies in the private sector, in government, and in the cybersecurity product and service community.'' \cite{MITRE}} 
 \end{quotation}
 The portal offers a variety of attacks and their patterns, which are currently known in different operating systems. MITRE ATT\&CK describes the attack in short words and then lists possibilities for detection and mitigation. Various attack tools are described on the portal as well. With which goal they are used and what effects they can have. In addition, the corresponding attacks are always cross-referenced. This is a great advantage for a quick search, especially when time is of the essence.
 
@@ -162,17 +158,15 @@ This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC e
 \subsubsection{Conclusion}
 This presentation contains interesting information which could be built into the project at a later point. The information this document contains are more suitable for monitoring purposes than for checking the readiness of a system.
 
-\subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}
+\subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}\label{JPCertStudy}
 %Lukas
 \subsubsection{Description}
 This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so.
 \subsubsection{Conclusion}
-This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the given information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time.
+This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the given information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 
-\clearpage
-
-\subsection{Test environment}
-A virtual network was set up on Azure-Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer. The following operating systems were installed in this test network: \\
+\subsection{Test environment}\label{sec:testenvironment}
+A virtual network was set up on the Microsoft Azure Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer and get the possibilities to create group policies. Group policies are used in almost every corporate environment to build rule sets for configurations. This configurations are a core element to check the readiness of a system. The following operating systems were installed in this test network: \\
 \\
 \textbf{Server:}
 \begin{itemize}
@@ -186,21 +180,21 @@ A virtual network was set up on Azure-Cloud as a test environment. The test netw
 The network is structured as followed:\\
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{assets/testnetwork.png}
+    \includegraphics[width=0.9\linewidth]{assets/test-environment/testnetwork.png}
     \caption{Test Environment}
 \end{figure}
 
 \clearpage
 
 \subsubsection{User}
-Three different user were configured for the logfarm-network:
+Three users were configured for the logfarm-network:
 \begin{table}[H]
     \centering
     \begin{tabular}{p{4cm} p{8cm}} \hline
-        \textbf{Name} & \textbf{Permissions}  \\ \hline
-        alice & administrator  \\ \hline
-        bob & user  \\ \hline
-        charlie & user  \\ \hline
+        \textbf{Name} & \textbf{Privileges}  \\ \hline
+        alice & Domain administrator  \\ \hline
+        bob & User  \\ \hline
+        charlie & User  \\ \hline
     \end{tabular}
     \caption{Test Environment User}
 \end{table}
@@ -208,12 +202,12 @@ Three different user were configured for the logfarm-network:
 \subsubsection{Difficulties}
 Various difficulties occurred which are presented in this subsection.
 \paragraph{Connect to the virtuel machines via RDP} \ \\
-After setting up the virtual machines on Azure, the developers tried to connect to the devices via  the Remote Desktop Protocol. First, the developers suspected it was the incoming port rules, so reinstall the machines. However, this did not fix the error.It turned out that the problem was not with the virtual machines, but with the network they were in. Their firewall blocked the RDP-connection. In order to avoid this, the developers used a VPN-Connection.
+After setting up the virtual machines on Azure, the developers tried to connect to the devices via the Remote Desktop Protocol but failed. First, the developers suspected the issue was the incoming port rules, so the machines were reinstalled. However, this did not fix the issue. It turned out that the problem were not the virtual machines, but with the network used to connect to the Microsoft Azure Cloud. Some firewall rules blocked the RDP-connection. In order to avoid this, the developers used a VPN-Connection in which these rules did not apply.
 \paragraph{Firewall setting for ICMP}\ \\
-After the virtual network has been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that all clients were receiving pings, but the ping-requests by Win10-Client remained unanswered. It turned out that,  for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting the ping-requests were answered positively.
+After the virtual network has been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that almost all clients were receiving pings, but the ping-requests by one client remained unanswered. It turned out that, for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting the ping-requests were answered positively.
 
 \paragraph{RDP connection for Bob and Charlie}\ \\
-Due to the fact that the user Alice owns administrator privileges, she was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
+Due to the fact that the user \lstinline|alice| owns domain administrator privileges, this user was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
 
 \clearpage
 
