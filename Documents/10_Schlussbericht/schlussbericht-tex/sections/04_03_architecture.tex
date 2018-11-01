@@ -56,7 +56,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC04 - Analyse Found Event Logs}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The implemented logic analyzes, by defined event ids, which events occurred or are missing and creates a list of events that did not occurred or are not logged yet.
+    The implemented logic analyses, by defined event ids, which events occurred or are missing and creates a list of events that did not occurred or are not logged yet.
     \ \\
     \paragraph{Precondition} \ \\
     UC03 is fulfilled: the temporary file is available.
@@ -122,25 +122,44 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \paragraph{PowerShell \& Visual Studio Code} \ \\
 The decision, which technology will be used, was made in favour of PowerShell. The reason why PowerShell will be used was, that it is close to the Microsoft Operating System and that it has a large and detailed documentation at its disposal. \ \\
 \ \\
-The scripts are written in Visual Studio Code with the extension packet 'PowerShell'. Visual Studio code is preferred to PowerShell ISE because it only requires working in one IDE for implementation and documentation.
+The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell ISE because it only requires working in one IDE for implementation and documentation.
 
 \paragraph{LaTeX \& Visual Studio Code}\ \\
 The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand we have made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
 
 \paragraph{Azure Cloud}\ \\
-The test environment is set up, like in '2.9 Test environment' described, in the azure cloud. One server and two clients form a virtual network, this brings the advantage that the developers can access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
+The test environment is set up, like in section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' described, in the azure cloud. One server and two clients form a virtual network, this brings the advantage that the developers can access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
 
 \paragraph{GitHub}\ \\
 GitHub is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
 
 \subsubsection{Rejected Technologies}
-\paragraph{Continuous Integration}\ \\
-Continuous integration is not used in this project because it will be a simple toolkit that is not written object-oriented. On the other hand, 
+% \paragraph{Continuous Integration}\ \\
+% Continuous integration is not used in this project because it will be a simple toolkit that is not written object-oriented. On the other hand, 
 
 \paragraph{Python}\ \\
-The decision to use PowerShell and C\# instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft-OS. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
+The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft-OS. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
 
 
+\clearpage
 
+\subsection{Tool Design}
+This section describes the process of the toolkit and explain the individual steps in detail. As mentioned in the Use Cases, the actor of this toolkit will be a security advisor, who will execute the toolkit.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
+    \caption{Sequence Diagram SystemReadinessInspector - SRI}
+\end{figure}
+
+\subsubsection{GetAuditPolicy()}
+This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration the \lstinline|Get-GPResultantSetOfPolicy| command will be used. \cite{GetGPResultantSetOfPolicy} This command gets all the information of the ''Resultant Set of Policies'' (RSoP). \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
+
+\subsubsection{AnalyseAditPolicy()}
+In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
+
+\subsubsection{GetEventLog()}
+
+\subsubsection{AnalyseEvent()}
 
 
