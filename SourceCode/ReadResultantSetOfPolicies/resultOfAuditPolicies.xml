@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<AuditPolicies>
+	<AuditLogoff>NotConfigured</AuditLogoff>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
+	<AuditFilteringPlatformConnection>SuccessAndFailure</AuditFilteringPlatformConnection>
+	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
+	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
+	<AuditMPSSVCRule-LevelPolicyChange>SuccessAndFailure</AuditMPSSVCRule-LevelPolicyChange>
+	<AuditProcessCreation>SuccessAndFailure</AuditProcessCreation>
+	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
+	<AuditSpecialLogon>NoAuditing</AuditSpecialLogon>
+	<AuditProcessTermination>SuccessAndFailure</AuditProcessTermination>
+	<AuditHandleManipulation>SuccessAndFailure</AuditHandleManipulation>
+	<AuditRegistry>SuccessAndFailure</AuditRegistry>
+	<AuditSAM>SuccessAndFailure</AuditSAM>
+	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
+	<AuditFileShare>SuccessAndFailure</AuditFileShare>
+	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
+	<AuditLogon>Failure</AuditLogon>
+	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
+	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
+	<Sysmon>Installed</Sysmon>
+</AuditPolicies>
