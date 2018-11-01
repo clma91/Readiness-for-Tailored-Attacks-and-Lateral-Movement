@@ -31,13 +31,11 @@ $xmlWriter.WriteStartElement("EventID")
     
    foreach($id in $idsToCheck){
        if($myEvents | where {$_.EventID -eq $id}){ 
-          $resultMyEvents.add("present: " + $id + ";")
           $xmlWriter.WriteStartElement($id)
           $xmlWriter.WriteValue("present")
           $xmlWriter.WriteEndElement()
             }
             else{
-                $resultMyEvents.add("missing: " + $id + ";")
                 $xmlWriter.WriteStartElement($id)
                 $xmlWriter.WriteValue("missing")
                 $xmlWriter.WriteEndElement()
