@@ -159,7 +159,8 @@ This task is responsible to get all Audit Policies, which are relevant for loggi
 In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
 
 \subsubsection{GetEventLog()}
+This task is responsible for getting the event logs from the system. Therefor the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System', 'Application' and 'Security'. This logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
 
 \subsubsection{AnalyseEvent()}
-
+In this task the created 'CSV' file from GetEventLog() is used to analyze the collected logs. They are compared to a list provided by JPCERT to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualize it.
 
