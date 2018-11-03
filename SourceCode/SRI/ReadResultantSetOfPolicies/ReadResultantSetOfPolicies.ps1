@@ -4,7 +4,7 @@ Function CheckLegacyAuditPolicy {
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     try {
-        $legacyAuditPolicyKey = Get-ItemProperty -Path $path -Name $name
+        $legacyAuditPolicyKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
         if ($legacyAuditPolicyKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             return "Enabled"
         } else {
@@ -37,7 +37,6 @@ Function ReadResultantSetOfPolicies {
     $currentPath = (Resolve-Path .\).Path
 
     $resultXML = (Resolve-Path .\).Path + "\resultOfAuditPolicies.xml"
-    Write-Host $resultXML
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -74,10 +73,10 @@ Function ReadResultantSetOfPolicies {
     foreach($auditSetting in $auditSettings) {
         if($auditSetting) {
             try {
-                $auditSettingValue = $auditSetting.SettingValue;
+                $auditSettingValue = $auditSetting.SettingValue
             }
             catch {
-                $auditSettingValue = 0;
+                $auditSettingValue = 0
             }
             $auditSubcategoryName = $auditSetting.SubcategoryName 
             $xmlWriter.WriteStartElement(($auditSubcategoryName -replace (" ")))
