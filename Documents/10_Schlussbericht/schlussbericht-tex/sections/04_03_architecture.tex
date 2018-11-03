@@ -1,7 +1,7 @@
 \section{System Architecture}
 In this section the following main question is answered: 
 \begin{quotation}
-    \textit{''How would a system architecture look like to fulfill the described problem domain?''}
+    \textit{''What would a system architecture look like to fulfill the described problem domain?''}
 \end{quotation}
 This includes the coverage of use cases, non-functional requirements, technologies used ...
 
@@ -106,7 +106,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \def\arraystretch{2}
     \begin{tabular}{| p{2.5cm} | p{13.5cm} |} \hline
         \textbf{NFR-No.} & \textbf{Description}  \\ \hline
-        NRF01 & The Toolkit must remain the system in the status quo. More specific the system shall not deliberately alter any existing entry in the event logs and registry. However, the tool may will produce new event logs.\\ \hline
+        NRF01 & After using the Toolkit the system must remain in the status quo. More specifically the system shall not deliberately alter any existing entry in the event logs and registry. However, the tool may produce new event logs.\\ \hline
         NFR02 & The user shall not notice significant performance degradation from the system when using the Toolkit. \\ \hline
         NFR03 & The Toolkit must be portable with no installation procedure before use. \\ \hline
         NFR04 & The minimal target version of the system for the Toolkit to run must be Microsoft Windows 10 Professional or Microsoft Server 2016. \\ \hline
@@ -118,17 +118,17 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \clearpage
 
 \subsection{Technologies}
-\subsubsection{Choosen Technologies}
+\subsubsection{Chosen Technologies}
 \paragraph{PowerShell \& Visual Studio Code} \ \\
-The decision, which technology will be used, was made in favour of PowerShell. The reason why PowerShell will be used was, that it is close to the Microsoft Operating System and that it has a large and detailed documentation at its disposal. \ \\
+The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft Operating System and that it has a large and detailed documentation at its disposal. \ \\
 \ \\
 The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell ISE because it only requires working in one IDE for implementation and documentation.
 
 \paragraph{LaTeX \& Visual Studio Code}\ \\
-The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand we have made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
+The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand, we made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
 
 \paragraph{Azure Cloud}\ \\
-The test environment is set up, like in section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' described, in the azure cloud. One server and two clients form a virtual network, this brings the advantage that the developers can access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
+The test environment is set up, as described in section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'', in the azure cloud. One server and two clients form a virtual network, this enables developers to access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
 
 \paragraph{GitHub}\ \\
 GitHub is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
@@ -162,5 +162,5 @@ In this task the gathered information from the task GetAuditPolicy(), which is r
 This task is responsible for getting the event logs from the system. Therefor the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System', 'Application' and 'Security'. This logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
 
 \subsubsection{AnalyseEvent()}
-In this task the created 'CSV' file from GetEventLog() is used to analyze the collected logs. They are compared to a list provided by JPCERT to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualize it.
+In this task the created 'CSV' file from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualise it.
 

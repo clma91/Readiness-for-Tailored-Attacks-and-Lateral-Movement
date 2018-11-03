@@ -11,13 +11,13 @@ BloodHound describes itself on its wiki page on GitHub as follows:
 BloodHound was tested in the test environment which is described later in this chapter. Both the C\# and Python ingestors were successfully installed and tested. The only problem which occurred was that the Python-ingestor does not yet run on the latest Python release. One must have a Python 2.7.x version installed to run the scripts successfully.
 
 \subsubsection{Conclusion}
-The most interesting aspect of BloodHound for our project is the way it retrieves its data. Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project. There so called ingestor will be used to retrieve the data of a whole network instead of only a local computer.
+The most interesting aspect of BloodHound for our project is the way it retrieves its data. Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project. Their so called ingestor will be used to retrieve the data of a whole network instead of only a local computer.
 
 \subsection{WEFFLES}
 \subsubsection{Description}
-WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralized server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply imported into Excel and start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
+WEFFLES (Windows Event Logging Forensic Logging Enhancement Services) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply imported into Excel and start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
 \subsubsection{Conclusion}
-WEFFELS will not be the product on which this project is based, but could become an important point of reference. The installation guide and other WEFFELS-related documents collected by Jessica Payne provide a lot of information for reading and understanding logs, which will be very helpful for this project. Also an interesting aspect of WEFFLES and the Jessica Payne article is how she visualized the logs, using Microsoft PowerBI.
+WEFFELS will not be the product on which this project is based, but could become an important point of reference. The installation guide and other WEFFELS-related documents collected by Jessica Payne provide a lot of information for reading and understanding logs, which will be very helpful for this project. Also an interesting aspect of WEFFLES and the Jessica Payne article is how she visualised the logs, using Microsoft PowerBI.
 
 
 \subsection{Microsoft Security Compliance Toolkit}
@@ -76,7 +76,7 @@ The following figure depicts a sample graph of logins from different users in th
     \label{fig:LogonTracerSample}
 \end{figure}
 \ \\
-To use the LogonTracer, only a .evtx-File (Windows XML Event Log - export of Windows event logs) is necessary to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
+To use the LogonTracer, only a .evtx-File (Windows XML Event Log - export of Windows event logs) is necessary to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built-in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
 \\\\
 In addition, LogonTracer provides a timeline for all or selected users to show when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
 \\\\
@@ -85,7 +85,7 @@ The test environment showed that this graph can quickly become confusing - espec
 Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in the figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
 
 \subsubsection{Difficulties}
-During the test phase of LogonTracer some difficulties were faced. It's pretty easy to get the docker container, but starting LogonTracer was a bit of a challenge. JPCERT/CC gives the following instructions for starting the docker container:
+During the test phase of LogonTracer some difficulties were faced. It is pretty easy to get the docker container, but starting LogonTracer was a bit of a challenge. JPCERT/CC gives the following instructions for starting the docker container:
 \begin{lstlisting}[language=HTML,caption=LogonTracer: given docker run command]
     $ docker run --detach \
     --publish=7474:7474 --publish=7687:7687 --publish=8080:8080 \
@@ -96,7 +96,7 @@ The problem was that the parameter \lstinline|[IP_Address]| was not described we
     PORTS
     0.0.0.0:7474->7474/tcp, 0.0.0.0:7687->7687/tcp, 7473/tcp, 0.0.0.0:8080->8080/tcp
 \end{lstlisting}
-After some time of investigation and further tests, it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and after enough patience it can be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
+After some time of investigation and further tests, it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and it can eventually be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
 
 \begin{lstlisting}[language=HTML,caption=LogonTracer: recommended docker run command]
     $ docker run --detach \
@@ -104,17 +104,17 @@ After some time of investigation and further tests, it turned out that under \ls
     -e LTHOSTNAME=localhost jpcertcc/docker-logontracer
 \end{lstlisting}
 \subsubsection{Conclussion}
-The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to various components, available in the network, can be visualized simply and graphically, hence conclusions can be drawn about what has happened.
+The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to various components available in the network, can be visualised simply and graphically, hence conclusions can be drawn about what has happened.
 \\\\
-However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. As well for a further detection of lateral movements this tool is extremely interesting and to recommend.
+However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. This tool is also extremely interesting and recommendable for a further detection of lateral movements.
 
 \clearpage
 
 \subsection{Microsoft Monitoring Active Directory for Signs of Compromise}
 \subsubsection{Description}
-This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quiet well overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore the article describes how the policies can be read with powershell.
+This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quite a good overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore, the article describes how the policies can be read with powershell.
 \\\\
-To this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
+In this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
 \subsubsection{Conclussion}
 Due to the fact that audit policies are an important setting for solid event logging, this article and appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
@@ -125,7 +125,7 @@ MITRE ATT\&CK introduces itself on its website as follows:
 \begin{quotation}
     \textit{''MITRE ATT\&CK™ is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. The ATT\&CK knowledge base is used as a foundation for the development of specific threat models and methodologies in the private sector, in government, and in the cybersecurity product and service community.'' \cite{MITRE}} 
 \end{quotation}
-The portal offers a variety of attacks and their patterns, which are currently known in different operating systems. MITRE ATT\&CK describes the attack in short words and then lists possibilities for detection and mitigation. Various attack tools are described on the portal as well. With which goal they are used and what effects they can have. In addition, the corresponding attacks are always cross-referenced. This is a great advantage for a quick search, especially when time is of the essence.
+The portal offers a variety of attacks and their patterns, which are currently known in different operating systems. MITRE ATT\&CK describes the attack in short words and then lists possibilities for detection and mitigation. The portal also describes various attack tools, their targets and effects on the system. In addition, the corresponding attacks are always cross-referenced. This is a great advantage for a quick search, especially when time is of the essence.
 
 \subsubsection{Conclusion}
 Although many attacks are described and how they can be detected and fended off, MITRE ATT\&CK is not quite suitable for our task. The readiness of a system to detect tailored attacks and lateral movements is only roughly described and would be associated with a time-consuming analysis in order to draw exact conclusions.
@@ -134,7 +134,7 @@ Although many attacks are described and how they can be detected and fended off,
 
 \subsection{sysmon-modular}
 \subsubsection{Description}
-With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are done by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
+With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
 
 \begin{figure}[H]
     \centering
@@ -143,31 +143,31 @@ With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows s
 \end{figure}
 
 \subsubsection{Conclusion}
-Sysmon-modular offers a very good basic configuration for Sysmon which is based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will probably not be included in the tool during this study, unless there are still enough time reserves for such an integration.
+Sysmon-modular offers a very good basic configuration for Sysmon based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately, sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will most likely not be included in the tool during this study, unless there are still enough time reserves for such an integration.
 
 \subsection{Sysmon Tools}
 % https://github.com/nshalabi/SysmonTools
 \subsubsection{Description}
 Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
 \subsubsection{Conclusion}
-This tool can also be a great help for detecting attacks and with the Sysmon Shell a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for the project ''Readiness for Tailored Attacks and Lateral Movement Detection''.
+This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for the project ''Readiness for Tailored Attacks and Lateral Movement Detection''.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
 %Lukas
 \subsubsection{Description}
-This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to better detect inconsistencies, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
+This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to to detect inconsistencies more effectively, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
 \subsubsection{Conclusion}
-This presentation contains interesting information which could be built into the project at a later point. The information this document contains are more suitable for monitoring purposes than for checking the readiness of a system.
+This presentation contains interesting information which could be built into the project at a later point. The information this document contains is more suitable for monitoring purposes than for checking the readiness of a system.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}\label{JPCertStudy}
 %Lukas
 \subsubsection{Description}
-This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe step by step the procedure, the tools used and what is most interesting for the project, the logs generated while doing so.
+This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and what is most interesting for the project, the logs generated while doing so.
 \subsubsection{Conclusion}
-This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the given information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
+This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 
 \subsection{Test environment}\label{sec:testenvironment}
-A virtual network was set up on the Microsoft Azure Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer and get the possibilities to create group policies. Group policies are used in almost every corporate environment to build rule sets for configurations. This configurations are a core element to check the readiness of a system. The following operating systems were installed in this test network: \\
+A virtual network was set up on the Microsoft Azure Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer and to have the possibilities to create group policies. Group policies are used in almost every corporate environment to build rule sets for configurations. These configurations are a core element to check the readiness of a system. The following operating systems were installed in this test network: \\
 \\
 \textbf{Server:}
 \begin{itemize}
@@ -203,9 +203,9 @@ Three users were configured for the logfarm-network:
 \subsubsection{Difficulties}
 Various difficulties occurred which are presented in this subsection.
 \paragraph{Connect to the virtuel machines via RDP} \ \\
-After setting up the virtual machines on Azure, the developers tried to connect to the devices via the Remote Desktop Protocol but failed. First, the developers suspected the issue was the incoming port rules, so the machines were reinstalled. However, this did not fix the issue. It turned out that the problem were not the virtual machines, but with the network used to connect to the Microsoft Azure Cloud. Some firewall rules blocked the RDP-connection. In order to avoid this, the developers used a VPN-Connection in which these rules did not apply.
+After setting up the virtual machines on Azure, the developers tried to connect to the devices via the Remote Desktop Protocol but failed. First, the developers suspected the issue was the incoming port rules, so the machines were reinstalled. However, this did not fix the issue. It became apparent that the problem were not the virtual machines, but with the network used to connect to the Microsoft Azure Cloud. Some firewall rules blocked the RDP-connection. In order to avoid this, the developers used a VPN-Connection in which these rules did not apply.
 \paragraph{Firewall setting for ICMP}\ \\
-After the virtual network has been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that almost all clients were receiving pings, but the ping-requests by one client remained unanswered. It turned out that, for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting the ping-requests were answered positively.
+After the virtual network had been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that almost all clients were receiving pings, but the ping-requests by one client remained unanswered. It transpired that, for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting, the ping-requests were answered positively.
 
 \paragraph{RDP connection for Bob and Charlie}\ \\
 Due to the fact that the user \lstinline|alice| owns domain administrator privileges, this user was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
@@ -213,7 +213,7 @@ Due to the fact that the user \lstinline|alice| owns domain administrator privil
 \clearpage
 
 \subsection{Domain Analysis}
-The following section describes the problem domain which is faced during this project. Despite the decision to not programm an object orientated solution, there are several things to be aware of and to think carefully through. For this reason building a domain model is a simple and  suitable  suitable technique to use for. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
+The following section describes the problem domain which is faced during this project. Despite the decision to not programm an object orientated solution, there are several things to be aware of and to think through carefully. For this reason building a domain model is a simple and  suitable  suitable technique to use for. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{assets/architecture/DomainModelSRI.png}
@@ -221,16 +221,16 @@ The following section describes the problem domain which is faced during this pr
 \end{figure}
 
 \subsubsection{Network}
-The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension the network is already considered in this domain model.
+The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension, the network is already considered in this domain model.
 
 \subsubsection{Computer}
-A computer illustrates a either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
+A computer illustrates either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
 
 \subsubsection{Event}
 An event represents a single event log entry in simplified form.
 
 \subsubsection{AuditPolicy}
-AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies to be used:
+AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
 \begin{quotation}
     \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}
 \end{quotation}
