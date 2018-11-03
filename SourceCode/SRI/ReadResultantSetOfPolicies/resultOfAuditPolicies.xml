@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
 <AuditPolicies>
+	<AuditSensitivePrivilegeUse>NotConfigured</AuditSensitivePrivilegeUse>
+	<AuditKerberosServiceTicketOperations>NotConfigured</AuditKerberosServiceTicketOperations>
+	<AuditRegistry>NotConfigured</AuditRegistry>
+	<AuditSecurityGroupManagement>NotConfigured</AuditSecurityGroupManagement>
+	<AuditFileSystem>NotConfigured</AuditFileSystem>
+	<AuditProcessTermination>NotConfigured</AuditProcessTermination>
 	<AuditLogoff>NotConfigured</AuditLogoff>
-	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
-	<AuditFilteringPlatformConnection>SuccessAndFailure</AuditFilteringPlatformConnection>
-	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
-	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditMPSSVCRule-LevelPolicyChange>SuccessAndFailure</AuditMPSSVCRule-LevelPolicyChange>
-	<AuditProcessCreation>SuccessAndFailure</AuditProcessCreation>
-	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
-	<AuditSpecialLogon>NoAuditing</AuditSpecialLogon>
-	<AuditProcessTermination>SuccessAndFailure</AuditProcessTermination>
-	<AuditHandleManipulation>SuccessAndFailure</AuditHandleManipulation>
-	<AuditRegistry>SuccessAndFailure</AuditRegistry>
-	<AuditSAM>SuccessAndFailure</AuditSAM>
-	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
-	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
-	<AuditFileShare>SuccessAndFailure</AuditFileShare>
-	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
-	<AuditLogon>Failure</AuditLogon>
-	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
-	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
+	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
+	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
+	<AuditFileShare>NotConfigured</AuditFileShare>
+	<AuditKernelObject>NotConfigured</AuditKernelObject>
+	<AuditMPSSVCRule-LevelPolicyChange>NotConfigured</AuditMPSSVCRule-LevelPolicyChange>
+	<AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
+	<AuditLogon>NotConfigured</AuditLogon>
+	<AuditSAM>NotConfigured</AuditSAM>
+	<AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
+	<AuditSpecialLogon>NotConfigured</AuditSpecialLogon>
+	<AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
+	<AuditKerberosAuthenticationService>NotConfigured</AuditKerberosAuthenticationService>
+	<AuditUserAccountManagement>NotConfigured</AuditUserAccountManagement>
+	<ForceAuditPolicySubcategory>Disabled</ForceAuditPolicySubcategory>
 	<Sysmon>Installed</Sysmon>
 </AuditPolicies>

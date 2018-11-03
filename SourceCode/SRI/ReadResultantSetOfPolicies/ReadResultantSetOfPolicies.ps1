@@ -1,6 +1,22 @@
 #Requires -RunAsAdministrator
 
-function IsSysmonInstalled {
+Function CheckLegacyAuditPolicy {
+    $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
+    $name = "SCENoApplyLegacyAuditPolicy"
+    try {
+        $legacyAuditPolicyKey = Get-ItemProperty -Path $path -Name $name
+        if ($legacyAuditPolicyKey.SCENoApplyLegacyAuditPolicy -eq 1) {
+            return "Enabled"
+        } else {
+            return "Disabled"
+        }
+    }
+    catch {
+        return "NotDefined"
+    }
+}
+
+Function IsSysmonInstalled {
     $service = $null
 
     try {
@@ -15,8 +31,13 @@ function IsSysmonInstalled {
         return "Installed"
     }
 }
-function ReadResultantSetOfPolicies {
-    $resultXML = "resultOfAuditPolicies.xml"
+
+
+Function ReadResultantSetOfPolicies {
+    $currentPath = (Resolve-Path .\).Path
+
+    $resultXML = (Resolve-Path .\).Path + "\resultOfAuditPolicies.xml"
+    Write-Host $resultXML
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -24,8 +45,6 @@ function ReadResultantSetOfPolicies {
     $xmlWriter.WriteStartDocument()
     $xmlWriter.WriteStartElement("AuditPolicies")
     
-
-    $currentPath = (Resolve-Path .\).Path
     $pathRSOPXML = $currentPath + "\LocalUserAndComputerReport.xml"
     Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null;
     [xml]$rsopResult = Get-Content $pathRSOPXML;
@@ -42,6 +61,7 @@ function ReadResultantSetOfPolicies {
     
     $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
 
+    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
         if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
             $xmlWriter.WriteStartElement(($auditSettingSubcategoryName -replace (" ")))
@@ -50,6 +70,7 @@ function ReadResultantSetOfPolicies {
         }
     }
 
+    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
     foreach($auditSetting in $auditSettings) {
         if($auditSetting) {
             try {
@@ -78,6 +99,12 @@ function ReadResultantSetOfPolicies {
             $xmlWriter.WriteEndElement()
         }    
     }
+
+    # Check if setting forcing basic security auditing (Security Settings\Local Policies\Audit Policy) is ignored to prevent conflicts between similar settings
+    $checkLegacyAuditPolicy = CheckLegacyAuditPolicy
+    $xmlWriter.WriteStartElement("ForceAuditPolicySubcategory")
+    $xmlWriter.WriteValue($checkLegacyAuditPolicy)
+    $xmlWriter.WriteEndElement()
 
     $isSysmonInstalled = IsSysmonInstalled
     $xmlWriter.WriteStartElement("Sysmon")
