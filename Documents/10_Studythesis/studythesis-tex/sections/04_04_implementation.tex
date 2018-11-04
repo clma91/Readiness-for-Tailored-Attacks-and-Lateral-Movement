@@ -1,0 +1,39 @@
+\section{Implementation}
+
+\subsection{Read Resultant Set of Policies and Analyse Audit Policies}
+The basic idea was to implement the use case ''Read Resultant Set of Policies'' (UC01) separately from the use case ''Analysis Audit Policies''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following describes how the two use cases were implemented.
+
+\subsubsection{Approach}
+\paragraph{Read Resultant Set of Policies} \ \\
+Research was done to read the corresponding audit policy configurations from the system. At the beginning, the approach was to read the required configurations using the command \lstinline|auditpol|. \cite{auditpol} This command can be used to read out and manipulate the currently valid information on the audit policies. However, the manipulation of the audit policies is not necessary within the tool and can be ignored. The command provides exactly the information needed to fulfill this use case:
+\begin{lstlisting}[caption=auditpol, language=html]
+PS C:\Windows\system32> auditpol /get /category:Logon/Logoff
+System audit policy
+Category/Subcategory                        Setting
+Logon/Logoff
+    Logon                                   Success and Failure
+    Logoff                                  Success and Failure
+    Account Lockout                         No Auditing
+    IPsec Main Mode                         No Auditing
+    IPsec Quick Mode                        No Auditing
+    IPsec Extended Mode                     No Auditing
+    Special Logon                           Success and Failure
+    Other Logon/Logoff Events               No Auditing
+    Network Policy Server                   No Auditing
+    User / Device Claims                    No Auditing
+    Group Membership                        No Auditing
+\end{lstlisting}
+Unfortunately this output is not very ideal for a suitable further processing and analysis of the current configuration. The return value of the command is an ordinary array filled with corresponding strings and therefore the complete array should have been checked for correct content by string comparisons. Furthermore, the command \lstinline|auditpol| does not offer the possibility of remote configuration with regard to an extension of the tool to a whole fleet of computers. For this reason, the idea of building the tool on the basis of this command was rejected.
+\\\\
+Further research has shown that Microsoft provides a Resultant Set of Policies (RSoP) \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test it quickly became clear that the generated XML provides all necessary information for the further analysis.
+
+
+\paragraph{Analyse Audit Policies} \ \\
+The current configuration of the system's audit policies is then to be evaluated from the temporarily cached file. The basis for this is provided by the JPCERT/CC study (see \ref{JPCertStudy} \nameref{JPCertStudy}).
+
+
+\subsubsection{Implementation}
+% In order to achieve this Use Case, the corresponding Resultant Set of Policies (RSoP) \cite{RSoP} should be read via the PowerShell and temporarily cached in a file. 
+
+
+\subsubsection{Result}
