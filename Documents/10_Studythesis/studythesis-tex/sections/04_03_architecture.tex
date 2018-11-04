@@ -148,12 +148,12 @@ This section describes the process of the toolkit and explain the individual ste
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
+    \includegraphics[width=0.8\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
     \caption{Sequence Diagram SystemReadinessInspector - SRI}
 \end{figure}
 
 \subsubsection{GetAuditPolicy()}
-This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration the \lstinline|Get-GPResultantSetOfPolicy| command will be used. \cite{GetGPResultantSetOfPolicy} This command gets all the information of the ''Resultant Set of Policies'' (RSoP). \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
+This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration  the ''Resultant Set of Policies'' (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
 
 \subsubsection{AnalyseAditPolicy()}
 In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
