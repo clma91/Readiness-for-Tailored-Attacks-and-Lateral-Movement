@@ -46,7 +46,7 @@ Function IsSysmonInstalled {
 }
 
 
-Function ReadResultantSetOfPolicies {
+Function GetAuditPolicies {
     $currentPath = (Resolve-Path .\).Path
 
     $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
@@ -138,4 +138,4 @@ Function ReadResultantSetOfPolicies {
     Remove-Item $pathRSOPXML
 }
 
-readResultantSetOfPolicies
+GetAuditPolicies

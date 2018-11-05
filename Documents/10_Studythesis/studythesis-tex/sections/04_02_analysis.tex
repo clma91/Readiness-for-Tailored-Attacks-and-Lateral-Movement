@@ -164,6 +164,8 @@ This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emer
 \subsubsection{Conclusion}
 This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 
+% \subsection{CAPI2}
+
 \subsection{Decision for a new Tool}
 At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
 
@@ -209,7 +211,8 @@ The following tables lists the event logs which are mandatory and must be logged
 \end{table}
 
 \clearpage
-
+\
+\vspace{0.5cm}
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
@@ -271,14 +274,18 @@ The following tables lists the event logs which are mandatory and must be logged
 \end{table}
 \setcounter{footnote}{1}
 
+\clearpage
+
+
 \subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}
+In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool.
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Account Logon} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Kerberos Authentication Service & 4768(S, F) \\ \hline
-        Audit Kerberos Service Ticket Operations & 4769(S, F) \\ \hline
+        Audit Kerberos Authentication Service & 4768 \\ \hline
+        Audit Kerberos Service Ticket Operations & 4769 \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Account Logon}
 \end{table}
@@ -288,8 +295,8 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Account Management} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit User Account Management & 4720(S), 4726(S) \\ \hline
-        Audit Security Group Management & 4728 (S, F), 4729 (S, F) \\ \hline
+        Audit User Account Management & 4720, 4726 \\ \hline
+        Audit Security Group Management & 4728, 4729 \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Account Management}
 \end{table}
@@ -299,9 +306,9 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Logon/Logoff} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Logon &	4624(S),	4648(S)  \\ \hline
-	    Audit Logoff & 4634(S) \\ \hline
-	    Audit Special Logon & 4672(S) \\ \hline
+        Audit Logon &	4624,	4648  \\ \hline
+	    Audit Logoff & 4634 \\ \hline
+	    Audit Special Logon & 4672 \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Logon/Logoff}
 \end{table}
@@ -311,24 +318,27 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Object Access} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit File System & 4656(S, F), 4658(S), 4660(S), 4663(S), 4670(S) \\ \hline
-        Audit Kernel Object & 4656(S, F), 4658(S), 4660(S), 4663(S)	\\ \hline
-        Audit Registry & 4656(S, F), 4658(S), 4660(S) , 4663(S)	\\ \hline
-        Audit Handle Manipulation & 4658(S)	, 4690(S) \\ \hline
-        Audit SAM & 4661(S, F) \\ \hline
-        Audit File Share & 5140(S, F), 5142(S), 5144(S)	\\ \hline	
-        Audit Detailed File Share & 5145(S, F) \\ \hline				
-        Audit Filtering Platform Connection & 5154(S), 5156(S) \\ \hline	
+        Audit File System & 4656, 4658, 4660, 4663, 4670 \\ \hline
+        Audit Kernel Object & 4656, 4658, 4660, 4663	\\ \hline
+        Audit Registry & 4656, 4658, 4660 , 4663	\\ \hline
+        Audit Handle Manipulation & 4658, 4690 \\ \hline
+        Audit SAM & 4661 \\ \hline
+        Audit File Share & 5140, 5142, 5144	\\ \hline	
+        Audit Detailed File Share & 5145 \\ \hline				
+        Audit Filtering Platform Connection & 5154, 5156 \\ \hline	
     \end{tabular}
     \caption{Advanced Audit Policy Setting Object Access}
 \end{table}
 
+\clearpage
+\
+\vspace{0.5cm}
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Policy Change} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit MPSSVC Rule-Level Policy Change &	4946(S) \\ \hline
+        Audit MPSSVC Rule-Level Policy Change &	4946 \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Policy Change}
 \end{table}
@@ -338,8 +348,8 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Privilege Use} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Non Sensitive Privilege Use & 4673(S, F) \\ \hline
-        Audit Sensitive Privilege Use & 4673(S, F) \\ \hline
+        Audit Non Sensitive Privilege Use & 4673 \\ \hline
+        Audit Sensitive Privilege Use & 4673 \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Privilege Use}
 \end{table}
@@ -366,7 +376,7 @@ A computer illustrates either a client like a Windows 10 machine or a server in 
 An event represents a single event log entry in simplified form.
 
 \subsubsection{AuditPolicy}
-AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
+AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found via \lstinline|gpedit.msc| under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
 \begin{quotation}
     \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}
 \end{quotation}
