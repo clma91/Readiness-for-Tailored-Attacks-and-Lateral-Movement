@@ -3,6 +3,8 @@
 \subsection{Read Resultant Set of Policies and Analyse Audit Policies}
 The basic idea was to implement the use case ''Read Resultant Set of Policies'' (UC01) separately from the use case ''Analysis Audit Policies''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following describes how the two use cases were implemented.
 
+\subsubsection{Result}
+
 \subsubsection{Approach}
 \paragraph{Read Resultant Set of Policies} \ \\
 Research was done to read the corresponding audit policy configurations from the system. At the beginning, the approach was to read the required configurations using the command \lstinline|auditpol|. \cite{auditpol} This command can be used to read out and manipulate the currently valid information on the audit policies. However, the manipulation of the audit policies is not necessary within the tool and can be ignored. The command provides exactly the information needed to fulfill this use case:
@@ -36,4 +38,3 @@ The current configuration of the system's audit policies is then to be evaluated
 % In order to achieve this Use Case, the corresponding Resultant Set of Policies (RSoP) \cite{RSoP} should be read via the PowerShell and temporarily cached in a file. 
 
 
-\subsubsection{Result}
