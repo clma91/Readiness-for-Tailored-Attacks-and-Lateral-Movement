@@ -7,10 +7,12 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- powershell: ./SourceCode/RunPester.ps1 -Verbose
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  displayName: 'PowerShell Script'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results SourceCode/TestResult.xml'
+  inputs:
+    testResultsFiles: SourceCode/TestResult.xml
