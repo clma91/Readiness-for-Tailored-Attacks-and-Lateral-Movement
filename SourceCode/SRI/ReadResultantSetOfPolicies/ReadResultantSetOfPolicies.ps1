@@ -1,6 +1,19 @@
 #Requires -RunAsAdministrator
 
-Function CheckLegacyAuditPolicy {
+Function IsCAPI2Enabled {
+    [xml]$capi2 = wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+    $capi2Enabled = $capi2.channel.enabled
+    $capi2LogSize = $capi2.channel.logging.maxsize -as [int]
+    if ($capi2Enabled -eq "true" -and $capi2LogSize -ge 4194304) {
+        return "EnabledGoodLogSize"
+    } elseif ($capi2Enabled -eq "true" -and $capi2LogSize -lt 4194304) {
+        return "EnabledBadLogSize"
+    } else {
+        return "Disabled"
+    }
+}
+
+Function IsLegacyAuditPolicyEnabled {
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     try {
@@ -36,7 +49,7 @@ Function IsSysmonInstalled {
 Function ReadResultantSetOfPolicies {
     $currentPath = (Resolve-Path .\).Path
 
-    $resultXML = (Resolve-Path .\).Path + "\resultOfAuditPolicies.xml"
+    $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -100,14 +113,21 @@ Function ReadResultantSetOfPolicies {
     }
 
     # Check if setting forcing basic security auditing (Security Settings\Local Policies\Audit Policy) is ignored to prevent conflicts between similar settings
-    $checkLegacyAuditPolicy = CheckLegacyAuditPolicy
+    $isLegacyAuditPolicyEnabled = IsLegacyAuditPolicyEnabled
     $xmlWriter.WriteStartElement("ForceAuditPolicySubcategory")
-    $xmlWriter.WriteValue($checkLegacyAuditPolicy)
+    $xmlWriter.WriteValue($isLegacyAuditPolicyEnabled)
     $xmlWriter.WriteEndElement()
 
+    # Check if Sysmon is installed and running as a service
     $isSysmonInstalled = IsSysmonInstalled
     $xmlWriter.WriteStartElement("Sysmon")
     $xmlWriter.WriteValue($isSysmonInstalled)
+    $xmlWriter.WriteEndElement()
+
+    # Check if CAPI2 is enabled and has a minimum log size of 4MB
+    $isCAPI2Enabled = IsCAPI2Enabled
+    $xmlWriter.WriteStartElement("CAPI2")
+    $xmlWriter.WriteValue($isCAPI2Enabled)
     $xmlWriter.WriteEndElement()
 
     $xmlWriter.WriteEndElement()

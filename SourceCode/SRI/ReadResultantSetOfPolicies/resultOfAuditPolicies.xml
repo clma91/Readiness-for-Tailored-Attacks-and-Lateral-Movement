@@ -6,20 +6,21 @@
 	<AuditSecurityGroupManagement>NotConfigured</AuditSecurityGroupManagement>
 	<AuditFileSystem>NotConfigured</AuditFileSystem>
 	<AuditProcessTermination>NotConfigured</AuditProcessTermination>
-	<AuditLogoff>NotConfigured</AuditLogoff>
 	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
 	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
 	<AuditFileShare>NotConfigured</AuditFileShare>
 	<AuditKernelObject>NotConfigured</AuditKernelObject>
 	<AuditMPSSVCRule-LevelPolicyChange>NotConfigured</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
-	<AuditLogon>NotConfigured</AuditLogon>
 	<AuditSAM>NotConfigured</AuditSAM>
 	<AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
-	<AuditSpecialLogon>NotConfigured</AuditSpecialLogon>
 	<AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
 	<AuditKerberosAuthenticationService>NotConfigured</AuditKerberosAuthenticationService>
 	<AuditUserAccountManagement>NotConfigured</AuditUserAccountManagement>
-	<ForceAuditPolicySubcategory>Disabled</ForceAuditPolicySubcategory>
+	<AuditSpecialLogon>SuccessAndFailure</AuditSpecialLogon>
+	<AuditLogon>SuccessAndFailure</AuditLogon>
+	<AuditLogoff>SuccessAndFailure</AuditLogoff>
+	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>Installed</Sysmon>
+	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>
