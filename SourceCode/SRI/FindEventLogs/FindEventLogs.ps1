@@ -19,10 +19,12 @@ function FindEventlogsByLog {
     }   
     $events.add("")
 }
-
+$StartMs = (Get-Date).Ticks
 FindEventlogsByLog $CheckApplicationLogIDs $ApplicationLog
 FindEventlogsByLog $CheckSystemLogIDs $SystemLog
 FindEventlogsByLog $CheckSecurityLogIDs $SecurityLog
+$EndMs = (Get-Date).Ticks
+Write-Host It took $($EndMs - $StartMs) ticks, or $(($EndMs - $StartMs) /10000000) secs. to get the EventLogs
 
 Write-Host Exporting to $ExportFile
 $events | Out-File -FilePath $ExportFile
