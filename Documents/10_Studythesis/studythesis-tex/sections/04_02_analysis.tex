@@ -150,65 +150,21 @@ Sysmon-modular offers a very good basic configuration for Sysmon based on the pl
 \subsubsection{Description}
 Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
 \subsubsection{Conclusion}
-This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for the project ''Readiness for Tailored Attacks and Lateral Movement Detection''.
+This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for this project.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
-%Lukas
 \subsubsection{Description}
 This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to to detect inconsistencies more effectively, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
 \subsubsection{Conclusion}
 This presentation contains interesting information which could be built into the project at a later point. The information this document contains is more suitable for monitoring purposes than for checking the readiness of a system.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}\label{JPCertStudy}
-%Lukas
 \subsubsection{Description}
 This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and what is most interesting for the project, the logs generated while doing so.
 \subsubsection{Conclusion}
 This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 
-\subsection{Test environment}\label{sec:testenvironment}
-A virtual network was set up on the Microsoft Azure Cloud as a test environment. The test network was set up in the cloud so that the development team can access the network regardless of its location. The test network consists of a Windows server and two Windows clients. Active Directory service was configured on the server to manage the client computer and to have the possibilities to create group policies. Group policies are used in almost every corporate environment to build rule sets for configurations. These configurations are a core element to check the readiness of a system. The following operating systems were installed in this test network: \\
-\\
-\textbf{Server:}
-\begin{itemize}
-    \item Windows Server 2016
-\end{itemize}
-\textbf{Clients:}
-\begin{itemize}
-    \item Windows 10 Pro, Version 1709
-\end{itemize}
-\ \\
-The network is structured as followed:\\
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{assets/test-environment/testnetwork.png}
-    \caption{Test Environment}
-\end{figure}
 
-\clearpage
-
-\subsubsection{User}
-Three users were configured for the logfarm-network:
-\begin{table}[H]
-    \centering
-    \begin{tabular}{p{4cm} p{8cm}} \hline
-        \textbf{Name} & \textbf{Privileges}  \\ \hline
-        alice & Domain administrator  \\ \hline
-        bob & User  \\ \hline
-        charlie & User  \\ \hline
-    \end{tabular}
-    \caption{Test Environment User}
-\end{table}
-
-\subsubsection{Difficulties}
-Various difficulties occurred which are presented in this subsection.
-\paragraph{Connect to the virtuel machines via RDP} \ \\
-After setting up the virtual machines on Azure, the developers tried to connect to the devices via the Remote Desktop Protocol but failed. First, the developers suspected the issue was the incoming port rules, so the machines were reinstalled. However, this did not fix the issue. It became apparent that the problem were not the virtual machines, but with the network used to connect to the Microsoft Azure Cloud. Some firewall rules blocked the RDP-connection. In order to avoid this, the developers used a VPN-Connection in which these rules did not apply.
-\paragraph{Firewall setting for ICMP}\ \\
-After the virtual network had been set up, the developers tested the connections in the virtual network. The configured DNS ran without any problem and could translate all hostnames. Testing the network using Pings showed that almost all clients were receiving pings, but the ping-requests by one client remained unanswered. It transpired that, for some inexplicable reason, the incoming ICMP-firewall-settings were different on this client. After adjusting the setting, the ping-requests were answered positively.
-
-\paragraph{RDP connection for Bob and Charlie}\ \\
-Due to the fact that the user \lstinline|alice| owns domain administrator privileges, this user was able to connect over RDP without an error. Bob and Charlie on the other hand did not have this permissions. The developers had to create a group for them, the RDP-Group. This group was then allowed to login over RDP on the clients Win10-Client and Win10-Admin. 
 
 \clearpage
 
@@ -245,3 +201,6 @@ The target list represents either the list of event logs or configured audit pol
 
 \subsubsection{Analysis}
 Based on the required lists and the current state of the computer, the analysis shows which settings are missing in the audit policies.
+
+\subsection{Main Goal and Final Conclusion}
+Zu Beginn war noch nicht ganz klar wie das Tool genau aufgebaut werden soll und wonach sich die Funktionalität und der Scope richten soll. Nach gründlicher Analyse von verschiedenen Tools, Berichten und Studien konnte immer besser eingeschätzt werden wie eine effiziente Detektion der Readiness eines Systems implementiert werden kann. Es wäre wünschenswert gewesen auf einem bestehendem Tool aufbauen zu können, wie sich aber in einer fünf-wöchigen Analyse gezeigt hat, besteht kein entsprechendes Tool dafür. Aus diesem Grund wurde der Entschluss gefasst ein eigenes Tool auf Basis der Studie \nameref{JPCertStudy} zu entwickeln. Diese Studie gibt einen 
