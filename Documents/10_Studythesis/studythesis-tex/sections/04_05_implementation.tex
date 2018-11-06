@@ -4,6 +4,16 @@
 The basic idea was to implement the use case ''Read Resultant Set of Policies'' (UC01) separately from the use case ''Analysis Audit Policies''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following describes how the two use cases were implemented.
 
 \subsubsection{Result}
+Both Use Cases were implemented together in one script. The script follows the following schedule:
+\begin{itemize}
+    \item Reading and caching of the RSoP
+    \item Verification that all defined audit policies are in place
+    \item Verification that all defined audit policies are correctly configured
+    \item Check if ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled to prevent conflicts between similar settings
+    \item Check if Sysmon is installed and running as a service
+    \item Check whether CAPI2 is enabled
+\end{itemize}
+Each result of the individual steps is then collected in a common XML file. Finally, the environment and files that are no longer needed are deleted, so that only the result XML is available for further processing.
 
 \subsubsection{Approach}
 \paragraph{Read Resultant Set of Policies} \ \\
