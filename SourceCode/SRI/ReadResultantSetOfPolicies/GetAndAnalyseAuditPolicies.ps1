@@ -13,12 +13,12 @@ Function IsCAPI2Enabled {
     }
 }
 
-Function IsLegacyAuditPolicyEnabled {
+Function IsForceAuditPoliySubcategoryEnabeled {
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     try {
-        $legacyAuditPolicyKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
-        if ($legacyAuditPolicyKey.SCENoApplyLegacyAuditPolicy -eq 1) {
+        $auditPoliySubcategoryKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+        if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             return "Enabled"
         } else {
             return "Disabled"
@@ -46,7 +46,7 @@ Function IsSysmonInstalled {
 }
 
 
-Function GetAuditPolicies {
+Function GetAndAnalyseAuditPolicies {
     $currentPath = (Resolve-Path .\).Path
 
     $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
@@ -96,26 +96,30 @@ Function GetAuditPolicies {
             switch ($auditSettingValue) {
                 NoAuditing {  
                     $xmlWriter.WriteValue("NoAuditing")
+                    continue
                 }
                 Success {
                     $xmlWriter.WriteValue("Success")
+                    continue
                 } 
                 Failure {
                     $xmlWriter.WriteValue("Failure")
+                    continue
                 }
                 SuccessAndFailure {
                     $xmlWriter.WriteValue("SuccessAndFailure")
+                    continue
                 }
-                Default {}
+                Default { continue }
             }
             $xmlWriter.WriteEndElement()
         }    
     }
 
-    # Check if setting forcing basic security auditing (Security Settings\Local Policies\Audit Policy) is ignored to prevent conflicts between similar settings
-    $isLegacyAuditPolicyEnabled = IsLegacyAuditPolicyEnabled
+    # Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) is ignored to prevent conflicts between similar settings
+    $isForceAuditPoliySubcategoryEnabeled = IsForceAuditPoliySubcategoryEnabeled
     $xmlWriter.WriteStartElement("ForceAuditPolicySubcategory")
-    $xmlWriter.WriteValue($isLegacyAuditPolicyEnabled)
+    $xmlWriter.WriteValue($isForceAuditPoliySubcategoryEnabeled)
     $xmlWriter.WriteEndElement()
 
     # Check if Sysmon is installed and running as a service
@@ -135,7 +139,7 @@ Function GetAuditPolicies {
     $xmlWriter.Flush()
     $xmlWriter.Close()
 
-    Remove-Item $pathRSOPXML
+    # Remove-Item $pathRSOPXML
 }
 
-GetAuditPolicies
+GetAndAnalyseAuditPolicies

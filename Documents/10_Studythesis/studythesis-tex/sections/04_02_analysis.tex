@@ -169,7 +169,7 @@ This report will have the biggest impact on this project, it shows which logs ha
 \subsection{Decision for a new Tool}
 At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
 
-\subsection{Mandatory Event Logs}
+\subsection{Mandatory Event Logs}\label{MandatoryLogs}
 The following tables lists the event logs which are mandatory and must be logged based on the study \nameref{JPCertStudy}:
 \footnotetext[1]{Recorded by default Windows settings}
 \begin{table}[H]
@@ -277,7 +277,7 @@ The following tables lists the event logs which are mandatory and must be logged
 \clearpage
 
 
-\subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}
+\subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}\label{Correlation}
 In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool.
 \begin{table}[H]
     \centering
@@ -375,7 +375,7 @@ A computer illustrates either a client like a Windows 10 machine or a server in 
 \subsubsection{Event}
 An event represents a single event log entry in simplified form.
 
-\subsubsection{AuditPolicy}
+\subsubsection{AuditPolicy}\label{DomainModelAuditPolicy}
 AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found via \lstinline|gpedit.msc| under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
 \begin{quotation}
     \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}

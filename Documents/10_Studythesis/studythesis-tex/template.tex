@@ -91,4 +91,28 @@
         showtabs=false,
         escapeinside={£}{£},
     }
+
+    \definecolor{Maroon}{rgb}{0.5,0,0}
+    \definecolor{darkgreen}{rgb}{0,0.5,0}
+    
+    \lstdefinelanguage{xml}
+    {
+        morekeywords={id, layout_width, layout_height, name, layout},
+        alsoletter=-,
+        morestring=[b]",
+        stringstyle=\color[rgb]{0,0,1},
+        morecomment=[s]{<?}{?>},
+        morecomment=[s]{<!--}{-->},
+        morecomment=[s]{<!}{>},
+        commentstyle=\color{darkgreen},
+        moredelim=[s][\color{black}]{![}{]]},
+        moredelim=*[s][\color{Maroon}]{<}{>},
+        keywordstyle=\color{red}
+    }
+
+    \lstdefinelanguage{Powershell}
+    {
+        morecomment=[l]{\#}
+    }
+    
     \lstset{style=visual-studio-style}
