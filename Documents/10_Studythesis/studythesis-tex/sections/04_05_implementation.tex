@@ -48,3 +48,30 @@ The current configuration of the system's audit policies is then to be evaluated
 % In order to achieve this Use Case, the corresponding Resultant Set of Policies (RSoP) \cite{RSoP} should be read via the PowerShell and temporarily cached in a file. 
 
 
+\subsection{Script: GetAndCompareLogs}
+This section describes the implementation of the ''\nameref{UC03}'' as well as ''\nameref{UC04}''. Both use cases were fulfilled in the PowerShell script ''GetAndCompareLogs''. Here is a description how the use cases were implemented.
+
+\subsubsection{Result}
+The script ''GetAndCompareLogs'', where both use cases were implement, runs as follows:
+\begin{itemize}
+    \item Reading and caching the Event Logs ''System'' \& ''Security''
+    \item Filter cached Logs by EventID, multiple EventIDs are grouped together. Found EventIDs are exported as ''CSV''
+    \item Checking and caching whether the EventIDs, which are important for the detection of attacks according to JPCERT, can be read out
+    \item Export result set of found EventIDs as ''CSV''
+    \item Import list of found Event Logs and compare it with the predefined checklist
+    \item Result of the comparison is written into an ''XML'' file
+    \item Import and compare found Application and Service Logs with predefined checklist
+    \item Result of the comparison is written into the same ''XML'' as before
+\end{itemize}
+The now no longer needed CSV files are deleted. The XML with the result set is now available for any further processing.
+
+\subsubsection{Approach}
+\paragraph{Get Event Logs}\ \\
+After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \textbf{Get-EventLog} \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kb. The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+\ \\
+To read out the ''Application and Service'' Logs we can not use Get-EventLog. The first approach used the \textbf{Get-WinEvent} \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
+The developers found an other, much quicker command called \textbf{wevtutil} \cite{wevtutil}.
+\paragraph{Analyse Found Event Logs}
+
+\subsubsection{Implementation}
+
