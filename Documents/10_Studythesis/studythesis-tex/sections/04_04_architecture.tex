@@ -8,7 +8,7 @@ This includes the coverage of use cases, non-functional requirements, technologi
 \subsection{Use Cases}
 A visual representation of the use cases with a use case diagram was deliberately omitted, because there is only one actor involved - the security advisor. The actor is not specifically mentioned in the use cases every time, because it is always the same.
 
-\subsubsection{UC01 - Read Resultant Set of Policies}
+\subsubsection{UC01 - Read Resultant Set of Policies}\label{UC01}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     The specified audit policies are read and saved in a temporary file.
@@ -23,7 +23,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \end{enumerate}   
 \end{tcolorbox}
 
-\subsubsection{UC02 - Analyse Audit Policies}
+\subsubsection{UC02 - Analyse Audit Policies}\label{UC02}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     The list which was created in UC01 is compared to a ''perfect settings''-list. Missing or wrong settings are going to be exported into a separate file.
@@ -37,7 +37,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
         \item Creates a list of incorrect settings
     \end{enumerate}   
 \end{tcolorbox}
-\subsubsection{UC03 - Find Event Logs}
+\subsubsection{UC03 - Find Event Logs}\label{UC03}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     Event logs are search by ID and marked in an external file as found or missing.
@@ -53,7 +53,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \end{tcolorbox}
 
 
-\subsubsection{UC04 - Analyse Found Event Logs}
+\subsubsection{UC04 - Analyse Found Event Logs}\label{UC04}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     The implemented logic analyses, by defined event ids, which events occurred or are missing and creates a list of events that did not occurred or are not logged yet.
@@ -69,7 +69,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \end{enumerate}   
 \end{tcolorbox}
 
-\subsubsection{UC05 - Display missing or wrong system configuration}
+\subsubsection{UC05 - Display missing or wrong system configuration}\label{UC05}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     Based on the list created in UC02 and UC04 the user gets an overview of missing configurations (the result) which would improve the readiness of the system for a good attack detection.
@@ -83,7 +83,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \end{enumerate}   
 \end{tcolorbox}
 
-\subsubsection{UC06 - Save Result to specific path}
+\subsubsection{UC06 - Save Result to specific path}\label{UC06}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
     The actor has the possibility to save the overview from UC05 to a file in a specific path defined by the actor himself. This file contains the result from UC05 in a descriptive way.
