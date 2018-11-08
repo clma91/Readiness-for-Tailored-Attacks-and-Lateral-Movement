@@ -12,7 +12,15 @@
     \usepackage{tcolorbox}
     \usepackage{xcolor}
     \usepackage{nameref}
+    \usepackage{makecell} % for line breaks in tables
     
+    % Style des URL
+    \urlstyle{sf}
+    % URL-Umbrüche
+    \appto\UrlBreaks{\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j
+\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w
+\do\x\do\y\do\z}
+
     % Seitenränder
     \usepackage{geometry}
     \geometry{
@@ -53,6 +61,13 @@
         \stepcounter{section}\section*{#1}
         \addcontentsline{toc}{section}{#1}
         \markboth{\arabic{section} #1}{\arabic{section} #1}
+    }
+
+    % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis
+    \newcommand{\subsectionroman}[1]{
+        \stepcounter{subsection}\subsection*{#1}
+        \addcontentsline{toc}{subsection}{#1}
+        \markboth{\arabic{subsection} #1}{\arabic{subsection} #1}
     }
 
     % Anpassung der Inhaltsverzeichnis-Tiefe, beginnend bei section

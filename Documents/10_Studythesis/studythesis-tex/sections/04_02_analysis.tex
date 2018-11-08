@@ -224,6 +224,7 @@ The following tables lists the event logs which are mandatory and must be logged
     \caption{Mandatory System Event Logs}
 \end{table}
 \footnotetext[1]{Recorded by default Windows settings}
+\footnotetext[2]{Recorded by default Sysmon settings}
 
 \begin{table}[H]
     \centering
@@ -266,9 +267,9 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Sysmon > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        1 & Process Create \\ \hline
-        5 & Process Terminated \\ \hline
-        8 & CreateRemoteThread detected \\ \hline
+        1\footnotemark[2] & Process Create \\ \hline
+        5\footnotemark[2] & Process Terminated \\ \hline
+        8\footnotemark[2] & CreateRemoteThread detected \\ \hline
     \end{tabular}
     \caption{Mandatory Sysmon Event Logs}
 \end{table}
