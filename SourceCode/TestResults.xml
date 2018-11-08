@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="6" errors="0" failures="3" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-08" time="13:53:42">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="6" errors="0" failures="3" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-08" time="14:43:37">
   <environment user="Claudio" machine-name="CLMA1040" cwd="D:\_Studium\zSemester5\SA\GitRepo\SourceCode" user-domain="CLMA1040" platform="Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="7.6153" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="6.9038" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEvents.Tests.ps1" executed="True" result="Failure" success="False" time="3.6214" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEvents.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1" executed="True" result="Failure" success="False" time="3.3962" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.5521" asserts="0" description="Get-EventLog -LogName System">
+          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.292" asserts="0" description="Get-EventLog -LogName System">
             <results>
-              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.5521" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.292" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="GetAndExportEventLogs" executed="True" result="Success" success="True" time="0.0337" asserts="0" description="GetAndExportEventLogs">
+          <test-suite type="TestFixture" name="GetAndExportEventLogs" executed="True" result="Success" success="True" time="0.0587" asserts="0" description="GetAndExportEventLogs">
             <results>
-              <test-case description="Tests the function GetAndExportEventLogs" name="GetAndExportEventLogs.Tests the function GetAndExportEventLogs" time="0.0337" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Tests the function GetAndExportEventLogs" name="GetAndExportEventLogs.Tests the function GetAndExportEventLogs" time="0.0587" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0357" asserts="0" description="Test File">
+          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0455" asserts="0" description="Test File">
             <results>
-              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0357" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0455" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
                   <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\myevents.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEvents.Tests.ps1: line 20
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1: line 20
 20:     $exportFile | Should -Exist</stack-trace>
                 </failure>
               </test-case>
@@ -29,31 +29,31 @@
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEventsAsFunctions.Tests.ps1" executed="True" result="Failure" success="False" time="3.9938" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEventsAsFunctions.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1" executed="True" result="Failure" success="False" time="3.5076" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.6736" asserts="0" description="Get-EventLog -LogName System">
+          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.2994" asserts="0" description="Get-EventLog -LogName System">
             <results>
-              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.6736" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.2994" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="ImportCompareExport" executed="True" result="Failure" success="False" time="0.2451" asserts="0" description="ImportCompareExport">
+          <test-suite type="TestFixture" name="ImportCompareExport" executed="True" result="Failure" success="False" time="0.1514" asserts="0" description="ImportCompareExport">
             <results>
-              <test-case description="Tests the function ImportCompareExport" name="ImportCompareExport.Tests the function ImportCompareExport" time="0.2451" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="Tests the function ImportCompareExport" name="ImportCompareExport.Tests the function ImportCompareExport" time="0.1514" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
                   <message>The term 'ImportCompareExport' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEventsAsFunctions.Tests.ps1: line 22
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1: line 22
 22:     ImportCompareExport $exportFile $myEvents $xmlWriter $idsToCheck
 </stack-trace>
                 </failure>
               </test-case>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0752" asserts="0" description="Test File">
+          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0568" asserts="0" description="Test File">
             <results>
-              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0752" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0568" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
                   <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\myevents.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\FindEventLogs\GetAndCompareEventsAsFunctions.Tests.ps1: line 30
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1: line 30
 30:     $exportFile | Should -Exist</stack-trace>
                 </failure>
               </test-case>

@@ -1,5 +1,3 @@
-#Requires -RunAsAdministrator
-
 Function IsCAPI2Enabled {
     [xml]$capi2 = wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
     $capi2Enabled = $capi2.channel.enabled
@@ -13,12 +11,12 @@ Function IsCAPI2Enabled {
     }
 }
 
-Function IsLegacyAuditPolicyEnabled {
+Function IsForceAuditPoliySubcategoryEnabeled {
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     try {
-        $legacyAuditPolicyKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
-        if ($legacyAuditPolicyKey.SCENoApplyLegacyAuditPolicy -eq 1) {
+        $auditPoliySubcategoryKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+        if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             return "Enabled"
         } else {
             return "Disabled"
@@ -45,24 +43,11 @@ Function IsSysmonInstalled {
     }
 }
 
-
-Function GetAuditPolicies {
-    $currentPath = (Resolve-Path .\).Path
-
-    $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
-    $xmlWriter.Formatting = "Indented"
-    $xmlWriter.Indentation = 1
-    $XmlWriter.IndentChar = "`t"
-    $xmlWriter.WriteStartDocument()
-    $xmlWriter.WriteStartElement("AuditPolicies")
-    
+Function GetAndAnalyseAuditPolicies ([String] $currentPath, [System.XMl.XmlTextWriter] $XmlWriter){
     $pathRSOPXML = $currentPath + "\LocalUserAndComputerReport.xml"
     Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null;
     [xml]$rsopResult = Get-Content $pathRSOPXML;
-
     $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management")
-
     enum AuditSettingValues {
         NoAuditing
         Success
@@ -76,9 +61,7 @@ Function GetAuditPolicies {
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
         if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
-            $xmlWriter.WriteStartElement(($auditSettingSubcategoryName -replace (" ")))
-            $xmlWriter.WriteValue("NotConfigured")
-            $xmlWriter.WriteEndElement()
+            WriteXMLElement $xmlWriter ($auditSettingSubcategoryName -replace (" ")) "NotConfigured"
         }
     }
 
@@ -92,50 +75,65 @@ Function GetAuditPolicies {
                 $auditSettingValue = 0
             }
             $auditSubcategoryName = $auditSetting.SubcategoryName 
-            $xmlWriter.WriteStartElement(($auditSubcategoryName -replace (" ")))
             switch ($auditSettingValue) {
                 NoAuditing {  
-                    $xmlWriter.WriteValue("NoAuditing")
+                    $auditSettingValueString = "NoAuditing"
+                    continue
                 }
                 Success {
-                    $xmlWriter.WriteValue("Success")
+                    $auditSettingValueString = "Success"
+                    continue
                 } 
                 Failure {
-                    $xmlWriter.WriteValue("Failure")
+                    $auditSettingValueString = "Failure"
+                    continue
                 }
                 SuccessAndFailure {
-                    $xmlWriter.WriteValue("SuccessAndFailure")
+                    $auditSettingValueString = "SuccessAndFailure"
+                    continue
                 }
-                Default {}
+                Default { continue }
             }
-            $xmlWriter.WriteEndElement()
+            WriteXMLElement $xmlWriter ($auditSubcategoryName -replace (" ")) $auditSettingValueString
         }    
     }
+    Remove-Item $pathRSOPXML
+}
+
+Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
+    $xmlWriter.WriteStartElement($startElement)
+    $xmlWriter.WriteValue($value)
+    $xmlWriter.WriteEndElement()
+}
+
+Function WriteXML {
+    $currentPath = (Resolve-Path .\).Path
+    $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
+    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
+    $xmlWriter.Formatting = "Indented"
+    $xmlWriter.Indentation = 1
+    $XmlWriter.IndentChar = "`t"
+    $xmlWriter.WriteStartDocument()
+    $xmlWriter.WriteStartElement("AuditPolicies")
+
+    GetAndAnalyseAuditPolicies $currentPath $xmlWriter 
 
     # Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) is ignored to prevent conflicts between similar settings
-    $isLegacyAuditPolicyEnabled = IsLegacyAuditPolicyEnabled
-    $xmlWriter.WriteStartElement("ForceAuditPolicySubcategory")
-    $xmlWriter.WriteValue($isLegacyAuditPolicyEnabled)
-    $xmlWriter.WriteEndElement()
+    $isForceAuditPoliySubcategoryEnabeled = IsForceAuditPoliySubcategoryEnabeled
+    WriteXMLElement $xmlWriter "ForceAuditPolicySubcategory" $isForceAuditPoliySubcategoryEnabeled
 
     # Check if Sysmon is installed and running as a service
     $isSysmonInstalled = IsSysmonInstalled
-    $xmlWriter.WriteStartElement("Sysmon")
-    $xmlWriter.WriteValue($isSysmonInstalled)
-    $xmlWriter.WriteEndElement()
+    WriteXMLElement $xmlWriter "Sysmon" $isSysmonInstalled
 
     # Check if CAPI2 is enabled and has a minimum log size of 4MB
     $isCAPI2Enabled = IsCAPI2Enabled
-    $xmlWriter.WriteStartElement("CAPI2")
-    $xmlWriter.WriteValue($isCAPI2Enabled)
-    $xmlWriter.WriteEndElement()
+    WriteXMLElement $xmlWriter "CAPI2" $isCAPI2Enabled
 
     $xmlWriter.WriteEndElement()
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
-
-    Remove-Item $pathRSOPXML
 }
 
-GetAuditPolicies
+Export-ModuleMember -Function WriteXML
