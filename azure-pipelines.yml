@@ -4,15 +4,16 @@
 # https://aka.ms/yaml
 
 pool:
-  vmImage: 'Ubuntu 16.04'
+  vmImage: 'Hosted VS2017'
 
 steps:
-- powershell: ./SourceCode/RunPester.ps1 -Verbose
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
+- powershell: .\SourceCode\RunPester.ps1 -Verbose
 
-  displayName: 'PowerShell Script'
+  displayName: 'Build and Test'
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results SourceCode/TestResult.xml'
+  displayName: 'Publish Test Results'
   inputs:
-    testResultsFiles: SourceCode/TestResult.xml
+    testRunner: 'NUnit'
+    testResultsFiles: '**/TestResults.xml'
+    testRunTitle: 'PS_Win2016'
