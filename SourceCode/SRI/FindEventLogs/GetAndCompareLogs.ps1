@@ -1,4 +1,4 @@
-Import-Module .\GetAndCompareLogs
+Import-Module GetAndCompareLogs
 
 $LogNames = @("System", "Security")
 $currentFolder = (Resolve-Path .\).Path #current Path

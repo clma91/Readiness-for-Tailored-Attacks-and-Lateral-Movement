@@ -199,7 +199,7 @@ At the end of the script all temporary files are removed.
 \subsection{Script: GetAndCompareLogs}
 This section describes the implementation of the ''\nameref{UC03}'' as well as ''\nameref{UC04}''. Both use cases were fulfilled in the PowerShell script ''GetAndCompareLogs''. Here is a description how the use cases were implemented.
 
-\subsubsection{Result}
+\subsubsection{Result} \label{ResultSetGetAndCompareLogs}
 The script ''GetAndCompareLogs'', where both use cases were implement, runs as follows:
 \begin{itemize}
     \item Reading and caching the Event Logs ''System'' \& ''Security''
@@ -211,14 +211,47 @@ The script ''GetAndCompareLogs'', where both use cases were implement, runs as f
     \item Import and compare found Application and Service Logs with predefined checklist
     \item Result of the comparison is written into the same ''XML'' as before
 \end{itemize}
-The now no longer needed CSV files are deleted. The XML with the result set is now available for any further processing.
+The now no longer needed CSV files are deleted. The XML with the result set is now available for any further processing.  A result could possibly look like the following listing:
+\begin{lstlisting}[caption=Example Result Audit Policy Analysis, language=xml]
+    <?xml version="1.0"?>
+    <Logs>
+        <EventLogsID>
+            <6>present</6>
+            <21>missing</21>
+            <24>missing</24>
+            <102>missing</102>
+            <104>missing</104>
+            <106>missing</106>
+            <201>missing</201>
+            <4624>present</4624>
+            <4634>present</4634>
+            <4648>present</4648>
+            <4656>present</4656>
+            ...
+        </EventLogsID>
+        <AppAndServID>
+            <106>present</106>
+            <200>present</200>
+            <129>present</129>
+            <201>present</201>
+            <102>present</102>
+            <6>missing</6>
+            <169>missing</169>
+            <21>present</21>
+            <24>present</24>
+        </AppAndServID>
+    </Logs>
+\end{lstlisting}
+
 
 \subsubsection{Approach}
 \paragraph{Get Event Logs}\ \\
-After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \textbf{Get-EventLog} \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kb. The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command\lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kb. The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
 \ \\
-To read out the ''Application and Service'' Logs we can not use Get-EventLog. The first approach used the \textbf{Get-WinEvent} \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
-The developers found an other, much quicker command called \textbf{wevtutil} \cite{wevtutil}.
-\paragraph{Analyse Found Event Logs}
+To read out the ''Application and Service'' Logs we can not use Get-EventLog. The first approach used the \lstinline|Get-WinEvent| \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
+The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all Logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of Logs is smaller. On the testing environment with a machine with 4 GB Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
+\paragraph{Analyse Found Event Logs} \ \\
+To analyse the occurred EventIDs the two generated ''CSV'' files are imported into the PowerShell script. The respective checklists, which are based on the \nameref{JPCertStudy}, are embedded in the script. Each id from the checklist is checked if it is present in the respective CSV file. Is this the case, the id is added to the XML-file and marked as present. Did the id no occur in the it will be added and marked as missing. The file looks like the example in ''\nameref{ResultSetGetAndCompareLogs}'' shown.
 
 \subsubsection{Implementation}
+This section describes the implementation of \lstinline|GetAndCompareLogs| in detail. For this purpose, the following is referred to in the section ''\ref{ResultSetGetAndCompareLogs} \nameref{ResultSetGetAndCompareLogs}'' described schedule.

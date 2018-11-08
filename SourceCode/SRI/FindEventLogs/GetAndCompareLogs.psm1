@@ -73,7 +73,7 @@ function ImportCompareExport{
 
     Write-Host Comparing Found AppAndServLogs
     #$args[2].WriteStartDocument()
-    $args[2].WriteStartElement("appAndServID")
+    $args[2].WriteStartElement("AppAndServID")
 
     foreach($id in $args[6]){ #appAndServLogIdsToCheck
         if($args[5] | where {$_.EventID -eq $id}){ #$myEvents
