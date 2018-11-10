@@ -1,45 +1,53 @@
-Function IsCAPI2Enabled {
+Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
+    $xmlWriter.WriteStartElement($startElement)
+    $xmlWriter.WriteValue($value)
+    $xmlWriter.WriteEndElement()
+}
+
+Function IsCAPI2Enabled([System.XMl.XmlTextWriter] $XmlWriter, [int] $requiredLogSize) {
     [xml]$capi2 = wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
     $capi2Enabled = $capi2.channel.enabled
-    $capi2LogSize = $capi2.channel.logging.maxsize -as [int]
-    if ($capi2Enabled -eq "true" -and $capi2LogSize -ge 4194304) {
-        return "EnabledGoodLogSize"
-    } elseif ($capi2Enabled -eq "true" -and $capi2LogSize -lt 4194304) {
-        return "EnabledBadLogSize"
+    $currentLogSize = $capi2.channel.logging.maxsize -as [int]
+    if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
+        WriteXMLElement $xmlWriter "CAPI2" "EnabledGoodLogSize"
+        WriteXMLElement $xmlWriter "CAPI2LogSize" "$currentLogSize"
+    } elseif ($capi2Enabled -eq "true" -and $currentLogSize -lt $requiredLogSize) {
+        WriteXMLElement $xmlWriter "CAPI2" "EnabledBadLogSize"
+        WriteXMLElement $xmlWriter "CAPI2LogSize" "$currentLogSize"
     } else {
-        return "Disabled"
+        WriteXMLElement $xmlWriter "CAPI2" "Disabled"
     }
 }
 
-Function IsForceAuditPoliySubcategoryEnabeled {
+Function IsForceAuditPoliySubcategoryEnabeled([System.XMl.XmlTextWriter] $XmlWriter) {
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     try {
         $auditPoliySubcategoryKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
         if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
-            return "Enabled"
+            WriteXMLElement $xmlWriter "ForceAuditPolicySubcategory" "Enabled"
         } else {
-            return "Disabled"
+            WriteXMLElement $xmlWriter "ForceAuditPolicySubcategory" "Disabled"
         }
     }
     catch {
-        return "NotDefined"
+        WriteXMLElement $xmlWriter "ForceAuditPolicySubcategory" "NotDefined"
     }
 }
 
-Function IsSysmonInstalled {
+Function IsSysmonInstalled([System.XMl.XmlTextWriter] $XmlWriter) {
     $service = $null
 
     try {
         $service = Get-Service -Name Sysmon*
     } catch {
-        return "NotInstalled"
+        WriteXMLElement $xmlWriter "Sysmon" "NotInstalled"
     }
     
     if ($service.Status -ne "Running") {
-        return "InstalledNotRunning"
+        WriteXMLElement $xmlWriter "Sysmon" "InstalledNotRunning"
     } else {
-        return "Installed"
+        WriteXMLElement $xmlWriter "Sysmon" "Installed"
     }
 }
 
@@ -100,40 +108,4 @@ Function GetAndAnalyseAuditPolicies ([String] $currentPath, [System.XMl.XmlTextW
     Remove-Item $pathRSOPXML
 }
 
-Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
-    $xmlWriter.WriteStartElement($startElement)
-    $xmlWriter.WriteValue($value)
-    $xmlWriter.WriteEndElement()
-}
-
-Function WriteXML {
-    $currentPath = (Resolve-Path .\).Path
-    $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
-    $xmlWriter.Formatting = "Indented"
-    $xmlWriter.Indentation = 1
-    $XmlWriter.IndentChar = "`t"
-    $xmlWriter.WriteStartDocument()
-    $xmlWriter.WriteStartElement("AuditPolicies")
-
-    GetAndAnalyseAuditPolicies $currentPath $xmlWriter 
-
-    # Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) is ignored to prevent conflicts between similar settings
-    $isForceAuditPoliySubcategoryEnabeled = IsForceAuditPoliySubcategoryEnabeled
-    WriteXMLElement $xmlWriter "ForceAuditPolicySubcategory" $isForceAuditPoliySubcategoryEnabeled
-
-    # Check if Sysmon is installed and running as a service
-    $isSysmonInstalled = IsSysmonInstalled
-    WriteXMLElement $xmlWriter "Sysmon" $isSysmonInstalled
-
-    # Check if CAPI2 is enabled and has a minimum log size of 4MB
-    $isCAPI2Enabled = IsCAPI2Enabled
-    WriteXMLElement $xmlWriter "CAPI2" $isCAPI2Enabled
-
-    $xmlWriter.WriteEndElement()
-    $xmlWriter.WriteEndDocument()
-    $xmlWriter.Flush()
-    $xmlWriter.Close()
-}
-
-Export-ModuleMember -Function WriteXML
+Export-ModuleMember -Function WriteXML,IsCAPI2Enabled, IsForceAuditPoliySubcategoryEnabeled, IsSysmonInstalled, GetAndAnalyseAuditPolicies

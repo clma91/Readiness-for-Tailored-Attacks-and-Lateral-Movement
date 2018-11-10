@@ -23,4 +23,5 @@
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledNotRunning</Sysmon>
 	<CAPI2>EnabledGoodLogSize</CAPI2>
+	<CAPI2LogSize>4980736</CAPI2LogSize>
 </AuditPolicies>
