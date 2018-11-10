@@ -133,9 +133,10 @@ The test environment is set up, as described in section \ref{sec:testenvironment
 \paragraph{GitHub}\ \\
 GitHub is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
 
+\paragraph{Continuous Integration}\ \\
+Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the Continuous Integration manual.
+
 \subsubsection{Rejected Technologies}
-% \paragraph{Continuous Integration}\ \\
-% Continuous integration is not used in this project because it will be a simple toolkit that is not written object-oriented. On the other hand, 
 
 \paragraph{Python}\ \\
 The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft-OS. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
