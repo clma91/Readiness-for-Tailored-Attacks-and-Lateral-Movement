@@ -54,12 +54,12 @@ function ImportCompareExport{
         
        foreach($id in $args[3]){ #$eventLogIdsToCheck
            if($args[1] | where {$_.EventID -eq $id}){ #$myEvents
-            $args[2].WriteStartElement($id)#$xmlWriter
+            $args[2].WriteStartElement("EventID" +$id)#$xmlWriter
             $args[2].WriteValue("present")
             $args[2].WriteEndElement()
                 }
                 else{
-                    $args[2].WriteStartElement($id)#$xmlWriter
+                    $args[2].WriteStartElement("EventID" +$id)#$xmlWriter
                     $args[2].WriteValue("missing")
                     $args[2].WriteEndElement()
                 }
@@ -77,12 +77,12 @@ function ImportCompareExport{
 
     foreach($id in $args[6]){ #appAndServLogIdsToCheck
         if($args[5] | where {$_.EventID -eq $id}){ #$myEvents
-            $args[2].WriteStartElement($id)#$xmlWriter
+            $args[2].WriteStartElement("EventID" + $id)#$xmlWriter
             $args[2].WriteValue("present")
             $args[2].WriteEndElement()
                 }
                 else{
-                    $args[2].WriteStartElement($id)#$xmlWriter
+                    $args[2].WriteStartElement("EventID" + $id)#$xmlWriter
                     $args[2].WriteValue("missing")
                     $args[2].WriteEndElement()
                 }
