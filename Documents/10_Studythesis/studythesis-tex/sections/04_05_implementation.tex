@@ -203,8 +203,8 @@ This section describes the implementation of the ''\nameref{UC03}'' as well as '
 The script ''GetAndCompareLogs'', where both use cases were implement, runs as follows:
 \begin{itemize}
     \item Reading and caching the Event Logs ''System'' \& ''Security''
-    \item Filter cached Logs by EventID, multiple EventIDs are grouped together. Found EventIDs are exported as ''CSV''
-    \item Checking and caching whether the EventIDs, which are important for the detection of attacks according to JPCERT, can be read out
+    \item Filter cached Logs by EventID, group EventIDs that occur more than once. Found EventIDs are exported as ''CSV''
+    \item Checking and caching whether a list of EventIDs from ''Application and Service'' Logs can be read out
     \item Export result set of found EventIDs as ''CSV''
     \item Import list of found Event Logs and compare it with the predefined checklist
     \item Result of the comparison is written into an ''XML'' file
@@ -252,6 +252,94 @@ To read out the ''Application and Service'' Logs we can not use Get-EventLog. Th
 The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all Logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of Logs is smaller. On the testing environment with a machine with 4 GB Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
 \paragraph{Analyse Found Event Logs} \ \\
 To analyse the occurred EventIDs the two generated ''CSV'' files are imported into the PowerShell script. The respective checklists, which are based on the \nameref{JPCertStudy}, are embedded in the script. Each id from the checklist is checked if it is present in the respective CSV file. Is this the case, the id is added to the XML-file and marked as present. Did the id no occur in the it will be added and marked as missing. The file looks like the example in ''\nameref{ResultSetGetAndCompareLogs}'' shown.
+\clearpage
 
 \subsubsection{Implementation}
 This section describes the implementation of \lstinline|GetAndCompareLogs| in detail. For this purpose, the following is referred to in the section ''\ref{ResultSetGetAndCompareLogs} \nameref{ResultSetGetAndCompareLogs}'' described schedule.
+\\\\
+The first step is to read out the ''System'' and ''Security'' Logs. To achieve this goal the command \lstinline|Get-EventLog| is used in the first part of the function \lstinline|GetEventLogsAndExport|. \begin{description}
+    \item[Note] The code has been adapted for better readability and easier understanding
+    \end{description}
+\begin{lstlisting}[caption=Function GetEventLogsAndExport Part 1, language=PowerShell]
+    $logNames = @("System", "Security")
+    $eventLogs = New-Object System.Collections.ArrayList
+
+    Function GetEventLogsAndExport{
+        foreach($log in $logNames){
+        $eventLogs += Get-EventLog -LogName $log
+        }
+    ...
+\end{lstlisting}
+The second part of the function filters the EventIDs from the chaced logs. Subsequently, multiple EventIDs are grouped together.
+\begin{lstlisting}[caption=Function GetEventLogsAndExport Part 2, language=PowerShell]
+    $currentFolder = (Resolve-Path .\).Path
+    $exportEventLogsIntoCSV=$currentFolder + "\myeventlogs.csv"
+
+    $eventLogs| Select EventID -Unique |Export-CSV $exportEventLogsIntoCSV -NoTypeInfo -Encoding UTF8
+    }
+\end{lstlisting}
+After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, we divide this function into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similar it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
+\begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 1, language=PowerShell]
+    $appAndServLogs = New-Object System.Collections.ArrayList
+    $idsForTaskScheduler = ("106", "200", "129", "201", ...)
+
+    $appAndServLogs += "EventID"
+
+    Function GetApplicationAndServiceLogs{
+    
+    foreach($id in $idsForTaskScheduler){
+    if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$id" )]]" /uni:false /f:text){
+        $appAndServLogs += $id
+         }
+    }
+    ...
+\end{lstlisting}
+\clearpage
+After all three Logs were checked and all found EventIDs were added, the information is exported into a ''CSV''-file.
+\begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 2, language=PowerShell]
+    $exportApplicationAndServiceLogsIntoCSV = $currentFolder + "\myapplicationandsiencelogs.csv"
+
+    $appAndServLogs | Out-File -FilePath $exportApplicationAndServiceLogsIntoCSV
+    }
+\end{lstlisting}
+The next point on the list is importing the found ''EventLogs'' and ''Service And Application'' Logs. Due to the similarity we only show one code.
+\begin{lstlisting}[caption=Function ImportCompareExport, language=PowerShell]
+    
+    $eventLogIdsToCheck = (6, 21, 24, 102, 104, 106, 129, ...
+
+    $resultXML = "resultOfEventLogs.xml"
+    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
+    $xmlWriter.Formatting = "Indented" #$xmlWriter
+    $xmlWriter.Indentation = 1
+    $xmlWriter.IndentChar = "`t"
+    $xmlWriter.WriteStartDocument()
+    $xmlWriter.WriteStartElement("Logs")
+    $xmlWriter.WriteStartElement("EventLogsID")
+
+    $importEventLogs = $exportEventLogsIntoCSV
+    $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
+
+    Function ImportCompareExport{
+        foreach($id in $eventLogIdsToCheck){
+           if( $myEventLogs | where {$_.EventID -eq $id}){
+            $xmlWriter.WriteStartElement("EventID" +$id)
+            $xmlWriter.WriteValue("present")
+            $xmlWriter.WriteEndElement()
+                }
+                else{
+                    $xmlWriter.WriteStartElement("EventID" +$id)
+                    $xmlWriter.WriteValue("missing")
+                    $xmlWriter.WriteEndElement()
+                }
+        }
+        $xmlWriter.WriteEndElement()
+    ...
+    }
+
+    $xmlWriter.WriteEndElement()
+    $xmlWriter.WriteEndDocument()
+    $xmlWriter.Flush()
+    $xmlWriter.Close()
+\end{lstlisting}
+
+The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. At the end all temporary files are deleted.

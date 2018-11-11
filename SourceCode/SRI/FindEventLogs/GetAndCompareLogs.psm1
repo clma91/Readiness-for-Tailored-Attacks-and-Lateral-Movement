@@ -65,7 +65,6 @@ function ImportCompareExport{
                 }
         }
     $args[2].WriteEndElement() #$xmlWriter
-    #$args[2].WriteEndDocument()
 
     $importAppAndServLogs = $args[4] #exportfileAppAndServLogs
 
