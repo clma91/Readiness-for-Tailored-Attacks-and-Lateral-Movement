@@ -1,5 +1,7 @@
 # Pester tests
-Remove-Module GetAndAnalyseAuditPolicies
+try {
+    Remove-Module GetAndAnalyseAuditPolicies
+}
 Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
 
 Describe "IsCAPI2Enabled" {
