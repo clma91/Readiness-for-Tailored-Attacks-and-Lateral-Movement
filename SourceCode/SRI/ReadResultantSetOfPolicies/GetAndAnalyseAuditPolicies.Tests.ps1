@@ -1,7 +1,6 @@
+# Pester tests
 Remove-Module GetAndAnalyseAuditPolicies
 Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
-
-
 
 Describe "IsCAPI2Enabled" {
     $currentPath = (Resolve-Path .\).Path
