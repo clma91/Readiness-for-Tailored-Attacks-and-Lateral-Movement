@@ -1,8 +1,9 @@
 # Pester tests
-Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
+$currentPath = (Resolve-Path .\).Path
+$modulePath = $currentPath + "SRI\ReadResultantSetOfPolicies\GetAndAnalyseAuditPolicies.psm1"
+Import-Module $modulePath -Force
 
 Describe "IsCAPI2Enabled" {
-    $currentPath = (Resolve-Path .\).Path
     $testFilesPath = $currentPath + "\TestFiles"
     [xml]$capi2Disabled = Get-Content ($testFilesPath + "\capi2Disabled.xml")
     [xml]$capi2EnabledBadLogSize = Get-Content ($testFilesPath + "\capi2EnabledBadLogSize.xml")
