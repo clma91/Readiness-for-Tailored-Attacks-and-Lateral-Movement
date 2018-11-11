@@ -1,6 +1,6 @@
 # Pester tests
 $localPath = (Resolve-Path .\).Path
-$azurePath = $PSScriptRoot + "\SourceCode\SRI\ReadResultantSetOfPolicies"
+$azurePath = $PSScriptRoot 
 
 $currentPath = $azurePath
 $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
