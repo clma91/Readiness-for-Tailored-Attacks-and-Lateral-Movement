@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <AuditPolicies>
+	<AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
+	<AuditLogoff>SuccessAndFailure</AuditLogoff>
+	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
+	<AuditFileSystem>Success</AuditFileSystem>
+	<AuditSAM>SuccessAndFailure</AuditSAM>
+	<AuditKerberosAuthenticationService>Failure</AuditKerberosAuthenticationService>
 	<AuditRegistry>NotConfigured</AuditRegistry>
 	<AuditProcessTermination>NotConfigured</AuditProcessTermination>
-	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
-	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
-	<AuditKernelObject>NotConfigured</AuditKernelObject>
-	<AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
 	<AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
+	<AuditLogon>SuccessAndFailure</AuditLogon>
+	<AuditSpecialLogon>SuccessAndFailure</AuditSpecialLogon>
+	<AuditMPSSVCRule-LevelPolicyChange>Failure</AuditMPSSVCRule-LevelPolicyChange>
+	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
 	<AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
 	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditLogoff>SuccessAndFailure</AuditLogoff>
+	<AuditKernelObject>NotConfigured</AuditKernelObject>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
-	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
-	<AuditLogon>SuccessAndFailure</AuditLogon>
-	<AuditSAM>SuccessAndFailure</AuditSAM>
-	<AuditFileSystem>Success</AuditFileSystem>
-	<AuditKerberosAuthenticationService>Failure</AuditKerberosAuthenticationService>
 	<AuditFileShare>NoAuditing</AuditFileShare>
-	<AuditMPSSVCRule-LevelPolicyChange>Failure</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditKerberosServiceTicketOperations>Success</AuditKerberosServiceTicketOperations>
-	<AuditSpecialLogon>SuccessAndFailure</AuditSpecialLogon>
+	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledNotRunning</Sysmon>
-	<CAPI2>EnabledGoodLogSize</CAPI2>
 	<CAPI2LogSize>4980736</CAPI2LogSize>
+	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>
