@@ -1,6 +1,8 @@
 # Pester tests
-$currentPath = (Resolve-Path .\).Path
-$modulePath = $currentPath + "\SourceCode\SRI\ReadResultantSetOfPolicies\GetAndAnalyseAuditPolicies.psm1"
+$localPath = (Resolve-Path .\).Path
+$azurePath = $currentPath + "\SourceCode\SRI\ReadResultantSetOfPolicies"
+$currentPath = $azurePath
+$modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
 Import-Module $modulePath -Force
 
 Describe "IsCAPI2Enabled" {
