@@ -1,5 +1,8 @@
-Function IsCAPI2Enabled([int] $requiredLogSize) {
-    [xml]$capi2 = wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+Function GetCAPI2 {
+    return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+}
+
+Function IsCAPI2Enabled([xml] $capi2, [int] $requiredLogSize) {
     $capi2Enabled = $capi2.channel.enabled
     $currentLogSize = $capi2.channel.logging.maxsize -as [int]
     $result = @{}
@@ -18,13 +21,22 @@ Function IsCAPI2Enabled([int] $requiredLogSize) {
     }
 }
 
-Function IsForceAuditPoliySubcategoryEnabeled {
-    $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
-    $name = "SCENoApplyLegacyAuditPolicy"
+Function GetRegistryValue($path, $name) 
+{
+    try
+    {
+        return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+    }
+    catch
+    {
+        throw
+    }
+}
+
+Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     $result = @{}
 
     try {
-        $auditPoliySubcategoryKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
         if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             $result.Add("ForceAuditPolicySubcategory", "Enabled")
             return $result
@@ -39,24 +51,32 @@ Function IsForceAuditPoliySubcategoryEnabeled {
     }
 }
 
-Function IsSysmonInstalled {
+Function GetService($name) {
     $service = $null
+    try {
+        return Get-Service -Name $name
+    } catch {
+        throw
+    }
+}
+
+Function IsSysmonInstalled($service) {
     $result = @{}
 
     try {
-        $service = Get-Service -Name Sysmon*
+        if ($service.Status -ne "Running") {
+            $result.Add("Sysmon", "InstalledNotRunning")
+            return $result
+        } else {
+            $result.Add("Sysmon", "Installed")
+            return $result
+        }
     } catch {
         $result.Add("Sysmon", "NotInstalled")
         return $result
     }
     
-    if ($service.Status -ne "Running") {
-        $result.Add("Sysmon", "InstalledNotRunning")
-        return $result
-    } else {
-        $result.Add("Sysmon", "Installed")
-        return $result
-    }
+
 }
 
 Function GetAndAnalyseAuditPolicies ([String] $currentPath){
@@ -119,7 +139,7 @@ Function GetAndAnalyseAuditPolicies ([String] $currentPath){
     return $result
 }
 
-Function Merge-Hashtables {
+Function MergeHashtables {
     $Output =  [ordered]@{}
     ForEach ($Hashtable in ($Input + $Args)) {
         If ($Hashtable -is [Hashtable]) {
@@ -156,4 +176,4 @@ Function WriteXML($currentPath, $resultCollection) {
     $xmlWriter.Close()
 }
 
-Export-ModuleMember -Function WriteXML, IsCAPI2Enabled, IsForceAuditPoliySubcategoryEnabeled, IsSysmonInstalled, GetAndAnalyseAuditPolicies, Merge-Hashtables
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAndAnalyseAuditPolicies, MergeHashtables, WriteXML
