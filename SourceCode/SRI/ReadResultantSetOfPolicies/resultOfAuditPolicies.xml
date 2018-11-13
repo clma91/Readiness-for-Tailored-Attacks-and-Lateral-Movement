@@ -14,14 +14,14 @@
 	<AuditMPSSVCRule-LevelPolicyChange>Failure</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
 	<AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
-	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditKernelObject>NotConfigured</AuditKernelObject>
-	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
 	<AuditFileShare>NoAuditing</AuditFileShare>
+	<AuditKernelObject>NotConfigured</AuditKernelObject>
+	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
 	<AuditKerberosServiceTicketOperations>Success</AuditKerberosServiceTicketOperations>
+	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
 	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledNotRunning</Sysmon>
 	<CAPI2LogSize>4980736</CAPI2LogSize>
-	<CAPI2>EnabledGoodLogSize</CAPI2>
+	<CAPI2>EnabledGoodLogSize</CAPI2>	
 </AuditPolicies>

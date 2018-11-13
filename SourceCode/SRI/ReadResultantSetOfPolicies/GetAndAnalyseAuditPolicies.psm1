@@ -52,7 +52,6 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
 }
 
 Function GetService($name) {
-    $service = $null
     try {
         return Get-Service -Name $name
     } catch {
@@ -75,12 +74,19 @@ Function IsSysmonInstalled($service) {
         $result.Add("Sysmon", "NotInstalled")
         return $result
     }
-    
-
 }
 
-Function GetAndAnalyseAuditPolicies ([String] $currentPath){
-    $pathRSOPXML = $currentPath + "\LocalUserAndComputerReport.xml"
+Function GetAuditPolicies {
+    $pathRSOPXML = $PSScriptRoot + "\LocalUserAndComputerReport.xml"
+    
+    Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+    $rsopResult = Get-Content $pathRSOPXML
+    Remove-Item $pathRSOPXML
+    
+    return $rsopResult
+}
+
+Function AnalyseAuditPolicies ([xml] $rsopResult){    
     $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management")
     enum AuditSettingValues {
         NoAuditing
@@ -88,11 +94,9 @@ Function GetAndAnalyseAuditPolicies ([String] $currentPath){
         Failure
         SuccessAndFailure
     }
-    [AuditSettingValues]$auditSettingValue = 0;
+    [AuditSettingValues]$auditSettingValue = 0
     $result = @{}
-
-    Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null;
-    [xml]$rsopResult = Get-Content $pathRSOPXML;  
+    
     $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
 
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
@@ -134,8 +138,6 @@ Function GetAndAnalyseAuditPolicies ([String] $currentPath){
             $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
         }    
     }
-    Remove-Item $pathRSOPXML
-
     return $result
 }
 
@@ -157,8 +159,8 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
     $xmlWriter.WriteEndElement()
 }
 
-Function WriteXML($currentPath, $resultCollection) {
-    $resultXML = $currentPath + "\resultOfAuditPolicies.xml"
+Function WriteXML($resultCollection) {
+    $resultXML = $PSScriptRoot + "\resultOfAuditPolicies.xml"
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $Null)
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -176,4 +178,4 @@ Function WriteXML($currentPath, $resultCollection) {
     $xmlWriter.Close()
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAndAnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
