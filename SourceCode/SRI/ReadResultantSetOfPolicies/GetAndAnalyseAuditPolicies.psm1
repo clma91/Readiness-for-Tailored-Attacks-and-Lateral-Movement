@@ -23,20 +23,17 @@ Function IsCAPI2Enabled([xml] $capi2, [int] $requiredLogSize) {
 
 Function GetRegistryValue($path, $name) 
 {
-    try
-    {
+    try {
         return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
-    }
-    catch
-    {
-        throw
+    } catch {
+        return $null
     }
 }
 
 Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     $result = @{}
 
-    try {
+    if ($auditPoliySubcategoryKey) {
         if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             $result.Add("ForceAuditPolicySubcategory", "Enabled")
             return $result
@@ -44,8 +41,7 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
             $result.Add("ForceAuditPolicySubcategory", "Disabled")
             return $result
         }
-    }
-    catch {
+    } else {
         $result.Add("ForceAuditPolicySubcategory", "NotDefined")
         return $result
     }
