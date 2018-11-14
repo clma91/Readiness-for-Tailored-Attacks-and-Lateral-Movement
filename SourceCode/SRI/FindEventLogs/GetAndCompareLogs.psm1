@@ -1,98 +1,99 @@
-function GetEventLogsAndExport{
+function GetEventLogsAndExport($logNames){
+    $eventLogs = New-Object System.Collections.ArrayList
+    $exportPath = $PSScriptRoot + "\myeventlogs.csv"
     Write-Host Collecting EventLogs
     $StartMs = (Get-Date).Ticks
-    foreach($log in $args[0]) #$LogNames
+    foreach($log in $logNames)
     {
-        $args[1] += Get-EventLog -LogName $log #$events
+       $eventLogs += Get-EventLog -LogName $log
     }
     $EndMs = (Get-Date).Ticks
     Write-Host It took $($EndMs - $StartMs) ticks, or $(($EndMs - $StartMs) /10000000) secs. to get the EventLogs
     Write-Host Done collecting
 
-$args[1]| Select EventID -Unique |Export-CSV $args[2] -NoTypeInfo -Encoding UTF8  #EXPORT || $events / $exportfile
-Write-Host Done exporting to $args[2] #$exportcsv
+    $eventLogs | Select EventID -Unique |Export-CSV $exportPath -NoTypeInfo -Encoding UTF8 
+    Write-Host Done exporting to $exportPath 
 }
 function GetApplicationAndServiceLogs {
+    $idsForTaskScheduler = (106, 200, 129, 201, 102)
+    $idsForWindowsRemoteManagement = (6, 169)
+    $idsForLocalSessionManager = (21, 24)
+    $exportPath = $PSScriptRoot + "\myappandservlogs.csv"
 
-    $args[0] += '"EventID"' #appAndServLogs
+    $appAndServLogs += '"EventID"' 
     
-    foreach($id in $args[1]){ #tasksch
+    foreach($id in $idsForTaskScheduler){
     if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
-        $args[0] += '"' + $id + '"'
+        $appAndServLogs += '"' + $id + '"'
          }
     }
     
-    foreach($id in $args[2]){ #winrm
+    foreach($id in $idsForWindowsRemoteManagement){
         if(wevtutil qe Microsoft-Windows-WinRM/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
-            $args[0] += '"' + $id + '"'
+            $appAndServLogs += '"' + $id + '"'
             }
     }
     
-        foreach($id in $args[3]){ #terminalserv
+        foreach($id in $idsForLocalSessionManager){ 
             if(wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
-                $args[0] += '"' + $id + '"'
-                }
+                $appAndServLogs += '"' + $id + '"'
+            }
         }
 
-    $args[0] | Out-File -FilePath $args[4] #applicationAndServiceLogs outputpath
+    $appAndServLogs | Out-File -FilePath $exportPath
 }
 
-function ImportCompareExport{
+Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
+    $xmlWriter.WriteStartElement($startElement)
+    $xmlWriter.WriteValue($value)
+    $xmlWriter.WriteEndElement()
+}
 
-    $importEventLogs = $args[0] #$exportfileEventLogs
+function ImportCompareExport($eventLogIdsToCheck,  $appAndServIdsToCheck){
+    $importEventLogs = $PSScriptRoot + "\myeventlogs.csv"
+    $resultXML = $PSScriptRoot + "\resultOfEventLogs.xml"
+    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null) 
     
-    $args[1] = Import-Csv $importEventLogs -Encoding UTF8 #$myEventLogs
+    $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
 
     Write-Host Comparing Found EventLogs to Checklist
     
-    $args[2].Formatting = "Indented" #$xmlWriter
-    $args[2].Indentation = 1
-    $args[2].IndentChar = "`t"
-    $args[2].WriteStartDocument()
-    $args[2].WriteStartElement("Logs")
-    $args[2].WriteStartElement("EventLogsID")
-        
-       foreach($id in $args[3]){ #$eventLogIdsToCheck
-           if($args[1] | where {$_.EventID -eq $id}){ #$myEvents
-            $args[2].WriteStartElement("EventID" +$id)#$xmlWriter
-            $args[2].WriteValue("present")
-            $args[2].WriteEndElement()
-                }
-                else{
-                    $args[2].WriteStartElement("EventID" +$id)#$xmlWriter
-                    $args[2].WriteValue("missing")
-                    $args[2].WriteEndElement()
-                }
+    $xmlWriter.Formatting = "Indented"
+    $xmlWriter.Indentation = 1
+    $xmlWriter.IndentChar = "`t"
+    $xmlWriter.WriteStartDocument()
+    $xmlWriter.WriteStartElement("Logs")
+    $xmlWriter.WriteStartElement("EventLogsID")
+
+    foreach($id in $eventLogIdsToCheck){
+        if($myEventLogs | where {$_.EventID -eq $id}){ 
+            WriteXMLElement $xmlWriter ("EventID" +$id) "present"
+        } else {
+            WriteXMLElement $xmlWriter ("EventID" +$id) "missing"
         }
-    $args[2].WriteEndElement() #$xmlWriter
+    }
+    $xmlWriter.WriteEndElement()
 
-    $importAppAndServLogs = $args[4] #exportfileAppAndServLogs
-
-    $args[5] = Import-Csv $importAppAndServLogs -Encoding UTF8 #myAppAndServLogs
+    $importAppAndServLogs =  $PSScriptRoot + "\myappandservlogs.csv"
+    $myAppAndServLogs = Import-Csv $importAppAndServLogs -Encoding UTF8 
 
     Write-Host Comparing Found AppAndServLogs
-    #$args[2].WriteStartDocument()
-    $args[2].WriteStartElement("AppAndServID")
+    $xmlWriter.WriteStartElement("AppAndServID")
 
-    foreach($id in $args[6]){ #appAndServLogIdsToCheck
-        if($args[5] | where {$_.EventID -eq $id}){ #$myEvents
-            $args[2].WriteStartElement("EventID" + $id)#$xmlWriter
-            $args[2].WriteValue("present")
-            $args[2].WriteEndElement()
-                }
-                else{
-                    $args[2].WriteStartElement("EventID" + $id)#$xmlWriter
-                    $args[2].WriteValue("missing")
-                    $args[2].WriteEndElement()
-                }
+    foreach($id in $appAndServIdsToCheck){
+        if($myAppAndServLogs | where {$_.EventID -eq $id}){
+            WriteXMLElement $xmlWriter ("EventID" +$id) "present"
+        } else{
+            WriteXMLElement $xmlWriter ("EventID" +$id) "missing"
+        }
     }
     Write-Host Done comparing
 
     Write-Host Exporting XML
-    $args[2].WriteEndElement()
-    $args[2].WriteEndDocument()
-    $args[2].Flush()
-    $args[2].Close()
+    $xmlWriter.WriteEndElement()
+    $xmlWriter.WriteEndDocument()
+    $xmlWriter.Flush()
+    $xmlWriter.Close()
     
     Write-Host Done!
 
@@ -100,8 +101,7 @@ function ImportCompareExport{
     Remove-Item $importAppAndServLogs
 }
 
-Export-ModuleMember -Function GetEventLogsAndExport
-Export-ModuleMember -Function GetApplicationAndServiceLogs
-Export-ModuleMember -Function ImportCompareExport
+Export-ModuleMember -Function GetEventLogsAndExport, ImportCompareExport, GetApplicationAndServiceLogs
+
 
 
