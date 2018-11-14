@@ -1,6 +1,6 @@
-function GetEventLogsAndExport($logNames){
-    $eventLogs = New-Object System.Collections.ArrayList
-    $exportPath = $PSScriptRoot + "\myeventlogs.csv"
+function GetEventLogsAndExport($exportFolder){
+    $logNames = @("System", "Security")
+    $exportPath = $exportFolder + "\myeventlogs.csv"
     Write-Host Collecting EventLogs
     $StartMs = (Get-Date).Ticks
     foreach($log in $logNames)
@@ -14,11 +14,11 @@ function GetEventLogsAndExport($logNames){
     $eventLogs | Select EventID -Unique |Export-CSV $exportPath -NoTypeInfo -Encoding UTF8 
     Write-Host Done exporting to $exportPath 
 }
-function GetApplicationAndServiceLogs {
+function GetApplicationAndServiceLogs($exportFolder) {
     $idsForTaskScheduler = (106, 200, 129, 201, 102)
     $idsForWindowsRemoteManagement = (6, 169)
     $idsForLocalSessionManager = (21, 24)
-    $exportPath = $PSScriptRoot + "\myappandservlogs.csv"
+    $exportPath = $exportFolder + "\myappandservlogs.csv"
 
     $appAndServLogs += '"EventID"' 
     
@@ -49,9 +49,12 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
     $xmlWriter.WriteEndElement()
 }
 
-function ImportCompareExport($eventLogIdsToCheck,  $appAndServIdsToCheck){
-    $importEventLogs = $PSScriptRoot + "\myeventlogs.csv"
+function ImportCompareExport($importFolder, $exportFolder){
+    
     $resultXML = $PSScriptRoot + "\resultOfEventLogs.xml"
+    $eventLogIdsToCheck = (6, 21, 24, 102, 104, 106, 129, 169, 200, 201, 4624, 4634, 4648, 4656, 4658, 4660, 4661, 4663, 4672, 4673, 4688, 4689, 4690, 4720, 4726, 4728, 4729, 4768,4769, 4946, 5140, 5142, 5144, 5145, 5154, 5156, 7036, 7045, 8222, 20001)
+    $appAndServIdsToCheck = (106, 200, 129, 201, 102, 6, 169, 21, 24)
+    $importEventLogs = $importFolder + "\myeventlogs.csv"
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null) 
     
     $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
@@ -73,8 +76,7 @@ function ImportCompareExport($eventLogIdsToCheck,  $appAndServIdsToCheck){
         }
     }
     $xmlWriter.WriteEndElement()
-
-    $importAppAndServLogs =  $PSScriptRoot + "\myappandservlogs.csv"
+    $importAppAndServLogs = $importFolder + "\myappandservlogs.csv"
     $myAppAndServLogs = Import-Csv $importAppAndServLogs -Encoding UTF8 
 
     Write-Host Comparing Found AppAndServLogs
