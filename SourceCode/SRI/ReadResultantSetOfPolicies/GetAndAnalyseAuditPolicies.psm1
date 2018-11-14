@@ -63,7 +63,7 @@ Function IsSysmonInstalled($service) {
             $result.Add("Sysmon", "InstalledNotRunning")
             return $result
         } else {
-            $result.Add("Sysmon", "Installed")
+            $result.Add("Sysmon", "InstalledAndRunning")
             return $result
         }
     } catch {
