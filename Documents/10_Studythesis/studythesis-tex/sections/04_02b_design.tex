@@ -1,0 +1,229 @@
+\section{Design}
+\subsection{Decision for a new Tool}
+At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
+
+\clearpage
+
+\subsection{Mandatory Event Logs}\label{MandatoryLogs}
+The following tables lists the event logs which are mandatory and must be logged based on the study \nameref{JPCertStudy}:
+\footnotetext[1]{Recorded by default Windows settings}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Security} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        104\footnotemark[1] & The System log file was cleared \\ \hline
+        4624 & An account was successfully logged on \\ \hline
+        4634 & An account was logged off \\ \hline
+        4648 & A logon was attempted using explicit credentials \\ \hline
+        4656 & A handle to an object was requested \\ \hline
+        4658 & The handle to an object was closed \\ \hline
+        4660 & An object was deleted \\ \hline
+        4661 & A handle to an object was requested \\ \hline
+        4663 & An attempt was made to access an object \\ \hline
+        4672 & Special privileges assigned to new logon \\ \hline
+        4673 & A privileged service was called \\ \hline
+        4688 & A new process has been created \\ \hline
+        4689 & A process has exited \\ \hline
+        4690 & An attempt was made to duplicate a handle to an object \\ \hline
+        4720 & A user account was created \\ \hline
+        4726 & A user account was deleted \\ \hline
+        4728 & A member was added to a security enabled global group \\ \hline
+        4729 & A member was removed from a security enabled global group \\ \hline
+        4768 & A Kerberos authentication ticket (TGT) was requested \\ \hline
+        4769 & A Kerberos service ticket was requested \\ \hline
+        4946 & A change has been made to Windows Firewall exception list. A rule was added \\ \hline
+        5140 & A network share object was accessed \\ \hline
+        5142 & A network share object was added \\ \hline
+        5144 & A network share object was deleted \\ \hline
+        5145 & A network share object was accessed \\ \hline
+        5154 & WFP has permitted an application or service to listen on a port for incoming connections \\ \hline
+        5156 & WFP has allowed a connection \\ \hline
+        7036\footnotemark[1] & The service state has changed \\ \hline
+        7045\footnotemark[1] & A service was installed in the system \\ \hline
+    \end{tabular}
+    \caption{Mandatory Security Event Logs}
+\end{table}
+
+\clearpage
+\
+\vspace{0.5cm}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries System} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        8222\footnotemark[1] & TShadow copy has been created \\ \hline
+        20001\footnotemark[1] & Driver Management concluded the process to install driver  \\ \hline
+    \end{tabular}
+    \caption{Mandatory System Event Logs}
+\end{table}
+\footnotetext[1]{Recorded by default Windows settings}
+\footnotetext[2]{Recorded by default Sysmon settings}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TaskScheduler > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        102\footnotemark[1] & Task completed \\ \hline
+        106\footnotemark[1] & A task has been registered \\ \hline
+        129\footnotemark[1] & A task process has been created \\ \hline
+        200\footnotemark[1] & The operation that has been started \\ \hline
+        201\footnotemark[1] & The operation has been completed \\ \hline
+    \end{tabular}
+    \caption{Mandatory TaskScheduler Event Logs}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Windows Remote Management > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        6\footnotemark[1] & Creating WSMan Session \\ \hline
+        169\footnotemark[1] & User authentication authenticated successfully \\ \hline
+    \end{tabular}
+    \caption{Mandatory Windows Remote Management Event Logs}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TerminalServices-LocalSessionManager > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        21\footnotemark[1] & Remote Desktop Services: Session logon succeeded\\ \hline
+        24\footnotemark[1] & Remote Desktop Services: Session has been disconnected \\ \hline
+    \end{tabular}
+    \caption{Mandatory TerminalServices-LocalSessionManager Event Logs}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Sysmon > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        1\footnotemark[2] & Process Create \\ \hline
+        5\footnotemark[2] & Process Terminated \\ \hline
+        8\footnotemark[2] & CreateRemoteThread detected \\ \hline
+    \end{tabular}
+    \caption{Mandatory Sysmon Event Logs}
+\end{table}
+\setcounter{footnote}{1}
+
+\clearpage
+
+
+\subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}\label{Correlation}
+In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Account Logon} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit Kerberos Authentication Service & 4768 \\ \hline
+        Audit Kerberos Service Ticket Operations & 4769 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Account Logon}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Account Management} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit User Account Management & 4720, 4726 \\ \hline
+        Audit Security Group Management & 4728, 4729 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Account Management}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Logon/Logoff} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit Logon &	4624,	4648  \\ \hline
+	    Audit Logoff & 4634 \\ \hline
+	    Audit Special Logon & 4672 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Logon/Logoff}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Object Access} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit File System & 4656, 4658, 4660, 4663, 4670 \\ \hline
+        Audit Kernel Object & 4656, 4658, 4660, 4663	\\ \hline
+        Audit Registry & 4656, 4658, 4660 , 4663	\\ \hline
+        Audit Handle Manipulation & 4658, 4690 \\ \hline
+        Audit SAM & 4661 \\ \hline
+        Audit File Share & 5140, 5142, 5144	\\ \hline	
+        Audit Detailed File Share & 5145 \\ \hline				
+        Audit Filtering Platform Connection & 5154, 5156 \\ \hline	
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Object Access}
+\end{table}
+
+\clearpage
+\
+\vspace{0.5cm}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Policy Change} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit MPSSVC Rule-Level Policy Change &	4946 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Policy Change}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Privilege Use} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit Non Sensitive Privilege Use & 4673 \\ \hline
+        Audit Sensitive Privilege Use & 4673 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Privilege Use}
+\end{table}
+
+
+
+\clearpage
+
+\subsection{Domain Analysis}
+The following section describes the problem domain which is faced during this project. Despite the decision to not programm an object orientated solution, there are several things to be aware of and to think through carefully. For this reason building a domain model is a simple and  suitable  suitable technique to use for. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{assets/architecture/DomainModelSRI.png}
+    \caption{Domain Model}\label{fig:domainmodel}
+\end{figure}
+
+\subsubsection{Network}
+The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension, the network is already considered in this domain model.
+
+\subsubsection{Computer}
+A computer illustrates either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
+
+\subsubsection{Event}
+An event represents a single event log entry in simplified form.
+
+\subsubsection{AuditPolicy}\label{DomainModelAuditPolicy}
+AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found via \lstinline|gpedit.msc| under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
+\begin{quotation}
+    \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}
+\end{quotation}
+A single audit policy setting represents one or more event IDs logged by this configuration.
+
+\subsubsection{Reference}
+\paragraph{ActualList}
+The ActualList represents the current state of the system. It reflects the event log IDs that have occurred and the audit policies that have been set.
+
+\paragraph{TargetList}
+The TargetList represents either the list of event logs or configured audit policies which must be present for a solid detection of attacks.
+
+\paragraph{DeltaList}
+Based on the required lists (audit policies, event logs) and the current state of the computer, the DeltaList shows which settings are missing in the audit policies.
