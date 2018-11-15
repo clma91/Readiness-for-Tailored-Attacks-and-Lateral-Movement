@@ -3,6 +3,7 @@ Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
 
 $logSize = 4194304
 
+# Check RSoP
 $rsopResult = GetAuditPolicies
 $auditPolicies = AnalyseAuditPolicies $rsopResult
 

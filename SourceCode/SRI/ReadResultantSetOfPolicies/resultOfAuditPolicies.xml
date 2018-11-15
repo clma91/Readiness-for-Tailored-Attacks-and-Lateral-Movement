@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <AuditPolicies>
-	<AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
-	<AuditLogoff>SuccessAndFailure</AuditLogoff>
-	<AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
-	<AuditFileSystem>Success</AuditFileSystem>
+	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
+	<AuditLogon>Success</AuditLogon>
+	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
-	<AuditKerberosAuthenticationService>Failure</AuditKerberosAuthenticationService>
+	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
+	<AuditHandleManipulation>Success</AuditHandleManipulation>
 	<AuditRegistry>NotConfigured</AuditRegistry>
-	<AuditProcessTermination>NotConfigured</AuditProcessTermination>
-	<AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
-	<AuditLogon>SuccessAndFailure</AuditLogon>
-	<AuditSpecialLogon>SuccessAndFailure</AuditSpecialLogon>
-	<AuditMPSSVCRule-LevelPolicyChange>Failure</AuditMPSSVCRule-LevelPolicyChange>
-	<AuditProcessCreation>NotConfigured</AuditProcessCreation>
-	<AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
-	<AuditFileShare>NoAuditing</AuditFileShare>
-	<AuditKernelObject>NotConfigured</AuditKernelObject>
+	<AuditProcessTermination>Success</AuditProcessTermination>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
+	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
+	<AuditSpecialLogon>Success</AuditSpecialLogon>
+	<AuditLogoff>Success</AuditLogoff>
 	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditKerberosServiceTicketOperations>Success</AuditKerberosServiceTicketOperations>
+	<AuditFileShare>SuccessAndFailure</AuditFileShare>
+	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
-	<AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
+	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
+	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
+	<AuditProcessCreation>Success</AuditProcessCreation>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
-	<Sysmon>InstalledNotRunning</Sysmon>
+	<Sysmon>InstalledAndRunning</Sysmon>
 	<CAPI2LogSize>4980736</CAPI2LogSize>
-	<CAPI2>EnabledGoodLogSize</CAPI2>	
+	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>

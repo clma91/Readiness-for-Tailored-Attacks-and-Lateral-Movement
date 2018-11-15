@@ -72,7 +72,7 @@ Function IsSysmonInstalled($service) {
     }
 }
 
-Function GetAuditPolicies {
+Function GetAuditPolicies($ImportPath) {
     $pathRSOPXML = $PSScriptRoot + "\LocalUserAndComputerReport.xml"
     
     Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
