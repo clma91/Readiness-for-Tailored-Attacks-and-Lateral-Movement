@@ -78,7 +78,7 @@ Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
 
 switch ($PsCmdLet.ParameterSetName) {
     'None' {
-        Write-Host "Please define the Script-Mode [-Online|-Offline]" -ForegroundColor Red
+        Write-Host "Please define the Script-Mode [-Online|-Offline] -ForegroundColor Red
     }
     'Online' {
         if([string]::IsNullOrEmpty($OnlineExportPath)) {
