@@ -114,14 +114,32 @@ The following tables lists the event logs which are mandatory and must be logged
 
 
 \subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}\label{Correlation}
-In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool.
+In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool. There are several combinations of settings which can be configured:\\
+\begin{multicols}{2}
+    \vspace{1cm} \null 
+    \begin{description}
+        \item[Not Configured:] \ \\ Nothing selected
+        \item[No Auditing:] \ \\ ''Configure the following audit events:''
+        \item[Success (S):] \ \\ ''Success''
+        \item[Failure (F):] \ \\ ''Failure''
+        \item[Success and Failure (S, F):] \ \\ ''Success'' and ''Failure'' 
+    \end{description}
+    \vfill \null 
+    \columnbreak
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\linewidth]{assets/auditpolicies/speciallogon.png}
+        \caption{Advanced Audit Policy - Logon/Logoff - Audit Special Logon}
+    \end{figure}
+\end{multicols}
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Account Logon} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Kerberos Authentication Service & 4768 \\ \hline
-        Audit Kerberos Service Ticket Operations & 4769 \\ \hline
+        Audit Kerberos Authentication Service & 4768(S, F) \\ \hline
+        Audit Kerberos Service Ticket Operations & 4769(S, F) \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Account Logon}
 \end{table}
@@ -131,8 +149,8 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Account Management} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit User Account Management & 4720, 4726 \\ \hline
-        Audit Security Group Management & 4728, 4729 \\ \hline
+        Audit User Account Management & 4720(S), 4726(S) \\ \hline
+        Audit Security Group Management & 4728(S, F), 4729(S, F) \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Account Management}
 \end{table}
@@ -140,11 +158,22 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Detailed Tracking} \\ \hline
+        \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
+        Audit Process Creation & 4688(S) \\ \hline
+	    Audit Process Termination & 4689(S)	 \\ \hline
+    \end{tabular}
+    \caption{Advanced Audit Policy Setting Logon/Logoff}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Logon/Logoff} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Logon &	4624,	4648  \\ \hline
-	    Audit Logoff & 4634 \\ \hline
-	    Audit Special Logon & 4672 \\ \hline
+        Audit Logon & 4624(S), 4648(S)	  \\ \hline
+	    Audit Logoff & 4634(S) \\ \hline
+	    Audit Special Logon & 4672(S) \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Logon/Logoff}
 \end{table}
@@ -154,14 +183,14 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Object Access} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit File System & 4656, 4658, 4660, 4663, 4670 \\ \hline
-        Audit Kernel Object & 4656, 4658, 4660, 4663	\\ \hline
-        Audit Registry & 4656, 4658, 4660 , 4663	\\ \hline
-        Audit Handle Manipulation & 4658, 4690 \\ \hline
-        Audit SAM & 4661 \\ \hline
-        Audit File Share & 5140, 5142, 5144	\\ \hline	
-        Audit Detailed File Share & 5145 \\ \hline				
-        Audit Filtering Platform Connection & 5154, 5156 \\ \hline	
+        Audit File System & 4656(S, F), 4658(S), 4660(S), 4663(S), 4670(S) \\ \hline
+        Audit Kernel Object & 4656(S, F), 4658(S), 4660(S), 4663(S)	\\ \hline
+        Audit Registry & 4656(S, F), 4658(S), 4660(S), 4663(S) \\ \hline
+        Audit Handle Manipulation & 4658(S), 4690(S) \\ \hline
+        Audit SAM & 4661(S, F) \\ \hline
+        Audit File Share & 5140(S, F), 5142(S), 5144(S)	\\ \hline	
+        Audit Detailed File Share & 5145(S, F) \\ \hline				
+        Audit Filtering Platform Connection & 5154(S), 5156(S) \\ \hline	
     \end{tabular}
     \caption{Advanced Audit Policy Setting Object Access}
 \end{table}
@@ -174,7 +203,7 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Policy Change} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit MPSSVC Rule-Level Policy Change &	4946 \\ \hline
+        Audit MPSSVC Rule-Level Policy Change &	4946(S) \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Policy Change}
 \end{table}
@@ -184,8 +213,8 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Privilege Use} \\ \hline
         \textbf{Subcategory} & \textbf{EventIDs}  \\ \hline
-        Audit Non Sensitive Privilege Use & 4673 \\ \hline
-        Audit Sensitive Privilege Use & 4673 \\ \hline
+        Audit Non Sensitive Privilege Use & 4673(S, F) \\ \hline
+        Audit Sensitive Privilege Use & 4673(S, F) \\ \hline
     \end{tabular}
     \caption{Advanced Audit Policy Setting Privilege Use}
 \end{table}
