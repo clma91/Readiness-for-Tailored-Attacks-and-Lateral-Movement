@@ -158,6 +158,7 @@ switch ($PsCmdLet.ParameterSetName) {
                 OfflineEventLogs $ImportPath $ExportPath
             } else {
                 Write-Host "Offline-Mode"
+                Offline $ImportPath $ExportPath
             }
         }
         continue
