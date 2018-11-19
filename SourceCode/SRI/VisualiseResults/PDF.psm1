@@ -10,7 +10,7 @@ Add-Type -Path "$PSScriptRoot\itextsharp.dll"
 #
 
 # Set basic PDF settings for the document
-Function Create-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$TopMargin, [int32]$BottomMargin, [int32]$LeftMargin, [int32]$RightMargin, [string]$Author)
+Function New-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$TopMargin, [int32]$BottomMargin, [int32]$LeftMargin, [int32]$RightMargin, [string]$Author)
 {
     $Document.SetPageSize([iTextSharp.text.PageSize]::A4)
     $Document.SetMargins($LeftMargin, $RightMargin, $TopMargin, $BottomMargin)

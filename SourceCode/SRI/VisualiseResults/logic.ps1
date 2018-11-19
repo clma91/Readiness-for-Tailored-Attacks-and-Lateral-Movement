@@ -49,7 +49,6 @@ foreach($audit in $myaudits){
     $c = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml);
     $c.BackgroundColor = New-Object iTextSharp.text.BaseColor(255, 0, 0);
     $t.AddCell($c)
-    
     }
 }
 $pdf.Add($t)

@@ -6,17 +6,15 @@ function GetEventLogsAndExport($exportPath){
     }
 
     Write-Host Collecting EventLogs
-    $StartMs = (Get-Date).Ticks
     foreach($log in $logNames)
     {
        $eventLogs += Get-EventLog -LogName $log
     }
     $EndMs = (Get-Date).Ticks
-    Write-Host "It took $($EndMs - $StartMs) ticks, or $(($EndMs - $StartMs) /10000000) secs. to get the EventLogs"
     Write-Host "Done collecting"
 
     $eventLogs | Select EventID -Unique |Export-CSV $exportPathCSV -NoTypeInfo -Encoding UTF8 
-    Write-Host "Done exporting to $exportPathCSV" 
+    Write-Host "Done exporting to $exportPathCSV"  -ForegroundColor Green
 }
 function GetApplicationAndServiceLogs($exportPath) {
     $idsForTaskScheduler = (106, 200, 129, 201, 102)
@@ -28,19 +26,19 @@ function GetApplicationAndServiceLogs($exportPath) {
     }
 
     $appAndServLogs += '"EventID"' 
-    
+    Write-Host "Checking TaskScheduler-Logs"
     foreach($id in $idsForTaskScheduler){
     if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
         $appAndServLogs += '"' + $id + '"'
          }
     }
-    
+    Write-Host "Checking WinRM-Logs"
     foreach($id in $idsForWindowsRemoteManagement){
         if(wevtutil qe Microsoft-Windows-WinRM/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
             $appAndServLogs += '"' + $id + '"'
             }
     }
-    
+    Write-Host "Checking LocalSessionManager-Logs"
         foreach($id in $idsForLocalSessionManager){ 
             if(wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System[(EventID="$id")]]" /uni:false /f:text){
                 $appAndServLogs += '"' + $id + '"'
@@ -48,6 +46,7 @@ function GetApplicationAndServiceLogs($exportPath) {
         }
 
     $appAndServLogs | Out-File -FilePath $exportPathCSV
+    Write-Host "Done exporting to" + $exportPathCSV -ForegroundColor Green
 }
 
 Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
@@ -85,7 +84,7 @@ function ImportCompareExport($importPath, $exportPath){
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null) 
     $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
 
-    Write-Host "Comparing Found EventLogs to Checklist"
+    Write-Host "Comparing found EventLogs to Checklist"
     
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -104,8 +103,8 @@ function ImportCompareExport($importPath, $exportPath){
     $xmlWriter.WriteEndElement()
     
     $myAppAndServLogs = Import-Csv $importAppAndServLogs -Encoding UTF8 
-
-    Write-Host "Comparing Found AppAndServLogs"
+    Write-Host "Done comparing found EventLogs to Checklist" -ForegroundColor Green
+    Write-Host "Comparing found AppAndServLogs"
     $xmlWriter.WriteStartElement("AppAndServID")
 
     foreach($id in $appAndServIdsToCheck){
@@ -115,15 +114,15 @@ function ImportCompareExport($importPath, $exportPath){
             WriteXMLElement $xmlWriter ("EventID" +$id) "missing"
         }
     }
-    Write-Host "Done comparing"
+    Write-Host "Done comparing found AppAndServLogs" -ForegroundColor Green
 
-    Write-Host "Exporting XML"
+    Write-Host "Exporting results into XML"
     $xmlWriter.WriteEndElement()
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
     
-    Write-Host "Done Event Logs!!!"
+    Write-Host "Export completed" -ForegroundColor Green
 
     if ($isCurrentPath) {
         Remove-Item $importEventLogs
