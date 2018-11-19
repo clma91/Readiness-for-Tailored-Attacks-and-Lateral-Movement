@@ -10,8 +10,13 @@ Function GetAuditPolicies($importPath) {
         Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
     }
 
-    $rsopResult = Get-Content $pathRSOPXML
-    
+    if ([System.IO.File]::Exists($pathRSOPXML)) {
+        $rsopResult = Get-Content $pathRSOPXML
+    } else {
+        Write-Host "File $pathRSOPXML does not exist!" -ForegroundColor Red
+        return
+    }    
+
     if ($isCurrentPath) {
         Remove-Item $pathRSOPXML
     }
@@ -19,7 +24,7 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-Function AnalyseAuditPolicies ([xml] $rsopResult){    
+Function AnalyseAuditPolicies ([xml] $rsopResult) {    
     Write-Host "Check RSoP"
     $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management")
     enum AuditSettingValues {
@@ -31,49 +36,52 @@ Function AnalyseAuditPolicies ([xml] $rsopResult){
     [AuditSettingValues]$auditSettingValue = 0
     $result = @{}
     
-    $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
+    if ($rsopResult) {
+        $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
 
-    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
-    foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
-        if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
-            $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
-            Write-Host " - $auditSettingSubcategoryName is not configured" -ForegroundColor Red
+        # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
+        foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
+            if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
+                $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
+            }
         }
-    }
 
-    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
-    foreach($auditSetting in $auditSettings) {
-        if($auditSetting) {
-            try {
-                $auditSettingValue = $auditSetting.SettingValue
-            }
-            catch {
-                $auditSettingValue = 0
-            }
-            $auditSubcategoryName = $auditSetting.SubcategoryName 
-            switch ($auditSettingValue) {
-                NoAuditing {  
-                    $auditSettingValueString = "NoAuditing"
-                    continue
+        # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
+        foreach($auditSetting in $auditSettings) {
+            if($auditSetting) {
+                try {
+                    $auditSettingValue = $auditSetting.SettingValue
                 }
-                Success {
-                    $auditSettingValueString = "Success"
-                    continue
-                } 
-                Failure {
-                    $auditSettingValueString = "Failure"
-                    continue
+                catch {
+                    $auditSettingValue = 0
                 }
-                SuccessAndFailure {
-                    $auditSettingValueString = "SuccessAndFailure"
-                    continue
+                $auditSubcategoryName = $auditSetting.SubcategoryName 
+                switch ($auditSettingValue) {
+                    NoAuditing {  
+                        $auditSettingValueString = "NoAuditing"
+                        continue
+                    }
+                    Success {
+                        $auditSettingValueString = "Success"
+                        continue
+                    } 
+                    Failure {
+                        $auditSettingValueString = "Failure"
+                        continue
+                    }
+                    SuccessAndFailure {
+                        $auditSettingValueString = "SuccessAndFailure"
+                        continue
+                    }
+                    Default { continue }
                 }
-                Default { continue }
-            }
-            $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
-        }    
+                $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
+            }    
+        }
+        return $result
+    } else {
+        return
     }
-    return $result
 }
 
 Function GetRegistryValue($path, $name) 
@@ -92,16 +100,13 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     if ($auditPoliySubcategoryKey) {
         if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             $result.Add("ForceAuditPolicySubcategory", "Enabled")
-            Write-Host " - `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`' enabled" -ForegroundColor Green
             return $result
         } else {
             $result.Add("ForceAuditPolicySubcategory", "Disabled")
-            Write-Host " - `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`' disabled" -ForegroundColor Red
             return $result
         }
     } else {
         $result.Add("ForceAuditPolicySubcategory", "NotDefined")
-        Write-Host " - `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`' not defined" -ForegroundColor Red
         return $result
     }
 }
@@ -121,16 +126,13 @@ Function IsSysmonInstalled($service) {
     try {
         if ($service.Status -ne "Running") {
             $result.Add("Sysmon", "InstalledNotRunning")
-            Write-Host " - Sysmon is installed but not running as a service" -ForegroundColor Yellow
             return $result
         } else {
             $result.Add("Sysmon", "InstalledAndRunning")
-            Write-Host " - Sysmon is installed and running as a service" -ForegroundColor Green
             return $result
         }
     } catch {
         $result.Add("Sysmon", "NotInstalled")
-        Write-Host " - Sysmon is not installed" -ForegroundColor Red
         return $result
     }
 }
@@ -139,29 +141,26 @@ Function GetCAPI2 {
     return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
 }
 
-Function IsCAPI2Enabled([xml] $capi2, [int] $requiredLogSize) {
+Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     Write-Host "Check CAPI2"
     $capi2Enabled = $capi2.channel.enabled
-    $currentLogSize = $capi2.channel.logging.maxsize -as [int]
+    $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
     $result = @{}
     if ($requiredLogSize -lt 4194304) {
-        Write-Host " - Defined Log Size smaller than 4MB ($requiredLogSize) => set default value 4MB (4194304)" -ForegroundColor Yellow
+        Write-Host " - Defined Log Size smaller than 4MB ($requiredLogSize Byte) => set default value 4MB (4194304 Byte)" -ForegroundColor Yellow
         $requiredLogSize = 4194304
     }
 
     if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
         $result.Add("CAPI2", "EnabledGoodLogSize")
         $result.Add("CAPI2LogSize", "$currentLogSize")
-        Write-Host " - CAPI2 enabled with a good log size of $currentLogSize (>= $requiredLogSize)" -ForegroundColor Green
         return $result
     } elseif ($capi2Enabled -eq "true" -and $currentLogSize -lt $requiredLogSize) {
         $result.Add("CAPI2", "EnabledBadLogSize")
         $result.Add("CAPI2LogSize", "$currentLogSize")
-        Write-Host " - CAPI2 enabled with a bad log size of $currentLogSize (<= $requiredLogSize)" -ForegroundColor Red
         return $result
     } else {
         $result.Add("CAPI2", "Disabled")
-        Write-Host " - CAPI2 disabled" -ForegroundColor Red
         return $result
     }
 }
@@ -206,7 +205,7 @@ Function WriteXML($resultCollection, $exportPath) {
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
-    Write-Host "DONE!!!"
+    Write-Host "DONE Audit Policies!!!"
 }
 
 Export-ModuleMember -Function GetAuditPolicies, AnalyseAuditPolicies, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetCAPI2, IsCAPI2Enabled, MergeHashtables, WriteXML
