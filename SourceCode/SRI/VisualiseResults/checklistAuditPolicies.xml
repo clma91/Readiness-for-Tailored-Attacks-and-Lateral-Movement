@@ -22,5 +22,6 @@
 	<AuditProcessCreation>SuccessAndFailure</AuditProcessCreation>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledAndRunning</Sysmon>
+	<CAPI2LogSize>4194304</CAPI2LogSize>
 	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>
