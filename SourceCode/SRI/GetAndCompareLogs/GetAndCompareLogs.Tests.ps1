@@ -3,6 +3,7 @@ $azurePath = $PSScriptRoot
 
 $currentPath = $azurePath
 $modulePath = $currentPath + "\GetAndCompareLogs.psm1"
+
 Import-Module $modulePath -Force
 
 Describe 'read Get-EventLogs'{
@@ -18,10 +19,10 @@ Describe 'read Get-EventLogs'{
 }
 
 Describe 'read App and Service Logs'{
-    It 'checks if got app and serve logs from taskscheduler'{
-        $events = wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System]" /uni:false /f:text
-        $events | Should -Not -BeNullOrEmpty
-    }
+    # It 'checks if got app and serve logs from taskscheduler'{
+    #     $events = wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System]*" /uni:false /f:text
+    #     $events | Should -Not -BeNullOrEmpty
+    # }
 
     It 'checks if got eventlogs from security'{
         $events = wevtutil qe Microsoft-Windows-WinRM/Operational /q:"*[System]" /uni:false /f:text

@@ -6,6 +6,8 @@ $currentPath = $azurePath
 $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
 Import-Module $modulePath -Force
 
+Write-Host $modulePath
+
 Describe "IsCAPI2Enabled" {
     $testFilesPath = $currentPath + "\TestFiles"
     $logSize = 4194304
@@ -65,5 +67,40 @@ Describe "IsForceAuditPoliySubcategoryEnabeled" {
             $result.keys | Should -Contain "ForceAuditPolicySubcategory"
             $result.values | Should -Contain "Disabled"
         }
+    }
+}
+
+Describe "IsSysmonInstalled" {
+    $sysmon64ServiceRunning = @{DisplayName="Sysmon64";Status="Running";}
+    $sysmonServiceRunning = @{DisplayName="Sysmon";Status="Running";}
+    $sysmon64ServiceStopped = @{DisplayName="Sysmon64";Status="Stopped";}
+    $sysmonServiceStopped = @{DisplayName="Sysmon";Status="Stopped";}
+    $sysmonNotInstalled = $null
+
+    Context "Sysmon64" {
+        It "checks if Sysmon64 is installed and running" {
+            $result = IsSysmonInstalled $sysmon64ServiceRunning
+
+            $result.keys | should -Contain "Sysmon"
+            $result.values | should -Contain "InstalledAndRunning"
+        }
+
+        It "checks if Sysmon64 is installed but not running" {
+            $result = IsSysmonInstalled $sysmon64ServiceStopped
+
+            $result.keys | should -Contain "Sysmon"
+            $result.values | should -Contain "InstalledNotRunning"
+        }
+
+        It "checks if Sysmon64 is not installed" {
+            $result = IsSysmonInstalled $sysmonNotInstalled
+
+            $result.keys | should -Contain "Sysmon"
+            $result.values | should -Contain "NotInstalled"
+        }
+    }
+
+    Context "Sysmon" {
+        
     }
 }

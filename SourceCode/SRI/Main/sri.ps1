@@ -101,8 +101,8 @@ param(
     $CAPI2LogSize
 )
 #Requires -RunAsAdministrator
-Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
-Import-Module .\GetAndCompareLogs.psm1 -Force
+Import-Module ..\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1 -Force
+Import-Module ..\GetAndCompareLogs\GetAndCompareLogs.psm1 -Force
 Import-Module .\visualize.psm1 -Force
 
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
@@ -110,7 +110,8 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
     $rsopResult = GetAuditPolicies
     $auditPolicies = AnalyseAuditPolicies $rsopResult
 
-    # Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) is ignored to prevent conflicts between similar settings
+    <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 
+       is ignored to prevent conflicts between similar settings #>
     $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
     $name = "SCENoApplyLegacyAuditPolicy"
     $auditPoliySubcategoryKey = GetRegistryValue $path $name
@@ -160,7 +161,7 @@ switch ($PsCmdLet.ParameterSetName) {
     }
     'Online' {
         Write-Host "Online-Mode"
-        
+        $ExportPathExist = $true
         if ($OnlineExportPath) {
             try {
                 $ExportPathExist = Test-Path -Path $OnlineExportPath
@@ -168,7 +169,7 @@ switch ($PsCmdLet.ParameterSetName) {
                 $ExportPathExist = $false
             }   
         } else {
-            $ExportPathExist = $true
+            $OnlineExportPath = $PSScriptRoot
         }
         
         if(-not $ExportPathExist) {

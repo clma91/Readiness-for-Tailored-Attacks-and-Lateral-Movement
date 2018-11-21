@@ -1,62 +1,96 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="6" errors="0" failures="3" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-08" time="14:43:37">
-  <environment user="Claudio" machine-name="CLMA1040" cwd="D:\_Studium\zSemester5\SA\GitRepo\SourceCode" user-domain="CLMA1040" platform="Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="18" errors="0" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-21" time="17:59:49">
+  <environment user="Claudio" machine-name="CLMA1040" cwd="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main" user-domain="CLMA1040" platform="Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="6.9038" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="44.4148" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1" executed="True" result="Failure" success="False" time="3.3962" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.Tests.ps1" executed="True" result="Success" success="True" time="0.8942" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.292" asserts="0" description="Get-EventLog -LogName System">
+          <test-suite type="TestFixture" name="IsCAPI2Enabled" executed="True" result="Success" success="True" time="0.4404" asserts="0" description="IsCAPI2Enabled">
             <results>
-              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.292" asserts="0" success="True" result="Success" executed="True" />
+              <test-suite type="TestFixture" name="xml with disabled CAPI2" executed="True" result="Success" success="True" time="0.1756" asserts="0" description="xml with disabled CAPI2">
+                <results>
+                  <test-case description="checks if function returns Disable" name="IsCAPI2Enabled.xml with disabled CAPI2.checks if function returns Disable" time="0.1756" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but bad log size of 1048576" executed="True" result="Success" success="True" time="0.1362" asserts="0" description="xml with enabled CAPI2 but bad log size of 1048576">
+                <results>
+                  <test-case description="checks if function returns EnabledBadLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns EnabledBadLogSize" time="0.0989" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 1048576" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns LogSize of 1048576" time="0.0372" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but good log size of 4980736" executed="True" result="Success" success="True" time="0.1286" asserts="0" description="xml with enabled CAPI2 but good log size of 4980736">
+                <results>
+                  <test-case description="checks if function returns EnabledGoodLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns EnabledGoodLogSize" time="0.0877" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 4980736" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns LogSize of 4980736" time="0.0409" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="GetAndExportEventLogs" executed="True" result="Success" success="True" time="0.0587" asserts="0" description="GetAndExportEventLogs">
+          <test-suite type="TestFixture" name="IsForceAuditPoliySubcategoryEnabeled" executed="True" result="Success" success="True" time="0.2408" asserts="0" description="IsForceAuditPoliySubcategoryEnabeled">
             <results>
-              <test-case description="Tests the function GetAndExportEventLogs" name="GetAndExportEventLogs.Tests the function GetAndExportEventLogs" time="0.0587" asserts="0" success="True" result="Success" executed="True" />
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 1" executed="True" result="Success" success="True" time="0.1729" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 1">
+                <results>
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 1.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.1729" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 0" executed="True" result="Success" success="True" time="0.0679" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 0">
+                <results>
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 0.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.0679" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0455" asserts="0" description="Test File">
+          <test-suite type="TestFixture" name="IsSysmonInstalled" executed="True" result="Success" success="True" time="0.213" asserts="0" description="IsSysmonInstalled">
             <results>
-              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0455" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\myevents.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEvents.Tests.ps1: line 20
-20:     $exportFile | Should -Exist</stack-trace>
-                </failure>
-              </test-case>
+              <test-suite type="TestFixture" name="Sysmon64" executed="True" result="Success" success="True" time="0.213" asserts="0" description="Sysmon64">
+                <results>
+                  <test-case description="checks if Sysmon64 is installed and running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed and running" time="0.1626" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon64 is installed but not running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed but not running" time="0.023" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon64 is not installed" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is not installed" time="0.0275" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Sysmon" executed="True" result="Success" success="True" time="0" asserts="0" description="Sysmon">
+                <results />
+              </test-suite>
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1" executed="True" result="Failure" success="False" time="3.5076" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndCompareLogs\GetAndCompareLogs.Tests.ps1" executed="True" result="Failure" success="False" time="43.5206" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndCompareLogs\GetAndCompareLogs.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="Get-EventLog -LogName System" executed="True" result="Success" success="True" time="3.2994" asserts="0" description="Get-EventLog -LogName System">
+          <test-suite type="TestFixture" name="read Get-EventLogs" executed="True" result="Success" success="True" time="13.893" asserts="0" description="read Get-EventLogs">
             <results>
-              <test-case description="Reads the System Logs" name="Get-EventLog -LogName System.Reads the System Logs" time="3.2994" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from system" name="read Get-EventLogs.checks if got windowslogs from system" time="4.7345" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from security" name="read Get-EventLogs.checks if got windowslogs from security" time="9.1585" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="ImportCompareExport" executed="True" result="Failure" success="False" time="0.1514" asserts="0" description="ImportCompareExport">
+          <test-suite type="TestFixture" name="read App and Service Logs" executed="True" result="Failure" success="False" time="3.0529" asserts="0" description="read App and Service Logs">
             <results>
-              <test-case description="Tests the function ImportCompareExport" name="ImportCompareExport.Tests the function ImportCompareExport" time="0.1514" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="checks if got app and serve logs from taskscheduler" name="read App and Service Logs.checks if got app and serve logs from taskscheduler" time="0.108" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
-                  <message>The term 'ImportCompareExport' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1: line 22
-22:     ImportCompareExport $exportFile $myEvents $xmlWriter $idsToCheck
-</stack-trace>
+                  <message>Expected a value, but got $null or empty.</message>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndCompareLogs\GetAndCompareLogs.Tests.ps1: line 24
+24:         $events | Should -Not -BeNullOrEmpty</stack-trace>
                 </failure>
               </test-case>
+              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.6192" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.3257" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test File" executed="True" result="Failure" success="False" time="0.0568" asserts="0" description="Test File">
+          <test-suite type="TestFixture" name="check function GetEventLogsAndExport" executed="True" result="Success" success="True" time="25.5408" asserts="0" description="check function GetEventLogsAndExport">
             <results>
-              <test-case description="tests if the events file is availabale" name="Test File.tests if the events file is availabale" time="0.0568" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\myevents.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\Trial\GetAndCompare\GetAndCompareEventsAsFunctions.Tests.ps1: line 30
-30:     $exportFile | Should -Exist</stack-trace>
-                </failure>
-              </test-case>
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetEventLogsAndExport.checks function GetEventLogsAndExport" time="25.5408" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="check function GetApplicationAndServiceLogs" executed="True" result="Success" success="True" time="0.6257" asserts="0" description="check function GetApplicationAndServiceLogs">
+            <results>
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetApplicationAndServiceLogs.checks function GetEventLogsAndExport" time="0.6257" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Test function ImportCompareExport" executed="True" result="Success" success="True" time="0.4081" asserts="0" description="Test function ImportCompareExport">
+            <results>
+              <test-case description="calls the function and loads a test-xml" name="Test function ImportCompareExport.calls the function and loads a test-xml" time="0.4081" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>

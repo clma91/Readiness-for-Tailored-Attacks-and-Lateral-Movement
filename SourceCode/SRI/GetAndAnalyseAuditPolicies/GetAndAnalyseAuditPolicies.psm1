@@ -48,17 +48,18 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
 }
 
 Function GetService($name) {
-    try {
-        return Get-Service -Name $name
-    } catch {
-        throw
+    Try {
+        return Get-Service -Name $name -ErrorAction Stop
+    } Catch [Microsoft.PowerShell.Commands.ServiceCommandException]{
+        return $null
     }
 }
 
 Function IsSysmonInstalled($service) {
+    Write-Host "Check Sysmon"
     $result = @{}
 
-    try {
+    if($service) {
         if ($service.Status -ne "Running") {
             $result.Add("Sysmon", "InstalledNotRunning")
             return $result
@@ -66,7 +67,7 @@ Function IsSysmonInstalled($service) {
             $result.Add("Sysmon", "InstalledAndRunning")
             return $result
         }
-    } catch {
+    } else {
         $result.Add("Sysmon", "NotInstalled")
         return $result
     }
@@ -155,9 +156,11 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
     $xmlWriter.WriteEndElement()
 }
 
-Function WriteXML($resultCollection) {
-    $resultXML = $PSScriptRoot + "\resultOfAuditPolicies.xml"
+Function WriteXML($resultCollection, $exportPath) {
+    Write-Host "Write Result XML"
+    $resultXML = $exportPath + "\resultOfAuditPolicies.xml"
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $Null)
+
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
     $xmlWriter.IndentChar = "`t"
@@ -172,6 +175,7 @@ Function WriteXML($resultCollection) {
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
+    Write-Host "DONE Audit Policies!!!"
 }
 
 Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
