@@ -14,7 +14,6 @@ function GetEventLogsAndExport($exportPath){
     Write-Host "Done collecting"
 
     $eventLogs | Select EventID -Unique |Export-CSV $exportPathCSV -NoTypeInfo -Encoding UTF8 
-    Write-Host "Done exporting to $exportPathCSV"  -ForegroundColor Green
 }
 function GetApplicationAndServiceLogs($exportPath) {
     $idsForTaskScheduler = (106, 200, 129, 201, 102)
@@ -46,7 +45,6 @@ function GetApplicationAndServiceLogs($exportPath) {
         }
 
     $appAndServLogs | Out-File -FilePath $exportPathCSV
-    Write-Host "Done exporting to" + $exportPathCSV -ForegroundColor Green
 }
 
 Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
@@ -103,7 +101,6 @@ function ImportCompareExport($importPath, $exportPath){
     $xmlWriter.WriteEndElement()
     
     $myAppAndServLogs = Import-Csv $importAppAndServLogs -Encoding UTF8 
-    Write-Host "Done comparing found EventLogs to Checklist" -ForegroundColor Green
     Write-Host "Comparing found AppAndServLogs"
     $xmlWriter.WriteStartElement("AppAndServID")
 
@@ -114,7 +111,6 @@ function ImportCompareExport($importPath, $exportPath){
             WriteXMLElement $xmlWriter ("EventID" +$id) "missing"
         }
     }
-    Write-Host "Done comparing found AppAndServLogs" -ForegroundColor Green
 
     Write-Host "Exporting results into XML"
     $xmlWriter.WriteEndElement()
@@ -122,8 +118,6 @@ function ImportCompareExport($importPath, $exportPath){
     $xmlWriter.Flush()
     $xmlWriter.Close()
     
-    Write-Host "Export completed" -ForegroundColor Green
-
     if ($isCurrentPath) {
         Remove-Item $importEventLogs
         Remove-Item $importAppAndServLogs

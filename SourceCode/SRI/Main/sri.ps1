@@ -54,17 +54,11 @@
     - Results will be written to the given path (in this example: C:/ExportSRI/)
     - The CAPI2 log size will bet overwritten to the given value (in this example: 5242880 = 5MB)
 .EXAMPLE
-    ./sri.ps1 -Offline
+    .\sri.ps1 -Offline -ImportPath C:/temp/test -ExportPath D:/test
 .EXAMPLE
-    ./sri.ps1 -Offline
+    .\sri.ps1 -Offline -EventLogs -ImportPath C:/temp/test -ExportPath D:/test
 .EXAMPLE
-    ./sri.ps1 -Offline
-.EXAMPLE
-    ./sri.ps1 -Offline
-.EXAMPLE
-    ./sri.ps1 -Offline
-.EXAMPLE
-    ./sri.ps1 -Offline
+    .\sri.ps1 -Offline -AuditPolicies -ImportPath C:/temp/test -ExportPath D:/test
     
 .NOTES
     Authors: Lukas Kellenberger, Claudio Mattes
@@ -109,6 +103,7 @@ param(
 #Requires -RunAsAdministrator
 Import-Module .\GetAndAnalyseAuditPolicies.psm1 -Force
 Import-Module .\GetAndCompareLogs.psm1 -Force
+Import-Module .\visualize.psm1 -Force
 
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
     # Check RSoP
@@ -136,25 +131,26 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
     GetEventLogsAndExport
     GetApplicationAndServiceLogs
     ImportCompareExport $ImportPath $OnlineExportPath
+
+    VisualizeAll $ImportPath $OnlineExportPath
 }
 
 Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
     $rsopResult = GetAuditPolicies $ImportPath
     $auditPolicies = AnalyseAuditPolicies $rsopResult
     WriteXML $auditPolicies $ExportPath
+    VisualizeAuditPolicies $ExportPath
 }
 
 Function OfflineEventLogs ($ImportPath, $ExportPath) {
     ImportCompareExport $ImportPath $ExportPath
+    VisualizeEventLogs $ExportPath
 }
 
 Function Offline ($ImportPath, $ExportPath) {
     OfflineAuditPolicies $ImportPath $ExportPath
     OfflineEventLogs $ImportPath $ExportPath
-}
-
-Function VisualiseResults {
-
+    VisualizeAll $ExportPath
 }
 
 switch ($PsCmdLet.ParameterSetName) {

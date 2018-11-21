@@ -11,7 +11,7 @@
 		<EventID169>missing</EventID169>
 		<EventID200>missing</EventID200>
 		<EventID201>missing</EventID201>
-		<EventID4624>missing</EventID4624>
+		<EventID4624>present</EventID4624>
 		<EventID4634>missing</EventID4634>
 		<EventID4648>missing</EventID4648>
 		<EventID4656>present</EventID4656>
@@ -31,11 +31,11 @@
 		<EventID4768>missing</EventID4768>
 		<EventID4769>missing</EventID4769>
 		<EventID4946>missing</EventID4946>
-		<EventID5140>present</EventID5140>
+		<EventID5140>missing</EventID5140>
 		<EventID5142>missing</EventID5142>
 		<EventID5144>missing</EventID5144>
 		<EventID5145>missing</EventID5145>
-		<EventID5154>missing</EventID5154>
+		<EventID5154>present</EventID5154>
 		<EventID5156>present</EventID5156>
 		<EventID7036>present</EventID7036>
 		<EventID7045>present</EventID7045>

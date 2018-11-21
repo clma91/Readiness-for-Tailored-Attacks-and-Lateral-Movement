@@ -123,7 +123,7 @@ Function IsSysmonInstalled($service) {
     Write-Host "Check Sysmon"
     $result = @{}
 
-    try {
+    if($service) {
         if ($service.Status -ne "Running") {
             $result.Add("Sysmon", "InstalledNotRunning")
             return $result
@@ -131,7 +131,7 @@ Function IsSysmonInstalled($service) {
             $result.Add("Sysmon", "InstalledAndRunning")
             return $result
         }
-    } catch {
+    } else {
         $result.Add("Sysmon", "NotInstalled")
         return $result
     }
