@@ -4,12 +4,12 @@ $azurePath = $PSScriptRoot
 
 $currentPath = $azurePath
 $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
+$testFilesPath = $currentPath + "\TestFiles"
 Import-Module $modulePath -Force
 
 Write-Host $modulePath
 
 Describe "IsCAPI2Enabled" {
-    $testFilesPath = $currentPath + "\TestFiles"
     $logSize = 4194304
     [xml]$capi2Disabled = Get-Content ($testFilesPath + "\capi2Disabled.xml")
     [xml]$capi2EnabledBadLogSize = Get-Content ($testFilesPath + "\capi2EnabledBadLogSize.xml")
@@ -91,16 +91,89 @@ Describe "IsSysmonInstalled" {
             $result.keys | should -Contain "Sysmon"
             $result.values | should -Contain "InstalledNotRunning"
         }
+    }
 
-        It "checks if Sysmon64 is not installed" {
+    Context "Sysmon" {
+        It "checks if Sysmon is installed and running" {
+            $result = IsSysmonInstalled $sysmonServiceRunning
+
+            $result.keys | should -Contain "Sysmon"
+            $result.values | should -Contain "InstalledAndRunning"
+        }
+
+        It "checks if Sysmon is installed but not running" {
+            $result = IsSysmonInstalled $sysmonServiceStopped
+
+            $result.keys | should -Contain "Sysmon"
+            $result.values | should -Contain "InstalledNotRunning"
+        }
+
+        It "checks if Sysmon is not installed" {
             $result = IsSysmonInstalled $sysmonNotInstalled
 
             $result.keys | should -Contain "Sysmon"
             $result.values | should -Contain "NotInstalled"
         }
     }
+}
 
-    Context "Sysmon" {
-        
+Describe "AnalyseAuditPolicies" {
+    [xml]$emptyXML = Get-Content ($testFilesPath + "\empty.xml")
+    [xml]$rsopXML = Get-Content ($testFilesPath + "\rsop.xml")
+    It "checks if empty xml returns hashtable with all audit-keys NotConfigured" {
+        $result = AnalyseAuditPolicies $emptyXML
+
+        $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
+        $result.keys | should -Contain "AuditSensitivePrivilegeUse"
+        $result.keys | should -Contain "AuditLogoff"
+        $result.keys | should -Contain "AuditUserAccountManagement"
+        $result.keys | should -Contain "AuditDetailedFileShare"
+        $result.keys | should -Contain "AuditSAM"
+        $result.keys | should -Contain "AuditKernelObject"
+        $result.keys | should -Contain "AuditKerberosAuthenticationService"
+        $result.keys | should -Contain "AuditHandleManipulation"
+        $result.keys | should -Contain "AuditRegistry"
+        $result.keys | should -Contain "AuditProcessTermination"
+        $result.keys | should -Contain "AuditFileSystem"
+        $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
+        $result.keys | should -Contain "AuditSpecialLogon"
+        $result.keys | should -Contain "AuditFileShare"
+        $result.keys | should -Contain "AuditProcessCreation"
+        $result.keys | should -Contain "AuditLogon"
+        $result.keys | should -Contain "AuditSecurityGroupManagement"
+        $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
+        $result.keys | should -Contain "AuditFilteringPlatformConnection"
+        $result.values | should -Contain "NotConfigured"
     }
+
+    It "checks if rsop xml returns hashtable with all audit-keys NotConfigured, NoAuditing, Success, Failure and SuccessAndFailure" {
+        $result = AnalyseAuditPolicies $rsopXML
+
+        $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
+        $result.keys | should -Contain "AuditSensitivePrivilegeUse"
+        $result.keys | should -Contain "AuditLogoff"
+        $result.keys | should -Contain "AuditUserAccountManagement"
+        $result.keys | should -Contain "AuditDetailedFileShare"
+        $result.keys | should -Contain "AuditSAM"
+        $result.keys | should -Contain "AuditKernelObject"
+        $result.keys | should -Contain "AuditKerberosAuthenticationService"
+        $result.keys | should -Contain "AuditHandleManipulation"
+        $result.keys | should -Contain "AuditRegistry"
+        $result.keys | should -Contain "AuditProcessTermination"
+        $result.keys | should -Contain "AuditFileSystem"
+        $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
+        $result.keys | should -Contain "AuditSpecialLogon"
+        $result.keys | should -Contain "AuditFileShare"
+        $result.keys | should -Contain "AuditProcessCreation"
+        $result.keys | should -Contain "AuditLogon"
+        $result.keys | should -Contain "AuditSecurityGroupManagement"
+        $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
+        $result.keys | should -Contain "AuditFilteringPlatformConnection"
+        $result.values | should -Contain "NotConfigured"
+        $result.values | should -Contain "NoAuditing"
+        $result.values | should -Contain "Success"
+        $result.values | should -Contain "Failure"
+        $result.values | should -Contain "SuccessAndFailure"
+    }
+
 }
