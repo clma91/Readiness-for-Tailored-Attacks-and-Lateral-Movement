@@ -32,17 +32,6 @@ function VisualizeEventLogs($exportFolder){
     $pdf.Close()
 }
 
-function CreateAddCellWithColor($content, $R, $G, $B){
-    $cell = New-Object iTextSharp.text.pdf.PdfPCell($content)
-    $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor($R, $G, $B)
-    $table.AddCell($cell) | Out-Null
-}
-
-function CreateAddCell($content){
-    $cell = New-Object iTextSharp.text.pdf.PdfPCell($content);  
-    $table.AddCell($cell) | Out-Null
-}
-
 function WriteAuditPolicies($importFolder) {
     $auditpath = $PSScriptRoot + "\resultOfAuditPolicies.xml"
     if ($importFolder) {
@@ -58,33 +47,53 @@ function WriteAuditPolicies($importFolder) {
     $table.SpacingAfter = 5
 
     $myaudits = $auditxml.AuditPolicies.ChildNodes
-    CreateAddCell "AuditName"
-    CreateAddCell "Target"
-    CreateAddCell "Actual"
-
+    $cell = New-Object iTextSharp.text.pdf.PdfPCell 
+    $cell = New-Object iTextSharp.text.pdf.PdfPCell("AuditName");  
+    $table.AddCell($cell) | Out-Null
+    $cell = New-Object iTextSharp.text.pdf.PdfPCell("Target");  
+    $table.AddCell($cell) | Out-Null
+    $cell = New-Object iTextSharp.text.pdf.PdfPCell("Actual");  
+    $table.AddCell($cell) | Out-Null
+    
     foreach ($audit in $myaudits) {
         $localName = $audit.LocalName
-        CreateAddCell $localName
+        $cell = New-Object iTextSharp.text.pdf.PdfPCell($localName)
+        $table.AddCell($cell) | Out-Null
         $checkaudit = $checklistaudit[$localName]
         if ($audit.InnerXml -eq $checkaudit) {
-            CreateAddCell $checkaudit
-            CreateAddCellWithColor $audit.InnerXml 0 255 0
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($checkaudit)
+            $table.AddCell($cell) | Out-Null
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml)
+            $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor(0, 255, 0)
+            $table.AddCell($cell) | Out-Null
         } elseif ($audit.InnerXml.startswith("Succ") -and $checkaudit -eq "Success") {
-            CreateAddCell $checkaudit
-            CreateAddCellWithColor $audit.InnerXml 0 106 0
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($checkaudit)
+            $table.AddCell($cell) | Out-Null
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml)
+            $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor(0, 106, 0)
+            $table.AddCell($cell) | Out-Null
         } elseif ((-not(!$checkaudit)) -and $checkaudit.GetType().ToString() -eq "System.Int32"){
             $auditint = [uint32]$audit.InnerXml
             if(-not ($auditint -lt $checkaudit)){
-                CreateAddCell $checkaudit.ToString()
-                CreateAddCellWithColor $audit.InnerXml 0 255 0
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($checkaudit.ToString())
+            $table.AddCell($cell) | Out-Null
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml)
+            $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor(0, 255, 0)
+            $table.AddCell($cell) | Out-Null
             } else{
-                CreateAddCell $checkaudit.ToString()
-            CreateAddCellWithColor $audit.InnerXml 255 0 0
+                $cell = New-Object iTextSharp.text.pdf.PdfPCell($checkaudit.ToString())
+                $table.AddCell($cell) | Out-Null
+                $cell = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml)
+                $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor(255, 0, 0)
+                $table.AddCell($cell) | Out-Null
             }
         }
         else {
-            CreateAddCell $checkaudit
-            CreateAddCellWithColor $audit.InnerXml 255 0 0
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($checkaudit)
+            $table.AddCell($cell) | Out-Null
+            $cell = New-Object iTextSharp.text.pdf.PdfPCell($audit.InnerXml)
+            $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor(255, 0, 0)
+            $table.AddCell($cell) | Out-Null
         }
     }
     $pdf.Add($table) | Out-Null

@@ -1,0 +1,205 @@
+﻿<?xml version="1.0"?>
+<Tool>
+  <CommandExecution>
+    <EventLogIDs>
+        <ID>4624</ID>
+        <ID>4634</ID>
+        <ID>4648</ID>
+        <ID>4656</ID>
+        <ID>4658</ID>
+        <ID>4660</ID>
+        <ID>4663</ID>
+        <ID>4672</ID>
+        <ID>4688</ID>
+        <ID>5140</ID>
+        <ID>4689</ID>
+        <ID>4698</ID>
+        <ID>4769</ID>
+        <ID>5156</ID>
+        <ID>4946</ID>
+        <ID>5145</ID>
+        <ID>5142</ID>
+        <ID>5144</ID>
+        <ID>4624</ID>
+        <ID>5447</ID>
+        <ID>7036</ID>
+        <ID>7045</ID>
+    </EventLogIDs>
+    <AppAndServIDs>
+        <ID>80</ID>
+        <ID>81</ID>
+        <ID>166</ID>
+        <ID>143</ID>
+        <ID>132</ID>
+        <ID>106</ID>
+        <ID>129</ID>
+        <ID>200</ID>
+        <ID>201</ID>
+        <ID>60</ID>
+    </AppAndServIDs>
+  </CommandExecution>
+  <PasswordHashAcquisation>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>5145</ID>
+        <ID>4656</ID>
+        <ID>4663</ID>
+        <ID>7036</ID>
+        <ID>7045</ID>
+        <ID>4658</ID>
+        <ID>4660</ID>
+        <ID>4688</ID>
+    </EventLogIDs>
+  </PasswordHashAcquisation>
+  <MaliciousCommunicationRelay>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>5156</ID>
+        <ID>4688</ID>
+        <ID>4656</ID>
+        <ID>4663</ID>
+        <ID>4658</ID>
+        <ID>5154</ID>
+    </EventLogIDs>
+  </MaliciousCommunicationRelay>
+  <RemoteLogin>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>4624</ID>
+        <ID>4663</ID>
+        <ID>4656</ID>
+        <ID>4685</ID>
+    </EventLogIDs>
+    <AppAndServIDs>
+         <ID>21</ID>
+         <ID>24</ID>
+    </AppAndServIDs>
+  </RemoteLogin>
+  <PassTheHashAndTicket>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>4656</ID>
+        <ID>4663</ID>
+        <ID>4658</ID>
+        <ID>4660</ID>
+        <ID>5156</ID>
+        <ID>7045</ID>
+        <ID>7036</ID>
+        <ID>4624</ID>
+        <ID>4634</ID>
+        <ID>4688</ID>
+        <ID>4648</ID>
+    </EventLogIDs>
+  </PassTheHashAndTicket>
+  <EscalationtoSYSTEMPrivileges>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+    </EventLogIDs>
+  </EscalationtoSYSTEMPrivileges>
+  <PrivilegeEscalation>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>4656</ID>
+        <ID>4663</ID>
+        <ID>4658</ID>
+    </EventLogIDs>
+  </PrivilegeEscalation>
+  <CapturingDomainAdministratorAndAccountCredentials>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>5156</ID>
+        <ID>4656</ID>
+        <ID>4663</ID>
+        <ID>4658</ID>
+        <ID>4673</ID>
+        <ID>4768</ID>
+        <ID>4769</ID>
+        <ID>4672</ID>
+        <ID>4624</ID>
+        <ID>4688</ID>
+        <ID>4634</ID>
+    </EventLogIDs>
+  </CapturingDomainAdministratorAndAccountCredentials>
+  <CapturingActiveDirectoryDatabase>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>4673</ID>
+        <ID>8222</ID>
+        <ID>4656</ID>
+        <ID>7036</ID>
+        <ID>4688</ID>
+        <ID>20001</ID>
+        <ID>4720</ID>
+        <ID>4722</ID>
+        <ID>4724</ID>
+        <ID>4726</ID>
+        <ID>4737</ID>
+        <ID>4738</ID>
+    </EventLogIDs>
+  </CapturingActiveDirectoryDatabase>
+  <AddingOrDeletingaLocalUserGroup>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>4656</ID>
+        <ID>4720</ID>
+        <ID>4722</ID>
+        <ID>4724</ID>
+        <ID>4726</ID>
+        <ID>4737</ID>
+        <ID>4738</ID>
+    </EventLogIDs>
+  </AddingOrDeletingaLocalUserGroup>
+  <FileSharing>
+    <EventLogIDs>
+        <ID>4688</ID>
+        <ID>4689</ID>
+        <ID>5156</ID>
+        <ID>4624</ID>
+        <ID>4688</ID>
+        <ID>5142</ID>
+    </EventLogIDs>
+  </FileSharing>
+  <DeletingEvidence>
+      <EventLogIDs>
+      <ID>4688</ID>
+<ID>4689</ID>
+<ID>4656</ID>
+<ID>4663</ID>
+<ID>4658</ID>
+<ID>4688</ID>
+      </EventLogIDs>
+  </DeletingEvidence>
+  <DeletingEventLog>
+      <EventLogIDs>
+      <ID>4688</ID>
+<ID>4689</ID>
+<ID>4648</ID>
+<ID>104</ID>
+<ID>4672</ID>
+<ID>4624</ID>
+<ID>1102</ID>
+      </EventLogIDs>
+  </DeletingEventLog>
+  <AcquisitionOfAccountInformation>
+    <EventLogIDs>
+   <ID>4688</ID>
+<ID>4689</ID>
+<ID>5156</ID>
+<ID>4663</ID>
+<ID>4656</ID>
+<ID>4658</ID>
+<ID>4624</ID>
+<ID>4634</ID>
+    </EventLogIDs>
+  </AcquisitionOfAccountInformation>
+
+</Tool>
