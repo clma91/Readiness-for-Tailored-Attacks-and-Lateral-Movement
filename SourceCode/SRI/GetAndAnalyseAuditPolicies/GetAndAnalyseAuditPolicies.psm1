@@ -31,6 +31,7 @@ Function GetRegistryValue($path, $name)
 }
 
 Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
+    Write-Host "Check `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
     $result = @{}
 
     if ($auditPoliySubcategoryKey) {
@@ -73,13 +74,30 @@ Function IsSysmonInstalled($service) {
     }
 }
 
-Function GetAuditPolicies($ImportPath) {
-    $pathRSOPXML = $PSScriptRoot + "\LocalUserAndComputerReport.xml"
-    
-    Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
-    $rsopResult = Get-Content $pathRSOPXML
-    Remove-Item $pathRSOPXML
-    
+Function GetAuditPolicies($importPath) {
+    Write-Host "Get RSoP"
+    $isCurrentPath = $true
+    $pathRSOPXML = $PSScriptRoot + "\rsop.xml"
+
+    if ($importPath) {
+        $isCurrentPath = $false
+        $pathRSOPXML = $importPath + "\rsop.xml"
+    } else {
+        Write-Host "Get-Rsop"
+        Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+    }
+
+    if ([System.IO.File]::Exists($pathRSOPXML)) {
+        $rsopResult = Get-Content $pathRSOPXML
+    } else {
+        Write-Host "File $pathRSOPXML does not exist!" -ForegroundColor Red
+        return
+    } 
+
+    if ($isCurrentPath) {
+        Remove-Item $pathRSOPXML
+    }
+        
     return $rsopResult
 }
 

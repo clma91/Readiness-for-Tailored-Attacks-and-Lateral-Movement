@@ -129,11 +129,13 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
 
     WriteXML $resultCollection $OnlineExportPath
 
-    GetEventLogsAndExport
-    GetApplicationAndServiceLogs
-    ImportCompareExport $ImportPath $OnlineExportPath
-
-    VisualizeAll $ImportPath $OnlineExportPath
+    GetEventLogsAndExport $OnlineExportPath
+    GetApplicationAndServiceLogs $OnlineExportPath
+    $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
+    if ($eventLogsDone) {
+        VisualizeAll $ImportPath $OnlineExportPath
+    }
+    
 }
 
 Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
@@ -144,14 +146,32 @@ Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
 }
 
 Function OfflineEventLogs ($ImportPath, $ExportPath) {
-    ImportCompareExport $ImportPath $ExportPath
-    VisualizeEventLogs $ExportPath
+    $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
+    if ($eventLogsDone) {
+        VisualizeAll $ExportPath
+    }
 }
 
 Function Offline ($ImportPath, $ExportPath) {
-    OfflineAuditPolicies $ImportPath $ExportPath
-    OfflineEventLogs $ImportPath $ExportPath
-    VisualizeAll $ExportPath
+    $rsopResult = GetAuditPolicies $ImportPath
+    $auditPolicies = AnalyseAuditPolicies $rsopResult
+    WriteXML $auditPolicies $ExportPath
+    $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
+    if ($eventLogsDone) {
+        VisualizeAll $ExportPath
+    }
+}
+
+Function CheckExportPath($exportPath) {
+    if ($exportPath) {
+        if(Test-Path -Path $exportPath) {
+            return $exportPath
+        } else {
+            return $null
+        } 
+    } else {
+        return $PSScriptRoot
+    }
 }
 
 switch ($PsCmdLet.ParameterSetName) {
@@ -161,44 +181,41 @@ switch ($PsCmdLet.ParameterSetName) {
     }
     'Online' {
         Write-Host "Online-Mode"
-        $ExportPathExist = $true
-        if ($OnlineExportPath) {
-            try {
-                $ExportPathExist = Test-Path -Path $OnlineExportPath
-            } catch {
-                $ExportPathExist = $false
-            }   
-        } else {
-            $OnlineExportPath = $PSScriptRoot
-        }
-        
-        if(-not $ExportPathExist) {
-            Write-Host "Defined OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
-        } else {
+        $OnlineExportPath = CheckExportPath $OnlineExportPath
+        $ImportPath = $OnlineExportPath
+
+        if($OnlineExportPath) {
             Online $OnlineExportPath $CAPI2LogSize
+        } else {
+            Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
         continue
     }
     'Offline' {
+        $ExportPath = CheckExportPath $ExportPath
         try {
             $ImportPathExist = Test-Path -Path $ImportPath
         } catch {
             $ImportPathExist = $false
-        }  
+        }            
 
-        if(-not $ImportPathExist) {
-            Write-Host "Defined ImportPath does not exist or your user has no access rights" -ForegroundColor Red
-        } else {
-            if ($AuditPolicies) {
-                Write-Host "Offline-Mode AuditPolicies"
-                OfflineAuditPolicies $ImportPath $ExportPath
-            } elseif ($EventLogs) {
-                Write-Host "Offline-Mode EventLogs"
-                OfflineEventLogs $ImportPath $ExportPath
+        if($ExportPath) {
+            if(-not $ImportPathExist) {
+                Write-Host "Defined ImportPath does not exist or your user has no access rights" -ForegroundColor Red
             } else {
-                Write-Host "Offline-Mode"
-                Offline $ImportPath $ExportPath
+                if ($AuditPolicies) {
+                    Write-Host "Offline-Mode AuditPolicies"
+                    OfflineAuditPolicies $ImportPath $ExportPath
+                } elseif ($EventLogs) {
+                    Write-Host "Offline-Mode EventLogs"
+                    OfflineEventLogs $ImportPath $ExportPath
+                } else {
+                    Write-Host "Offline-Mode"
+                    Offline $ImportPath $ExportPath
+                }
             }
+        } else {
+            Write-Host "Defined ExportPath $ExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
         continue
     }

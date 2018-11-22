@@ -21,7 +21,7 @@
 	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
-	<Sysmon>InstalledNotRunning</Sysmon>
+	<Sysmon>InstalledAndRunning</Sysmon>
 	<CAPI2LogSize>4980736</CAPI2LogSize>
 	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>
