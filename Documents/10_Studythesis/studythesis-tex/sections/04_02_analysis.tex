@@ -79,10 +79,20 @@ The following figure depicts a sample graph of logins from different users in th
 To use the LogonTracer, only a .evtx-File (Windows XML Event Log - export of Windows event logs) is necessary to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built-in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
 \\\\
 In addition, LogonTracer provides a timeline for all or selected users to show when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
-\\\\
-The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
-\\\\
+
+\clearpage
+
+The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment as depicted in figure xxx. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{assets/LogonTracer/logontracer_confusing.png}
+    \caption{LogonTracer: Confusing Graph from Test Environment}
+\end{figure}
+
 Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in the figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
+
+\clearpage
 
 \subsubsection{Difficulties}
 During the test phase of LogonTracer some difficulties were faced. It is pretty easy to get the docker container, but starting LogonTracer was a bit of a challenge. JPCERT/CC gives the following instructions for starting the docker container:
@@ -134,7 +144,7 @@ Although many attacks are described and how they can be detected and fended off,
 
 \subsection{sysmon-modular}
 \subsubsection{Description}
-With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organization. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
+With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organisation. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
 
 \begin{figure}[H]
     \centering
@@ -151,6 +161,24 @@ Sysmon-modular offers a very good basic configuration for Sysmon based on the pl
 Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
 \subsubsection{Conclusion}
 This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for this project.
+
+\subsection{CryptoAPI 2.0}
+\subsubsection{Description}
+The Microsoft feature CryptoAPI 2.0 (CAPI2) Diagnostics provides the ability to collect detailed information about certificate chain validation, certificate store operations and signature verification. CAPI2 in doubt extremely important for any Public Key Infrastructure (PKI) to perform several security based tasks, such as
+\begin{itemize}
+    \item Build and verify certificate chains
+    \item Manage per-user and per-computer certificate stores
+    \item Encrypt/decrypt, encode/decode and sign/verify messages
+\end{itemize}
+Hence, CAPI2 enables an organisation to secure its communications and business transactions. Identification of users, devices or organisation as well as signed e-mail, code signing and secure web browsing gets possible with todays standards of hash-functions and encryption due to CAPI2. PKI problems are not always easy to troubleshoot and therefor it is necessary to have a good diagnostic capabilities in such cases. 
+\begin{quotation}
+    \textit{CAPI2 Diagnostics in Windows Vista\footnote{Windows Vista and above} provides logging of detailed information about certificate validation, network retrievals, revocation, and other low-level API results and errors. [...] utilizes the event logging and Event Viewer to provide better logging and troubleshooting capabilities for PKI applications based on the CAPI2 API set. \cite{CAPI2}}
+\end{quotation}
+\subsubsection{Conclusion}
+To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system.
+
+
+\clearpage
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
 \subsubsection{Description}
