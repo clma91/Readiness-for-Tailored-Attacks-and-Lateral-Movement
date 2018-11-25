@@ -63,7 +63,8 @@ function ImportCompareExport($importPath, $exportPath){
         return $false
     }        
 
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null) 
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $encoding)
     $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
 
     Write-Host "Comparing found EventLogs to Checklist"

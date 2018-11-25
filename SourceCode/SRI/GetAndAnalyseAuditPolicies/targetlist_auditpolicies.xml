@@ -3,24 +3,24 @@
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
 	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
 	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
-	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
-	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
+	<AuditProcessTermination>Success</AuditProcessTermination>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
-	<AuditLogoff>Success</AuditLogoff>
-	<AuditProcessTermination>Success</AuditProcessTermination>
 	<AuditHandleManipulation>Success</AuditHandleManipulation>
-	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
-	<AuditSpecialLogon>Success</AuditSpecialLogon>
 	<AuditRegistry>SuccessAndFailure</AuditRegistry>
-	<AuditProcessCreation>Success</AuditProcessCreation>
-	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
+	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
+	<AuditSpecialLogon>Success</AuditSpecialLogon>
+	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
+	<AuditLogoff>Success</AuditLogoff>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
+	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
+	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
 	<AuditFileShare>SuccessAndFailure</AuditFileShare>
-	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
+	<AuditProcessCreation>Success</AuditProcessCreation>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledAndRunning</Sysmon>
 	<CAPI2LogSize>4194304</CAPI2LogSize>
