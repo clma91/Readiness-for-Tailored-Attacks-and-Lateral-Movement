@@ -1,27 +1,28 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <AuditPolicies>
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
-	<AuditLogoff>NotConfigured</AuditLogoff>
+	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
 	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
 	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
-	<AuditHandleManipulation>Success</AuditHandleManipulation>
-	<AuditRegistry>NotConfigured</AuditRegistry>
+	<AuditLogoff>Success</AuditLogoff>
 	<AuditProcessTermination>Success</AuditProcessTermination>
-	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
+	<AuditHandleManipulation>Success</AuditHandleManipulation>
 	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditSpecialLogon>Success</AuditSpecialLogon>
-	<AuditFileShare>SuccessAndFailure</AuditFileShare>
+	<AuditRegistry>SuccessAndFailure</AuditRegistry>
 	<AuditProcessCreation>Success</AuditProcessCreation>
-	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
 	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
+	<AuditFileShare>SuccessAndFailure</AuditFileShare>
 	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledAndRunning</Sysmon>
-	<CAPI2LogSize>4980736</CAPI2LogSize>
+	<CAPI2LogSize>4194304</CAPI2LogSize>
 	<CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>

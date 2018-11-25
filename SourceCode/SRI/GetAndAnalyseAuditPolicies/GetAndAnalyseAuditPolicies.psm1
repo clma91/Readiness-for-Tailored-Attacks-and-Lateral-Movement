@@ -2,10 +2,19 @@ Function GetCAPI2 {
     return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
 }
 
-Function IsCAPI2Enabled([xml] $capi2, [int] $requiredLogSize) {
+Function GetCAPI2Remote ($computer) {
+    return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml /r:$computer
+}
+
+Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
+    Write-Host "Check CAPI2"
     $capi2Enabled = $capi2.channel.enabled
-    $currentLogSize = $capi2.channel.logging.maxsize -as [int]
+    $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
     $result = @{}
+    if ($requiredLogSize -lt 4194304) {
+        Write-Host " - Defined Log Size smaller than 4MB ($requiredLogSize Byte) => set default value 4MB (4194304 Byte)" -ForegroundColor Yellow
+        $requiredLogSize = 4194304
+    }
 
     if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
         $result.Add("CAPI2", "EnabledGoodLogSize")
@@ -30,6 +39,12 @@ Function GetRegistryValue($path, $name)
     }
 }
 
+Function GetRegistryValueRemote($path, $name, $computer) {
+    $registry = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $computer) # requires service 'Remote Registry' running on remote computer
+    $registryKey = $Reg.OpenSubKey($path)
+    return $RegKey.GetValue($name)
+}
+
 Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     Write-Host "Check `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
     $result = @{}
@@ -48,9 +63,17 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     }
 }
 
-Function GetService($name) {
+Function GetService($serviceName) {
     Try {
-        return Get-Service -Name $name -ErrorAction Stop
+        return Get-Service -Name $serviceName -ErrorAction Stop
+    } Catch [Microsoft.PowerShell.Commands.ServiceCommandException]{
+        return $null
+    }
+}
+
+Function GetServiceRemote($serviceName, $computer) {
+    Try {
+        return Get-Service -Name $serviceName -ComputerName $computer -ErrorAction Stop
     } Catch [Microsoft.PowerShell.Commands.ServiceCommandException]{
         return $null
     }
@@ -83,12 +106,11 @@ Function GetAuditPolicies($importPath) {
         $isCurrentPath = $false
         $pathRSOPXML = $importPath + "\rsop.xml"
     } else {
-        Write-Host "Get-Rsop"
         Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
     }
 
     if ([System.IO.File]::Exists($pathRSOPXML)) {
-        $rsopResult = Get-Content $pathRSOPXML
+        [xml]$rsopResult = Get-Content $pathRSOPXML
     } else {
         Write-Host "File $pathRSOPXML does not exist!" -ForegroundColor Red
         return
@@ -101,8 +123,33 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-Function AnalyseAuditPolicies ([xml] $rsopResult){    
-    $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management")
+# ($domain, $policyName) 
+Function GetAuditPoliciesDomain {
+    $domain = "logfarm.ch"
+    $policyName = "Default Domain Policy"
+    $policyId = Get-GPO -Name $policyName | Select-Object -ExpandProperty id
+    $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
+
+    if (Test-Path $policyCSVPath) {
+        $policyCSV = $policyCSVPath + "\audit.csv"
+    } else {
+        Write-Host "For this Group Policy exist no auditing defintion"
+        return
+    }
+    
+    [System.IO.File]::Exists($policyCSV)
+    
+    $auditSettings = @{ 
+        SubcategoryName = Import-Csv $policyCSV -Encoding UTF8 | Select-Object -ExpandProperty "Subcategory"
+        SettingValue = Import-Csv $policyCSV -Encoding UTF8 | Select-Object -ExpandProperty "Setting Value"
+    }
+
+    return $auditSettings
+}
+
+Function AnalyseAuditPolicies ($auditSettings){
+    Write-Host "Analyse"
+    $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management", "Audit Other Object Access Events")
     enum AuditSettingValues {
         NoAuditing
         Success
@@ -112,8 +159,10 @@ Function AnalyseAuditPolicies ([xml] $rsopResult){
     [AuditSettingValues]$auditSettingValue = 0
     $result = @{}
     
-    $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
-
+    if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
+        $auditSettings = $auditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
+    }
+    
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
         if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
@@ -177,7 +226,8 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
 Function WriteXML($resultCollection, $exportPath) {
     Write-Host "Write Result XML"
     $resultXML = $exportPath + "\resultOfAuditPolicies.xml"
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $Null)
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $encoding)
 
     $xmlWriter.Formatting = "Indented"
     $xmlWriter.Indentation = 1
@@ -196,4 +246,4 @@ Function WriteXML($resultCollection, $exportPath) {
     Write-Host "DONE Audit Policies!!!"
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, GetAuditPoliciesDomain, AnalyseAuditPolicies, MergeHashtables, WriteXML

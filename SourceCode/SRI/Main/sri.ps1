@@ -107,7 +107,8 @@ Import-Module .\visualize.psm1 -Force
 
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
     # Check RSoP
-    $rsopResult = GetAuditPolicies
+    $rsopResult = GetAuditPolicies 
+    # $rsopResult = GetAuditPoliciesDomain
     $auditPolicies = AnalyseAuditPolicies $rsopResult
 
     <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 

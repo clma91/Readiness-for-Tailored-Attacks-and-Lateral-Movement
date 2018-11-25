@@ -22,7 +22,8 @@ function VisualizeAll($exportFolder) {
 
 function VisualizeAuditPolicies($exportFolder) {
     $pdf = OpenPDF $exportFolder
-    WriteAuditPolicies $exportFolder
+    $incorrectAudits = WriteAuditPolicies $exportFolder
+    ToolCanBeDetected $incorrectAudits
     $pdf.Close()
 }
 
@@ -63,6 +64,7 @@ function WriteAuditPolicies($importFolder) {
     CreateAddCell "Actual"
 
     foreach ($audit in $myaudits) {
+        $incorrectAudits = @()
         $localName = $audit.LocalName
         CreateAddCell $localName
         $checkaudit = $checklistaudit[$localName]
@@ -79,16 +81,18 @@ function WriteAuditPolicies($importFolder) {
                 CreateAddCellWithColor $audit.InnerXml 0 255 0
             } else{
                 CreateAddCell $checkaudit.ToString()
-            CreateAddCellWithColor $audit.InnerXml 255 0 0
+                CreateAddCellWithColor $audit.InnerXml 255 0 0
+                $incorrectAudits + $audit.LocalName
             }
         }
         else {
             CreateAddCell $checkaudit
             CreateAddCellWithColor $audit.InnerXml 255 0 0
+            $incorrectAudits + $audit.LocalName
         }
     }
     $pdf.Add($table) | Out-Null
-
+    return $incorrectAudits
 }
 
 function WriteEventLogs($importFolder){
@@ -115,6 +119,32 @@ function WriteEventLogs($importFolder){
     }
 
     Add-Table -Document $pdf -Dataset $resulta -Cols 2 -Centered | Out-Null
+}
+
+function ToolCanBeDetected($incorrectAudits){
+    $detectables = @()
+    $notdetectables = @()
+[xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
+$toolCategories = $auditsbytool.Tool.ChildNodes
+foreach($toolCategory in $toolCategories){
+     [int]$checknr = 0
+   foreach($incorrectAudit in $incorrectAudits){
+       if($toolCategory.ChildNodes.InnerXml -contains $incorrectAudit){
+           $checknr += 1
+       }
+   }
+  
+  if($checknr -gt 0){
+      $notdetectables += "`n" + $toolCategory.LocalName
+  } else {
+    $detectables += $toolCategory.LocalName
+  }
+ }
+ $amoutOfDetecables = $detectables.count
+ $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
+ Add-Text -Document $pdf -Text $text 
+     [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
+ Add-Text -Document $pdf -Text $text
 }
 
 Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
@@ -148,6 +178,7 @@ function Add-Text([iTextSharp.text.Document]$Document, [string]$Text, [string]$F
     $p.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
     $p.SpacingBefore = 2
     $p.SpacingAfter = 2
+    $p.IndentationLeft = 60
     $p.Add($Text)
     $Document.Add($p)
 }
