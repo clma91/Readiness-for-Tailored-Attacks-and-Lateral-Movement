@@ -82,12 +82,13 @@ In addition, LogonTracer provides a timeline for all or selected users to show w
 
 \clearpage
 
-The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment as depicted in figure xxx. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
+The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment as depicted in figure \ref{fig:LogonTraceerConfusing} \nameref{fig:LogonTraceerConfusing}. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{assets/LogonTracer/logontracer_confusing.png}
     \caption{LogonTracer: Confusing Graph from Test Environment}
+    \label{fig:LogonTraceerConfusing}
 \end{figure}
 
 Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in the figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
