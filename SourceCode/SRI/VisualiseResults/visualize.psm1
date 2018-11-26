@@ -6,16 +6,17 @@ function OpenPDF ($exportFolder) {
     if ($exportFolder) {
         $exportPath = $exportFolder + "\results.pdf"
     }  
-    $pdf = New-Object iTextSharp.text.Document 
-    New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
-    $pdf.Open()
-    Write-Host "Result PDF is created at $exportPath" -ForegroundColor Green
-    return $pdf
+        $pdf = New-Object iTextSharp.text.Document 
+        New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
+        $pdf.Open()
+        Write-Host "Result PDF is created at $exportPath" -ForegroundColor Green
+        return $pdf
 }
 
 function VisualizeAll($exportFolder) {
     $pdf = OpenPDF $exportFolder
     WriteAuditPolicies $exportFolder
+    ToolCanBeDetected $incorrectAudits
     WriteEventLogs $exportFolder
     $pdf.Close()
 }
@@ -50,7 +51,7 @@ function WriteAuditPolicies($importFolder) {
         $auditpath = $importFolder + "\resultOfAuditPolicies.xml"
     }    
     [xml] $auditxml = Get-Content $auditpath
-    $checklistaudit = @{AuditNonSensitivePrivilegeUse = "SuccessAndFailure"; AuditUserAccountManagement = "Success"; AuditDetailedFileShare = "SuccessAndFailure"; AuditKernelObject = "SuccessAndFailure"; AuditSAM = "SuccessAndFailure"; AuditKerberosAuthenticationService = "SuccessAndFailure"; AuditHandleManipulation = "Success"; AuditRegistry = "SuccessAndFailure"; AuditProcessTermination = "Success"; AuditFileSystem = "SuccessAndFailure"; 'AuditMPSSVCRule-LevelPolicyChange' = "Success"; AuditSpecialLogon = "Success"; AuditLogoff = "Success"; AuditSensitivePrivilegeUse = "SuccessAndFailure"; ersetzen = "SuccessAndFailure"; AuditLogon = "Success"; AuditSecurityGroupManagement = "SuccessAndFailure"; AuditFileShare = "SuccessAndFailure"; AuditKerberosServiceTicketOperations = "SuccessAndFailure"; AuditFilteringPlatformConnection = "Success"; AuditProcessCreation = "Success"; ForceAuditPolicySubcategory = "Enabled"; Sysmon = "InstalledAndRunning"; CAPI2 = "EnabledGoodLogSize"; CAPI2LogSize = 4194304; }
+    $checklistaudit = @{AuditNonSensitivePrivilegeUse = "SuccessAndFailure"; AuditUserAccountManagement = "Success"; AuditDetailedFileShare = "SuccessAndFailure"; AuditKernelObject = "SuccessAndFailure"; AuditSAM = "SuccessAndFailure"; AuditKerberosAuthenticationService = "SuccessAndFailure"; AuditHandleManipulation = "Success"; AuditRegistry = "SuccessAndFailure"; AuditProcessTermination = "Success"; AuditFileSystem = "SuccessAndFailure"; 'AuditMPSSVCRule-LevelPolicyChange' = "Success"; AuditSpecialLogon = "Success"; AuditLogoff = "Success"; AuditSensitivePrivilegeUse = "SuccessAndFailure"; ersetzen = "SuccessAndFailure"; AuditLogon = "Success"; AuditSecurityGroupManagement = "SuccessAndFailure"; AuditFileShare = "SuccessAndFailure"; AuditKerberosServiceTicketOperations = "SuccessAndFailure"; AuditFilteringPlatformConnection = "Success"; AuditProcessCreation = "Success"; ForceAuditPolicySubcategory = "Enabled"; Sysmon = "InstalledAndRunning"; CAPI2 = "EnabledGoodLogSize"; CAPI2LogSize = 4194304; OtherObjectAccessEvents = "SuccessAndFailure"; }
     
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
@@ -142,9 +143,9 @@ foreach($toolCategory in $toolCategories){
  }
  $amoutOfDetecables = $detectables.count
  $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
- Add-Text -Document $pdf -Text $text 
+ Add-Text -Document $pdf -Text $text | Out-Null
      [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
- Add-Text -Document $pdf -Text $text
+ Add-Text -Document $pdf -Text $text | Out-Null
 }
 
 Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
@@ -167,7 +168,12 @@ Function New-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$Top
 {
     $Document.SetPageSize([iTextSharp.text.PageSize]::A4)
     $Document.SetMargins($LeftMargin, $RightMargin, $TopMargin, $BottomMargin)
-    [void][iTextSharp.text.pdf.PdfWriter]::GetInstance($Document, [System.IO.File]::Create($File))
+    try{
+        [void][iTextSharp.text.pdf.PdfWriter]::GetInstance($Document, [System.IO.File]::Create($File))
+    } catch{
+        Write-Host Please close PDF $File -ForegroundColor Red
+        Break
+    }
     $Document.AddAuthor($Author)
 }
 
