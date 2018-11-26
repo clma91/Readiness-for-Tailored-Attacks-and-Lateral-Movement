@@ -52,13 +52,13 @@ function WriteAuditPolicies($importFolder) {
     }    
     [xml] $auditxml = Get-Content $auditpath
     $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); OtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
-    
+
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
     $table = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $table.SpacingBefore = 5
     $table.SpacingAfter = 5
-  
+    
 
     $myaudits = $auditxml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
@@ -141,7 +141,7 @@ foreach($toolCategory in $toolCategories){
    }
   
   if($checknr -gt 0){
-      $notdetectables += "`n" + $toolCategory.LocalName
+      $notdetectables += "`n" + "- " + $toolCategory.LocalName
   } else {
     $detectables += $toolCategory.LocalName
   }
