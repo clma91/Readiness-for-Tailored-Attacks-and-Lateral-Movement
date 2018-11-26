@@ -6,16 +6,17 @@ function OpenPDF ($exportFolder) {
     if ($exportFolder) {
         $exportPath = $exportFolder + "\results.pdf"
     }  
-    $pdf = New-Object iTextSharp.text.Document 
-    New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
-    $pdf.Open()
-    Write-Host "Result PDF is created at $exportPath" -ForegroundColor Green
-    return $pdf
+        $pdf = New-Object iTextSharp.text.Document 
+        New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
+        $pdf.Open()
+        Write-Host "Result PDF is created at $exportPath" -ForegroundColor Green
+        return $pdf
 }
 
 function VisualizeAll($exportFolder) {
     $pdf = OpenPDF $exportFolder
     WriteAuditPolicies $exportFolder
+    ToolCanBeDetected $incorrectAudits
     WriteEventLogs $exportFolder
     $pdf.Close()
 }
@@ -50,46 +51,51 @@ function WriteAuditPolicies($importFolder) {
         $auditpath = $importFolder + "\resultOfAuditPolicies.xml"
     }    
     [xml] $auditxml = Get-Content $auditpath
-    $checklistaudit = @{AuditNonSensitivePrivilegeUse = "SuccessAndFailure"; AuditUserAccountManagement = "Success"; AuditDetailedFileShare = "SuccessAndFailure"; AuditKernelObject = "SuccessAndFailure"; AuditSAM = "SuccessAndFailure"; AuditKerberosAuthenticationService = "SuccessAndFailure"; AuditHandleManipulation = "Success"; AuditRegistry = "SuccessAndFailure"; AuditProcessTermination = "Success"; AuditFileSystem = "SuccessAndFailure"; 'AuditMPSSVCRule-LevelPolicyChange' = "Success"; AuditSpecialLogon = "Success"; AuditLogoff = "Success"; AuditSensitivePrivilegeUse = "SuccessAndFailure"; ersetzen = "SuccessAndFailure"; AuditLogon = "Success"; AuditSecurityGroupManagement = "SuccessAndFailure"; AuditFileShare = "SuccessAndFailure"; AuditKerberosServiceTicketOperations = "SuccessAndFailure"; AuditFilteringPlatformConnection = "Success"; AuditProcessCreation = "Success"; ForceAuditPolicySubcategory = "Enabled"; Sysmon = "InstalledAndRunning"; CAPI2 = "EnabledGoodLogSize"; CAPI2LogSize = 4194304; }
+    $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); OtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
     
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
-    $table = New-Object iTextSharp.text.pdf.PDFPTable(3)
+    $table = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $table.SpacingBefore = 5
     $table.SpacingAfter = 5
+  
 
     $myaudits = $auditxml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
     CreateAddCell "Target"
     CreateAddCell "Actual"
+    CreateAddCell "Prio"
 
     foreach ($audit in $myaudits) {
         $incorrectAudits = @()
         $localName = $audit.LocalName
         CreateAddCell $localName
         $checkaudit = $checklistaudit[$localName]
-        if ($audit.InnerXml -eq $checkaudit) {
-            CreateAddCell $checkaudit
+        $checkauditvalue = $checkaudit[0]
+        $checkauditprio = $checkaudit[1]
+        if ($audit.InnerXml -eq $checkauditvalue) {
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 0 255 0
-        } elseif ($audit.InnerXml.startswith("Succ") -and $checkaudit -eq "Success") {
-            CreateAddCell $checkaudit
+        } elseif ($audit.InnerXml.startswith("Succ") -and $checkauditvalue -eq "Success") {
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 0 106 0
-        } elseif ((-not(!$checkaudit)) -and $checkaudit.GetType().ToString() -eq "System.Int32"){
+        } elseif ((-not(!$checkauditvalue)) -and $checkauditvalue.GetType().ToString() -eq "System.Int32"){
             $auditint = [uint32]$audit.InnerXml
-            if(-not ($auditint -lt $checkaudit)){
-                CreateAddCell $checkaudit.ToString()
+            if(-not ($auditint -lt $checkauditvalue)){
+                CreateAddCell $checkauditvalue.ToString()
                 CreateAddCellWithColor $audit.InnerXml 0 255 0
             } else{
-                CreateAddCell $checkaudit.ToString()
+                CreateAddCell $checkauditvalue.ToString()
                 CreateAddCellWithColor $audit.InnerXml 255 0 0
                 $incorrectAudits + $audit.LocalName
             }
         }
         else {
-            CreateAddCell $checkaudit
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 255 0 0
             $incorrectAudits + $audit.LocalName
         }
+       CreateAddCell $checkauditprio 
     }
     $pdf.Add($table) | Out-Null
     return $incorrectAudits
@@ -142,9 +148,9 @@ foreach($toolCategory in $toolCategories){
  }
  $amoutOfDetecables = $detectables.count
  $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
- Add-Text -Document $pdf -Text $text 
+ Add-Text -Document $pdf -Text $text | Out-Null
      [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
- Add-Text -Document $pdf -Text $text
+ Add-Text -Document $pdf -Text $text | Out-Null
 }
 
 Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
@@ -167,7 +173,12 @@ Function New-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$Top
 {
     $Document.SetPageSize([iTextSharp.text.PageSize]::A4)
     $Document.SetMargins($LeftMargin, $RightMargin, $TopMargin, $BottomMargin)
-    [void][iTextSharp.text.pdf.PdfWriter]::GetInstance($Document, [System.IO.File]::Create($File))
+    try{
+        [void][iTextSharp.text.pdf.PdfWriter]::GetInstance($Document, [System.IO.File]::Create($File))
+    } catch{
+        Write-Host Please close PDF $File -ForegroundColor Red
+        Break
+    }
     $Document.AddAuthor($Author)
 }
 

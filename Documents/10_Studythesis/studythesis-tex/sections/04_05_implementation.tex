@@ -281,7 +281,7 @@ The second part of the function filters the EventIDs from the chaced logs. Subse
 After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, we divide this function into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similar it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 1, language=PowerShell]
     $appAndServLogs = New-Object System.Collections.ArrayList
-    $idsForTaskScheduler = ("106", "200", "129", "201", ...)
+    $idsForTaskScheduler = ("106", "200", "129", "201", ...
 
     $appAndServLogs += "EventID"
 
@@ -297,7 +297,7 @@ After the export the function \lstinline|GetApplicationAndServiceLogs| is called
 \clearpage
 After all three Logs were checked and all found EventIDs were added, the information is exported into a ''CSV''-file.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 2, language=PowerShell]
-    $exportApplicationAndServiceLogsIntoCSV = $currentFolder + "\myapplicationandsiencelogs.csv"
+    $exportApplicationAndServiceLogsIntoCSV = $currentFolder + "\myapplicationandservicelogs.csv"
 
     $appAndServLogs | Out-File -FilePath $exportApplicationAndServiceLogsIntoCSV
     }
@@ -307,39 +307,78 @@ The next point on the list is importing the found ''EventLogs'' and ''Service An
     
     $eventLogIdsToCheck = (6, 21, 24, 102, 104, 106, 129, ...
 
-    $resultXML = "resultOfEventLogs.xml"
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML,$Null)
-    $xmlWriter.Formatting = "Indented" #$xmlWriter
-    $xmlWriter.Indentation = 1
-    $xmlWriter.IndentChar = "`t"
-    $xmlWriter.WriteStartDocument()
-    $xmlWriter.WriteStartElement("Logs")
-    $xmlWriter.WriteStartElement("EventLogsID")
+    # Create XML "resultOfEventLogs.xml"
 
     $importEventLogs = $exportEventLogsIntoCSV
     $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
 
     Function ImportCompareExport{
         foreach($id in $eventLogIdsToCheck){
-           if( $myEventLogs | where {$_.EventID -eq $id}){
-            $xmlWriter.WriteStartElement("EventID" +$id)
-            $xmlWriter.WriteValue("present")
-            $xmlWriter.WriteEndElement()
+           if($myEventLogs | where {$_.EventID -eq $id}){
+            # Write to XML with value "present"
                 }
                 else{
-                    $xmlWriter.WriteStartElement("EventID" +$id)
-                    $xmlWriter.WriteValue("missing")
-                    $xmlWriter.WriteEndElement()
+                    # Write to XML with value "missing"
                 }
         }
-        $xmlWriter.WriteEndElement()
-    ...
     }
-
-    $xmlWriter.WriteEndElement()
-    $xmlWriter.WriteEndDocument()
-    $xmlWriter.Flush()
-    $xmlWriter.Close()
+    # Close XML
 \end{lstlisting}
-
 The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. At the end all temporary files are deleted.
+\clearpage
+\subsection{Script: Visualize}
+In this script we implemented the ''\nameref{UC05}'', here the description how we have done it.
+\subsubsection{Result} \label{resultVisualize}
+The script ''\nameref{UC05}'' runs as follows:
+\begin{itemize}
+    \item Create PDF-document at given folder and ''open'' it
+    \item Import audit policies and compare them to a given checklist, result is written and visualized in a table
+    \item Check which attack tool categories can be detected with the current audit guidelines and which cannot
+    \item Import the found EventLogs and check if the important EventIDs, according to JPCERT, are found
+    \item ''Close'' PDF-document
+\end{itemize}
+The resulting PDF looks something like this: \ \\
+\ \\
+\textbf{AuditPolicies}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{5.33cm} |  p{5.33cm} | p{5.33cm} |} \hline
+        Aduit Name & Target & Actual \\ \hline
+        AuditNonSensitivePrivilege & SuccessAndFailure &\cellcolor{green} SuccessAndFailure \\ \hline
+        AuditProcessTermination & Success &\cellcolor{darkgreen} SuccessAndFailure \\ \hline
+        AuditSAM & SuccessAndFailure &\cellcolor{red} NotConfigured \\ \hline
+        ... & ... & ... \\ \hline
+    \end{tabular}
+\end{table}\ \\
+With this policies it is possible to detect X out of 14 attack categories \ \\
+The following attack categories cannot be detected with certainty: \\
+... \ \\
+\ \\
+\textbf{WindowsLogs}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{8cm} |  p{8cm} |} \hline
+        EventID6 & present \\ \hline
+        EventID104 & missing \\ \hline
+        ... & ... \\ \hline
+    \end{tabular}
+\end{table}
+\subsubsection{Approach}
+At first, we toyed with the idea to use ''PowerBI'' \cite{PowerBI}, like Jessica Payne uses it in ''WEFFELS''. But after a short tryout we decided that the tool was too overpowered for our purpose. Also we did not like that the user would have to install a third-party tool to analyse his data. We found the Dynamic Link Library ''iTextSharp''. Originally a C\# library that allows you to generate a PDF directly, which can also be used in PowerShell. This variant is not very versatile and it is difficult to create an appealing design, but it is enough for now. 
+\subsubsection{Implementation}
+This section describes the implementation of \lstinline|Display missing or wrong system configuration| in detail. For this purpose, the following is referred to in the section ''\ref{resultVisualize} \nameref{resultVisualize}'' described schedule. \\\\
+We imported the iTextSharp.dll and the functions from \lstinline|PowerShell-PDF| \cite{PowerShell-PDF}. The first step is to create a PDF-document and ''open'' it. For this purpose we created the function \lstinline|OpenPDF:|
+\begin{lstlisting}[caption=Function OpenPDF, language=PowerShell]
+    function OpenPDF{
+        $pdf = New-Object iTextSharp.text.Document 
+        New-PDF -Document $pdf -File #export path
+        $pdf.Open()
+        return $pdf
+    }
+\end{lstlisting}
+We return the \$pdf because we will need that in a later function.\\\\
+We then use the function \lstinline|WriteAuditPolicies| to compare the found audit policies and display the incorrectly.
+\begin{lstlisting}[caption=Function WriteAuditPolicies, language=PowerShell]
+    function WriteAuditPolicies{
+    }
+\end{lstlisting}
