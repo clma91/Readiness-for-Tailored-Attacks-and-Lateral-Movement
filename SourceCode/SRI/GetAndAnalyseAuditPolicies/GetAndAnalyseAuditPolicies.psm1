@@ -150,6 +150,7 @@ Function GetAuditPoliciesDomain ($domain, $policyName) {
         foreach($element in $policy) {
             $auditSettingsDomain.Add($element.Subcategory, $element."Setting Value")
         }
+        Write-Host $auditSettingsDomain.Count
         return $auditSettingsDomain
     } else {
         Write-Host "For this Group Policy exist no auditing defintion"
@@ -177,9 +178,7 @@ Function AnalyseAuditPolicies ($auditSettings){
                 $auditSettings.Add($auditSettingRSoP.SubcategoryName, $auditSettingRSoP.SettingValue)
             }
         }
-    } else {
-        return
-    }
+    } 
     
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
