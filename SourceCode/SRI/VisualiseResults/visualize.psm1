@@ -51,46 +51,52 @@ function WriteAuditPolicies($importFolder) {
         $auditpath = $importFolder + "\resultOfAuditPolicies.xml"
     }    
     [xml] $auditxml = Get-Content $auditpath
-    $checklistaudit = @{AuditNonSensitivePrivilegeUse = "SuccessAndFailure"; AuditUserAccountManagement = "Success"; AuditDetailedFileShare = "SuccessAndFailure"; AuditKernelObject = "SuccessAndFailure"; AuditSAM = "SuccessAndFailure"; AuditKerberosAuthenticationService = "SuccessAndFailure"; AuditHandleManipulation = "Success"; AuditRegistry = "SuccessAndFailure"; AuditProcessTermination = "Success"; AuditFileSystem = "SuccessAndFailure"; 'AuditMPSSVCRule-LevelPolicyChange' = "Success"; AuditSpecialLogon = "Success"; AuditLogoff = "Success"; AuditSensitivePrivilegeUse = "SuccessAndFailure"; ersetzen = "SuccessAndFailure"; AuditLogon = "Success"; AuditSecurityGroupManagement = "SuccessAndFailure"; AuditFileShare = "SuccessAndFailure"; AuditKerberosServiceTicketOperations = "SuccessAndFailure"; AuditFilteringPlatformConnection = "Success"; AuditProcessCreation = "Success"; ForceAuditPolicySubcategory = "Enabled"; Sysmon = "InstalledAndRunning"; CAPI2 = "EnabledGoodLogSize"; CAPI2LogSize = 4194304; OtherObjectAccessEvents = "SuccessAndFailure"; }
+    $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); OtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
     
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
-    $table = New-Object iTextSharp.text.pdf.PDFPTable(3)
+    $table = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $table.SpacingBefore = 5
     $table.SpacingAfter = 5
+    $widths = [float] @() 1f, 2f)
+    $table.SetWidths($widths)
 
     $myaudits = $auditxml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
     CreateAddCell "Target"
     CreateAddCell "Actual"
+    CreateAddCell "Prio"
 
     foreach ($audit in $myaudits) {
         $incorrectAudits = @()
         $localName = $audit.LocalName
         CreateAddCell $localName
         $checkaudit = $checklistaudit[$localName]
-        if ($audit.InnerXml -eq $checkaudit) {
-            CreateAddCell $checkaudit
+        $checkauditvalue = $checkaudit[0]
+        $checkauditprio = $checkaudit[1]
+        if ($audit.InnerXml -eq $checkauditvalue) {
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 0 255 0
-        } elseif ($audit.InnerXml.startswith("Succ") -and $checkaudit -eq "Success") {
-            CreateAddCell $checkaudit
+        } elseif ($audit.InnerXml.startswith("Succ") -and $checkauditvalue -eq "Success") {
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 0 106 0
-        } elseif ((-not(!$checkaudit)) -and $checkaudit.GetType().ToString() -eq "System.Int32"){
+        } elseif ((-not(!$checkauditvalue)) -and $checkauditvalue.GetType().ToString() -eq "System.Int32"){
             $auditint = [uint32]$audit.InnerXml
-            if(-not ($auditint -lt $checkaudit)){
-                CreateAddCell $checkaudit.ToString()
+            if(-not ($auditint -lt $checkauditvalue)){
+                CreateAddCell $checkauditvalue.ToString()
                 CreateAddCellWithColor $audit.InnerXml 0 255 0
             } else{
-                CreateAddCell $checkaudit.ToString()
+                CreateAddCell $checkauditvalue.ToString()
                 CreateAddCellWithColor $audit.InnerXml 255 0 0
                 $incorrectAudits + $audit.LocalName
             }
         }
         else {
-            CreateAddCell $checkaudit
+            CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 255 0 0
             $incorrectAudits + $audit.LocalName
         }
+       CreateAddCell $checkauditprio 
     }
     $pdf.Add($table) | Out-Null
     return $incorrectAudits
