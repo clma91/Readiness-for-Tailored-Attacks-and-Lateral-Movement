@@ -12,7 +12,6 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
     $result = @{}
     if ($requiredLogSize -lt 4194304) {
-        Write-Host " - Defined Log Size smaller than 4MB ($requiredLogSize Byte) => set default value 4MB (4194304 Byte)" -ForegroundColor Yellow
         $requiredLogSize = 4194304
     }
 
@@ -123,10 +122,18 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-# 
 Function GetAuditPoliciesDomain ($domain, $policyName) {
-    # $domain = "logfarm.ch"
-    # $policyName = "Default Domain Policy"
+    try {
+        $gpo = Get-GPO -Name "$policyName" -ErrorAction Stop
+    } catch {
+        Write-Host "The Group Policy with the name $policyName does not exist" -ForegroundColor Red
+        return
+    }
+    $thisDomain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object Domain
+    if(-not ($thisDomain.Domain -eq $domain)) {
+        Write-Host "Your system is not in the domain $domain" -ForegroundColor Red
+        return
+    }
     Write-Host "Get Audit Settings from Domain Policy $domain\$policyName"
     $policyId = Get-GPO -Name $policyName | Select-Object -ExpandProperty id
     $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
@@ -138,22 +145,20 @@ Function GetAuditPoliciesDomain ($domain, $policyName) {
         return
     }
     if ([System.IO.File]::Exists($policyCSV)) {
-        $auditSettings = @{}
+        $auditSettingsDomain = @{}
         $policy = Import-Csv $policyCSV -Encoding UTF8
         foreach($element in $policy) {
-            $auditSettings.Add($element.Subcategory, $element."Setting Value")
+            $auditSettingsDomain.Add($element.Subcategory, $element."Setting Value")
         }
+        return $auditSettingsDomain
     } else {
         Write-Host "For this Group Policy exist no auditing defintion"
         return
     }
-    Write-Host $auditSettings.Count
-    return $auditSettings
 }
 
 Function AnalyseAuditPolicies ($auditSettings){
     Write-Host "Analyse"
-    Write-Host $auditSettings.Count
     $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management", "Audit Other Object Access Events")
     enum AuditSettingValues {
         NoAuditing
@@ -172,6 +177,8 @@ Function AnalyseAuditPolicies ($auditSettings){
                 $auditSettings.Add($auditSettingRSoP.SubcategoryName, $auditSettingRSoP.SettingValue)
             }
         }
+    } else {
+        return
     }
     
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
@@ -183,7 +190,7 @@ Function AnalyseAuditPolicies ($auditSettings){
 
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
     foreach($auditSetting in $auditSettings.GetEnumerator()) {
-        if($auditSetting) {
+        if($auditSetting.value -and $auditSetting.name) {
             try {
                 $auditSettingValue = $auditSetting.value
             }

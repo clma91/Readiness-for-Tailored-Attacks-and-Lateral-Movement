@@ -67,15 +67,15 @@
 
 [CmdletBinding(DefaultParametersetName='None')]
 param(
-    [Parameter(Mandatory = $true, ParameterSetName = "GPO", Position=0)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=0)]
     [switch]
-    $GPO,
+    $GroupPolicy,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "GPO", Position=1)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=1)]
     [String]
     $DomainName,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "GPO", Position=2)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=2)]
     [String]
     $GroupPolicyName,
 
@@ -118,9 +118,12 @@ Import-Module ..\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1 -For
 Import-Module ..\GetAndCompareLogs\GetAndCompareLogs.psm1 -Force
 Import-Module ..\VisualiseResults\visualize.psm1 -Force
 
-Function GPO ($OnlineExportPath) {
-    $auditPolicies = GetAuditPoliciesDomain $DomainName $GroupPolicyName
-    $auditPolicies = AnalyseAuditPolicies $auditPolicies
+Function GroupPolicy ($OnlineExportPath) {
+    $auditPoliciesDomain = GetAuditPoliciesDomain $DomainName $GroupPolicyName
+    if ($null -eq $auditPoliciesDomain) {
+        return
+    }
+    $auditPolicies = AnalyseAuditPolicies $auditPoliciesDomain
     WriteXML $auditPolicies $OnlineExportPath
     VisualizeAuditPolicies $OnlineExportPath
 }
@@ -153,7 +156,7 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
     GetApplicationAndServiceLogs $OnlineExportPath
     $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
     if ($eventLogsDone) {
-        VisualizeAll $ImportPath $OnlineExportPath
+        VisualizeAll $OnlineExportPath
     }    
 }
 
@@ -167,7 +170,7 @@ Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
 Function OfflineEventLogs ($ImportPath, $ExportPath) {
     $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
     if ($eventLogsDone) {
-        VisualizeAll $ExportPath
+        VisualizeEventLogs $ExportPath
     }
 }
 
@@ -203,15 +206,15 @@ Function CheckGroupPolicyModule {
 
 switch ($PsCmdLet.ParameterSetName) {
     'None' {
-        Write-Host "Please define the Script-Mode [-GPO|-Online|-Offline]" -ForegroundColor Red
+        Write-Host "Please define the Script-Mode [-GroupPolicy|-Online|-Offline]" -ForegroundColor Red
         continue
     }
-    'GPO' {
+    'GroupPolicy' {
         $OnlineExportPath = CheckExportPath $OnlineExportPath
         $ImportPath = $OnlineExportPath
 
         if($OnlineExportPath) {
-            GPO $OnlineExportPath
+            GroupPolicy $OnlineExportPath
         } else {
             Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
@@ -219,12 +222,12 @@ switch ($PsCmdLet.ParameterSetName) {
     }
     'Online' {
         Write-Host "Online-Mode"
-        if (-not (CheckGroupPolicyModule)) {
-            Write-Host "Necessary Module `'GroupPolicy`' is not provided within this system" -ForegroundColor Red
-            Write-Host "Please download: `'Remote Server Administration Tools for Windows 10`'" -ForegroundColor DarkRed
-            Write-Host "Link https://www.microsoft.com/en-us/download/details.aspx?id=45520" -ForegroundColor DarkRed 
-            continue
-        }
+        # if (-not (CheckGroupPolicyModule)) {
+        #     Write-Host "Necessary Module `'GroupPolicy`' is not provided within this system" -ForegroundColor Red
+        #     Write-Host "Please download: `'Remote Server Administration Tools for Windows 10`'" -ForegroundColor DarkRed
+        #     Write-Host "Link https://www.microsoft.com/en-us/download/details.aspx?id=45520" -ForegroundColor DarkRed 
+        #     continue
+        # }
         $OnlineExportPath = CheckExportPath $OnlineExportPath
         $ImportPath = $OnlineExportPath
 

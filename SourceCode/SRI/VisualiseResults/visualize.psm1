@@ -15,7 +15,7 @@ function OpenPDF ($exportFolder) {
 
 function VisualizeAll($exportFolder) {
     $pdf = OpenPDF $exportFolder
-    WriteAuditPolicies $exportFolder
+    $incorrectAudits = WriteAuditPolicies $exportFolder
     ToolCanBeDetected $incorrectAudits
     WriteEventLogs $exportFolder
     $pdf.Close()
@@ -51,7 +51,7 @@ function WriteAuditPolicies($importFolder) {
         $auditpath = $importFolder + "\resultOfAuditPolicies.xml"
     }    
     [xml] $auditxml = Get-Content $auditpath
-    $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); OtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
+    $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); AuditOtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
 
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
@@ -79,7 +79,7 @@ function WriteAuditPolicies($importFolder) {
         } elseif ($audit.InnerXml.startswith("Succ") -and $checkauditvalue -eq "Success") {
             CreateAddCell $checkauditvalue
             CreateAddCellWithColor $audit.InnerXml 0 106 0
-        } elseif ((-not(!$checkauditvalue)) -and $checkauditvalue.GetType().ToString() -eq "System.Int32"){
+        } elseif ((-not(!$checkauditvalue)) -and $checkauditvalue.GetType() -eq [System.Int32]){
             $auditint = [uint32]$audit.InnerXml
             if(-not ($auditint -lt $checkauditvalue)){
                 CreateAddCell $checkauditvalue.ToString()
@@ -130,27 +130,27 @@ function WriteEventLogs($importFolder){
 function ToolCanBeDetected($incorrectAudits){
     $detectables = @()
     $notdetectables = @()
-[xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
-$toolCategories = $auditsbytool.Tool.ChildNodes
-foreach($toolCategory in $toolCategories){
-     [int]$checknr = 0
-   foreach($incorrectAudit in $incorrectAudits){
-       if($toolCategory.ChildNodes.InnerXml -contains $incorrectAudit){
-           $checknr += 1
-       }
-   }
-  
-  if($checknr -gt 0){
-      $notdetectables += "`n" + "- " + $toolCategory.LocalName
-  } else {
-    $detectables += $toolCategory.LocalName
-  }
- }
- $amoutOfDetecables = $detectables.count
- $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
- Add-Text -Document $pdf -Text $text | Out-Null
-     [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
- Add-Text -Document $pdf -Text $text | Out-Null
+    [xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
+    $toolCategories = $auditsbytool.Tool.ChildNodes
+    foreach($toolCategory in $toolCategories){
+        [int]$checknr = 0
+    foreach($incorrectAudit in $incorrectAudits){
+        if($toolCategory.ChildNodes.InnerXml -contains $incorrectAudit){
+            $checknr += 1
+        }
+    }
+    
+    if($checknr -gt 0){
+        $notdetectables += "`n" + "- " + $toolCategory.LocalName
+    } else {
+        $detectables += $toolCategory.LocalName
+    }
+    }
+    $amoutOfDetecables = $detectables.count
+    $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
+    Add-Text -Document $pdf -Text $text | Out-Null
+        [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
+    Add-Text -Document $pdf -Text $text | Out-Null
 }
 
 Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
