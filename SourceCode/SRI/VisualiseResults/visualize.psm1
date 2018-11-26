@@ -58,8 +58,7 @@ function WriteAuditPolicies($importFolder) {
     $table = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $table.SpacingBefore = 5
     $table.SpacingAfter = 5
-    $widths = [float] @() 1f, 2f)
-    $table.SetWidths($widths)
+  
 
     $myaudits = $auditxml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
