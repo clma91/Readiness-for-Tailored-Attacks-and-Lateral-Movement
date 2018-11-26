@@ -3,7 +3,7 @@
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
 	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
 	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
-	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
@@ -13,12 +13,12 @@
 	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditSpecialLogon>Success</AuditSpecialLogon>
 	<AuditRegistry>SuccessAndFailure</AuditRegistry>
+	<AuditFileShare>SuccessAndFailure</AuditFileShare>
 	<AuditProcessCreation>Success</AuditProcessCreation>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
 	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
-	<AuditFileShare>SuccessAndFailure</AuditFileShare>
 	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>

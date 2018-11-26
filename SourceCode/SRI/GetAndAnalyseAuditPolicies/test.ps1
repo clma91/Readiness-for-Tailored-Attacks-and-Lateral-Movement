@@ -7,8 +7,18 @@ Function GetTargetListAuditPolicies {
     return $auditSettingSubcategoryNames
 }
 
-$auditSettingSubcategoryNames = GetTargetListAuditPolicies
+# $auditSettingSubcategoryNames = GetTargetListAuditPolicies
 
-foreach($a in $auditSettingSubcategoryNames) {
-    Write-Host $a
+# foreach($a in $auditSettingSubcategoryNames) {
+#     Write-Host $a
+# }
+
+Function CheckGroupPolicyModule {
+    if(Get-Module -Name "GroupPolicy") {
+        return $true
+    } else {
+        return $false
+    }
 }
+
+Write-Host (-not (CheckGroupPolicyModule))

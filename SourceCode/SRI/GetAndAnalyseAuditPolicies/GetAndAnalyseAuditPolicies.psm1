@@ -123,32 +123,37 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-# ($domain, $policyName) 
-Function GetAuditPoliciesDomain {
-    $domain = "logfarm.ch"
-    $policyName = "Default Domain Policy"
+# 
+Function GetAuditPoliciesDomain ($domain, $policyName) {
+    # $domain = "logfarm.ch"
+    # $policyName = "Default Domain Policy"
+    Write-Host "Get Audit Settings from Domain Policy $domain\$policyName"
     $policyId = Get-GPO -Name $policyName | Select-Object -ExpandProperty id
     $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
 
     if (Test-Path $policyCSVPath) {
         $policyCSV = $policyCSVPath + "\audit.csv"
     } else {
+        Write-Host "For this Group Policy exist no defintion"
+        return
+    }
+    if ([System.IO.File]::Exists($policyCSV)) {
+        $auditSettings = @{}
+        $policy = Import-Csv $policyCSV -Encoding UTF8
+        foreach($element in $policy) {
+            $auditSettings.Add($element.Subcategory, $element."Setting Value")
+        }
+    } else {
         Write-Host "For this Group Policy exist no auditing defintion"
         return
     }
-    
-    [System.IO.File]::Exists($policyCSV)
-    
-    $auditSettings = @{ 
-        SubcategoryName = Import-Csv $policyCSV -Encoding UTF8 | Select-Object -ExpandProperty "Subcategory"
-        SettingValue = Import-Csv $policyCSV -Encoding UTF8 | Select-Object -ExpandProperty "Setting Value"
-    }
-
+    Write-Host $auditSettings.Count
     return $auditSettings
 }
 
 Function AnalyseAuditPolicies ($auditSettings){
     Write-Host "Analyse"
+    Write-Host $auditSettings.Count
     $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use","Audit Kerberos Service Ticket Operations","Audit Registry","Audit Security Group Management","Audit File System","Audit Process Termination","Audit Logoff","Audit Process Creation","Audit Filtering Platform Connection","Audit File Share","Audit Kernel Object","Audit MPSSVC Rule-Level Policy Change","Audit Non Sensitive Privilege Use","Audit Logon","Audit SAM","Audit Handle Manipulation","Audit Special Logon","Audit Detailed File Share","Audit Kerberos Authentication Service","Audit User Account Management", "Audit Other Object Access Events")
     enum AuditSettingValues {
         NoAuditing
@@ -158,28 +163,34 @@ Function AnalyseAuditPolicies ($auditSettings){
     }
     [AuditSettingValues]$auditSettingValue = 0
     $result = @{}
-    
+
     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-        $auditSettings = $auditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
+        $auditSettingsRSoP = $auditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
+        $auditSettings = @{}
+        foreach($auditSettingRSoP in $auditSettingsRSoP) {
+            if ($auditSettingRSoP) {
+                $auditSettings.Add($auditSettingRSoP.SubcategoryName, $auditSettingRSoP.SettingValue)
+            }
+        }
     }
     
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
     foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
-        if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
+        if($auditSettings.keys -notcontains $auditSettingSubcategoryName){
             $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
         }
     }
 
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
-    foreach($auditSetting in $auditSettings) {
+    foreach($auditSetting in $auditSettings.GetEnumerator()) {
         if($auditSetting) {
             try {
-                $auditSettingValue = $auditSetting.SettingValue
+                $auditSettingValue = $auditSetting.value
             }
             catch {
                 $auditSettingValue = 0
             }
-            $auditSubcategoryName = $auditSetting.SubcategoryName 
+            $auditSubcategoryName = $auditSetting.name 
             switch ($auditSettingValue) {
                 NoAuditing {  
                     $auditSettingValueString = "NoAuditing"
