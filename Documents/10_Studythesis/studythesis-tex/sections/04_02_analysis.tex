@@ -143,6 +143,24 @@ Although many attacks are described and how they can be detected and fended off,
 
 \clearpage
 
+\subsection{Sysmon}
+\begin{quotation}
+    \textit{System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time.\cite{Sysmon}}
+\end{quotation}
+Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the ID 4688 is logged by Sysmon with the ID 1. The problem is that the default logged event with the ID 4688 logs only the EXE name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. For that a reference hash value of the executed EXE is required to compare the hash values on its correctness.
+
+\subsubsection{Conclusion}
+
+
+\subsection{Sysmon Tools}
+% https://github.com/nshalabi/SysmonTools
+\subsubsection{Description}
+Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
+\subsubsection{Conclusion}
+This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for this project.
+
+\clearpage
+
 \subsection{sysmon-modular}
 \subsubsection{Description}
 With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organisation. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
@@ -156,12 +174,7 @@ With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows s
 \subsubsection{Conclusion}
 Sysmon-modular offers a very good basic configuration for Sysmon based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately, sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will most likely not be included in the tool during this study, unless there are still enough time reserves for such an integration. This tool would better fit the goal to realise a ''Readiness Optimizer'' as initially mentioned in the task definition.
 
-\subsection{Sysmon Tools}
-% https://github.com/nshalabi/SysmonTools
-\subsubsection{Description}
-Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
-\subsubsection{Conclusion}
-This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for this project.
+
 
 \subsection{CryptoAPI 2.0}
 \subsubsection{Description}
@@ -176,7 +189,7 @@ Hence, CAPI2 enables an organisation to secure its communications and business t
     \textit{CAPI2 Diagnostics in Windows Vista\footnote{Windows Vista and above} provides logging of detailed information about certificate validation, network retrievals, revocation, and other low-level API results and errors. [...] utilizes the event logging and Event Viewer to provide better logging and troubleshooting capabilities for PKI applications based on the CAPI2 API set. \cite{CAPI2}}
 \end{quotation}
 \subsubsection{Conclusion}
-To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system.
+To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system. On the other hand, CAPI2 Diagnostics produces a lot of events and therefor the log size should be chosen wisely. For this reason the recommendation of 4MB from Microsoft shall be applied. \cite{CAPI2}
 
 
 \clearpage
