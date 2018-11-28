@@ -102,16 +102,57 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Sysmon > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        1\footnotemark[2] & Process Create \\ \hline
-        5\footnotemark[2] & Process Terminated \\ \hline
-        8\footnotemark[2] & CreateRemoteThread detected \\ \hline
+        1\footnotemark[2] & Process create \\ \hline
+        2\footnotemark[2] & A process changed a file creation time \\ \hline
+        5\footnotemark[2] & Process terminated \\ \hline
+        8\footnotemark[2] & CreateRemoteThread \\ \hline
+        9\footnotemark[2] & RawAccessRead: detects when the process is using ''\textbackslash\textbackslash.\textbackslash'' \\ \hline
     \end{tabular}
     \caption{Mandatory Sysmon Event Logs}
 \end{table}
+
 \setcounter{footnote}{1}
 
 \clearpage
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TaskScheduler > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        102\footnotemark[1] & Task completed \\ \hline
+        106\footnotemark[1] & Task registered \\ \hline
+        129\footnotemark[1] & Created Task Process \\ \hline
+        200\footnotemark[1] & Action started \\ \hline
+        201\footnotemark[1] & Action completed \\ \hline
+    \end{tabular}
+    \caption{Mandatory TaskScheduler Event Logs}
+\end{table}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > WinRM > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        6\footnotemark[1] & Creating WSMan Session \\ \hline
+        169\footnotemark[1] & User authentication: authenticated successfully \\ \hline
+    \end{tabular}
+    \caption{Mandatory Windows Remote Management Event Logs}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TerminalServices > LocalSessionManager > Operational} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        21\footnotemark[1] & Remote Desktop Services: Session logon succeeded \\ \hline
+        24\footnotemark[1] & Remote Desktop Services: Session has been disconnected \\ \hline
+    \end{tabular}
+    \caption{Mandatory Windows Local Session Manager Event Logs}
+\end{table}
+
+\footnotetext[1]{Recorded by default Windows settings}
+
+\clearpage
 
 \subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}\label{Correlation}
 In this section, the ''Advanced Audit Policies'' required to trigger the corresponding event logs are shown in tables. Based on these tables, the ''Advanced Audit Policies'' are checked for correctness with the tool. There are several combinations of settings which can be configured:\\
