@@ -64,12 +64,11 @@
 
 \subsection*{Fragen}
 \begin{itemize}
-    \item Flotten-Prüfung sinnvoll?
+    \item Flotten-Prüfung (Informationen bei einzelnen Clients abholen) sinnvoll?
     \begin{itemize}
         \item Security-Risks
         \item Besser nur Group Policies auf SYSVOL prüfen
     \end{itemize}
-    \item Einzelschritte auch im Online-Modus (einzeln Audit Policies und Event Logs prüfen)
 \end{itemize}
 
 \vspace{1cm}
@@ -84,7 +83,7 @@
         UC05: Display missing or wrong system configuration - Logik & Lukas \\ \hline
         UC07: Create Main Script & Claudio \\ \hline
         UC08: Get Domain Information & Claudio \\ \hline
-        Weitere (allfällige) Use Cases/NFRs definieren & Team\\ \hline
+        English Consulting & Team \\ \hline
     \end{tabular}
 \end{table}
 
@@ -112,8 +111,26 @@
 \vspace{1cm}
 
 \subsection*{Beschlüsse (Diskussion)}
+\paragraph{SA}
 \begin{itemize}
-    \item 
+    \item Informationen bei einzelnen Clients abholen nicht sinnvoll $\rightarrow$ besser Prüfung der GPOs
+    \item Alle GPOs aus SYSVOL prüfen - nicht nur einzelne
+    \item Bringen die Sysmon Logs wirklich einen Benefit?
+    \item Sysmon kann auch einen anderen Service-Namen haben $\rightarrow$ anders prüfen
+    \item Kann Force Audit Policy und CAPI2 wirklich nicht über RSoP geprüft werden?
+    \item Im Text die Audit Policies pro Kategorie anzeigen
+\end{itemize}
+
+\paragraph{BA}
+\begin{itemize}
+    \item Wie wollen wir das ganze darstellen?
+    \item Können wir vorhandenes Powershell einfach in C\# portieren?
+    \item Flottenfunktionalität: Forests, Domains, OUs
+    \item Readiness Optimiser: GPO Templates ausgeben zum applizieren (Delta oder Erweiterung)
+    \item Sysmon auf Flotte verteilen
+    \item Zentrales Logging
+    \item Aussagen über Performance und Speicherbedarf Logging
+    \item Eventuell wird dann eine DB nötig
 \end{itemize}
 
 \end{document}
