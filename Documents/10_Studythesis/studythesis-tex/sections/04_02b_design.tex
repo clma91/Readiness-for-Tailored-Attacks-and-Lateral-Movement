@@ -2,50 +2,8 @@
 \subsection{Decision for a new Tool}
 At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
 
-\clearpage
-
 \subsection{Mandatory Event Logs}\label{MandatoryLogs}
 The following tables lists the event logs which are mandatory and must be logged based on the study ''\nameref{JPCertStudy}'':
-\footnotetext[1]{Recorded by default Windows settings}
-\begin{table}[H]
-    \centering
-    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
-        \multicolumn{2} {|c|} {\tiny\bfseries Security} \\ \hline
-        \textbf{EventID} & \textbf{Description}  \\ \hline
-        104\footnotemark[1] & The System log file was cleared \\ \hline
-        4624 & An account was successfully logged on \\ \hline
-        4634 & An account was logged off \\ \hline
-        4648 & A logon was attempted using explicit credentials \\ \hline
-        4656 & A handle to an object was requested \\ \hline
-        4658 & The handle to an object was closed \\ \hline
-        4660 & An object was deleted \\ \hline
-        4661 & A handle to an object was requested \\ \hline
-        4663 & An attempt was made to access an object \\ \hline
-        4672 & Special privileges assigned to new logon \\ \hline
-        4673 & A privileged service was called \\ \hline
-        4688 & A new process has been created \\ \hline
-        4689 & A process has exited \\ \hline
-        4690 & An attempt was made to duplicate a handle to an object \\ \hline
-        4720 & A user account was created \\ \hline
-        4726 & A user account was deleted \\ \hline
-        4728 & A member was added to a security enabled global group \\ \hline
-        4729 & A member was removed from a security enabled global group \\ \hline
-        4768 & A Kerberos authentication ticket (TGT) was requested \\ \hline
-        4769 & A Kerberos service ticket was requested \\ \hline
-        4946 & A change has been made to Windows Firewall exception list. A rule was added \\ \hline
-        5140 & A network share object was accessed \\ \hline
-        5142 & A network share object was added \\ \hline
-        5144 & A network share object was deleted \\ \hline
-        5145 & A network share object was accessed \\ \hline
-        5154 & WFP has permitted an application or service to listen on a port for incoming connections \\ \hline
-        5156 & WFP has allowed a connection \\ \hline
-        7036\footnotemark[1] & The service state has changed \\ \hline
-        7045\footnotemark[1] & A service was installed in the system \\ \hline
-    \end{tabular}
-    \caption{Mandatory Security Event Logs}
-\end{table}
-
-\clearpage
 \
 \vspace{0.5cm}
 \begin{table}[H]
@@ -59,7 +17,7 @@ The following tables lists the event logs which are mandatory and must be logged
     \caption{Mandatory System Event Logs}
 \end{table}
 \footnotetext[1]{Recorded by default Windows settings}
-\footnotetext[2]{Recorded by default Sysmon settings}
+
 
 \begin{table}[H]
     \centering
@@ -113,7 +71,6 @@ The following tables lists the event logs which are mandatory and must be logged
 
 \setcounter{footnote}{1}
 
-\clearpage
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
@@ -151,6 +108,48 @@ The following tables lists the event logs which are mandatory and must be logged
 \end{table}
 
 \footnotetext[1]{Recorded by default Windows settings}
+\footnotetext[2]{Recorded by default Sysmon settings}
+\clearpage
+
+\
+\footnotetext[1]{Recorded by default Windows settings}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
+        \multicolumn{2} {|c|} {\tiny\bfseries Security} \\ \hline
+        \textbf{EventID} & \textbf{Description}  \\ \hline
+        104\footnotemark[1] & The System log file was cleared \\ \hline
+        4624 & An account was successfully logged on \\ \hline
+        4634 & An account was logged off \\ \hline
+        4648 & A logon was attempted using explicit credentials \\ \hline
+        4656 & A handle to an object was requested \\ \hline
+        4658 & The handle to an object was closed \\ \hline
+        4660 & An object was deleted \\ \hline
+        4661 & A handle to an object was requested \\ \hline
+        4663 & An attempt was made to access an object \\ \hline
+        4672 & Special privileges assigned to new logon \\ \hline
+        4673 & A privileged service was called \\ \hline
+        4688 & A new process has been created \\ \hline
+        4689 & A process has exited \\ \hline
+        4690 & An attempt was made to duplicate a handle to an object \\ \hline
+        4720 & A user account was created \\ \hline
+        4726 & A user account was deleted \\ \hline
+        4728 & A member was added to a security enabled global group \\ \hline
+        4729 & A member was removed from a security enabled global group \\ \hline
+        4768 & A Kerberos authentication ticket (TGT) was requested \\ \hline
+        4769 & A Kerberos service ticket was requested \\ \hline
+        4946 & A change has been made to Windows Firewall exception list. A rule was added \\ \hline
+        5140 & A network share object was accessed \\ \hline
+        5142 & A network share object was added \\ \hline
+        5144 & A network share object was deleted \\ \hline
+        5145 & A network share object was accessed \\ \hline
+        5154 & WFP has permitted an application or service to listen on a port for incoming connections \\ \hline
+        5156 & WFP has allowed a connection \\ \hline
+        7036\footnotemark[1] & The service state has changed \\ \hline
+        7045\footnotemark[1] & A service was installed in the system \\ \hline
+    \end{tabular}
+    \caption{Mandatory Security Event Logs}
+\end{table}
 
 \clearpage
 
