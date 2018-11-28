@@ -54,18 +54,18 @@ function CreateAddCell($content) {
 }
 
 function WriteAuditPolicies($importFolder) {
-    $auditpath = $PSScriptRoot + "\resultOfAuditPolicies.xml"
+    $auditPath = $PSScriptRoot + "\resultOfAuditPolicies.xml"
     if ($importFolder) {
-        $auditpath = $importFolder + "\resultOfAuditPolicies.xml"
+        $auditPath = $importFolder + "\resultOfAuditPolicies.xml"
     }    
-    [xml] $auditxml = Get-Content $auditpath
-    $checklistaudit = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); AuditOtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
+    [xml] $auditXml = Get-Content $auditPath
+    $auditChecklist = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); AuditOtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
 
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
     $tableAudit.SpacingBefore = 20
     $tableAudit.SpacingAfter = 20
-    $myaudits = $auditxml.AuditPolicies.ChildNodes
+    $myaudits = $auditXml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
     CreateAddCell "Target"
     CreateAddCell "Actual"
@@ -75,7 +75,7 @@ function WriteAuditPolicies($importFolder) {
         $incorrectAudits = @()
         $localName = $audit.LocalName
         CreateAddCell $localName
-        $checkaudit = $checklistaudit[$localName]
+        $checkaudit = $auditChecklist[$localName]
         $checkauditvalue = $checkaudit[0]
         $checkauditprio = $checkaudit[1]
         if ($audit.InnerXml -eq $checkauditvalue) {
@@ -138,6 +138,7 @@ function WriteEventLogs($importFolder) {
 function ToolCanBeDetected($incorrectAudits) {
     $detectables = @()
     $notdetectables = @()
+    $causingAudit = @()
     [xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
     $toolCategories = $auditsbytool.Tool.ChildNodes
     foreach ($toolCategory in $toolCategories) {
@@ -145,15 +146,16 @@ function ToolCanBeDetected($incorrectAudits) {
         foreach ($incorrectAudit in $incorrectAudits) {
             if ($toolCategory.ChildNodes.InnerXml -contains $incorrectAudit) {
                 $checknr += 1
+                $causingAudit += $incorrectAudit + ", "
             }
         }
     
         if ($checknr -gt 0) {
-            $notdetectables += "`n" + "- " + $toolCategory.LocalName
-        }
-        else {
+            $notdetectables += "`n" + "- " + $toolCategory.LocalName + "(" + $causingAudit + ")"
+        } else {
             $detectables += $toolCategory.LocalName
         }
+        $causingAudit = ""
     }
     $amoutOfDetecables = $detectables.count
     $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"

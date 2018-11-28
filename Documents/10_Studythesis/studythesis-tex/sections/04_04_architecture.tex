@@ -5,7 +5,7 @@ In this section the following main question is answered:
 \end{quotation}
 This includes the coverage of use cases, non-functional requirements, technologies used and how the tool will be designed. 
 
-\subsection{Use Cases}
+\subsection{Use Cases (UC)}
 A visual representation of the use cases with a use case diagram was deliberately omitted, because there is only one actor involved - the security advisor. The actor is not specifically mentioned in the use cases every time, because it is always the same. During the elaboration phase it was decided in consultation with the client that the project would be limited to a Readiness Analyser only.
 
 \subsubsection{UC01 - Read Resultant Set of Policies}\label{UC01}
@@ -151,9 +151,9 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \paragraph{PowerShell \& Visual Studio Code} \ \\
 The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft Operating System and that it has a large and detailed documentation at its disposal. \ \\
 \ \\
-The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell ISE because it only requires working in one IDE for implementation and documentation.
+The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell Integrated Scripting Environment (PowerShell ISE) because it only requires working in one Integrated Development Environment (IDE) for implementation and documentation.
 
-\paragraph{LaTeX \& Visual Studio Code}\ \\
+\paragraph{\LaTeX \& Visual Studio Code}\ \\
 The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand, we made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
 
 \paragraph{Azure Cloud}\ \\
@@ -168,7 +168,7 @@ Continuous Integration (CI) for Powershell is unfortunately not very widespread 
 \subsubsection{Rejected Technologies}
 
 \paragraph{Python}\ \\
-The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft-OS. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
+The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft operating system. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
 
 
 \clearpage
@@ -183,7 +183,7 @@ This section describes the process of the toolkit and explain the individual ste
 \end{figure}
 
 \subsubsection{GetAuditPolicy()}
-This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration  the ''Resultant Set of Policies'' (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
+This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
 
 \subsubsection{AnalyseAditPolicy()}
 In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
@@ -192,5 +192,5 @@ In this task the gathered information from the task GetAuditPolicy(), which is r
 This task is responsible for getting the event logs from the system. Therefor the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System', 'Application' and 'Security'. This logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
 
 \subsubsection{AnalyseEvent()}
-In this task the created 'CSV' file from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualise it.
+In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualise it.
 

@@ -56,16 +56,16 @@ This toolkit is very interesting, but cannot be used to build on it. The reason 
 
 \subsection{LogonTracer}
 \subsubsection{Description}
-JPCERT/CCs LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section \ref{DetectingLateral} \nameref{DetectingLateral}. The tool links hostnames or IP addresses with the \textit{"[...] account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: 
+Japan Computer Emergency Response Team Coordination Centers (JPCERT/CC) LogonTracer is a tool built to investigate malicious logons on a system based on the research described in section ''\ref{DetectingLateral} \nameref{DetectingLateral}''. The tool links hostnames or Internet-Protocol (IP) addresses with the \textit{"[...] account name found in logon-related events and displays it as a graph"}. \cite{LogonTracer} The following event ids are checked with the tool: 
 \ \\
 \begin{multicols}{2}
     \begin{itemize}
-        \item 4624:Successful logon
-        \item 4625:Logon failure
-        \item 4768:Kerberos Authentication(TGT Req.)
-        \item 4769:Kerberos Service Ticket (ST Req.)
-        \item 4776:NTLM Authentication
-        \item 4672:Assign special privileges
+        \item 4624: Successful logon
+        \item 4625: Logon failure
+        \item 4768: Kerberos Authentication
+        \item 4769: Kerberos Service Ticket
+        \item 4776: NTLM Authentication
+        \item 4672: Assign special privileges
     \end{itemize}
 \end{multicols} \ \\
 The following figure depicts a sample graph of logins from different users in the test environment:
@@ -76,7 +76,7 @@ The following figure depicts a sample graph of logins from different users in th
     \label{fig:LogonTracerSample}
 \end{figure}
 \ \\
-To use the LogonTracer, only a .evtx-File (Windows XML Event Log - export of Windows event logs) is necessary to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built-in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
+To use the LogonTracer, only a .evtx-File (Windows Extensible Markup Language (XML) Event Log: export of Windows event logs) is necessary to be uploaded. To get the best result out of LogonTracer an export of the security event log from the domain controller should be used - to get as much information of the network as possible. With the built-in analysis of logins, by using machine learning models and statistical analysis, LogonTracer is able to provide a ranking of the most malicious users which tried to log in. \cite{LogonTracerBlog}
 \\\\
 In addition, LogonTracer provides a timeline for all or selected users to show when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
 
@@ -128,9 +128,9 @@ This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \
 In this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
 \subsubsection{Conclussion}
-Due to the fact that audit policies are an important setting for solid event logging, this article and appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
+Due to the fact that audit policies are an important setting for solid event logging, this article and Appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
 
-\subsection{MITRE ATT\&CK}
+\subsection{MITRE Adversarial Tactics, Techniques and Common Knowledge (ATT\&CK)}
 \subsubsection{Description}
 MITRE ATT\&CK introduces itself on its website as follows:
 \begin{quotation}
@@ -147,7 +147,7 @@ Although many attacks are described and how they can be detected and fended off,
 \begin{quotation}
     \textit{System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time.\cite{Sysmon}}
 \end{quotation}
-Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the ID 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the EXE name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. For that a reference hash value of the executed EXE is required to compare the hash values on its correctness.
+Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. For that a reference hash value of the executed EXE is required to compare the hash values on its correctness.
 
 \subsubsection{Conclusion}
 As mentioned in the description Sysmon is a important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness. In order to do not create duplicated events, the events similar logged by default and Sysmon must be examined by their differences. Very likely Sysmon is the better choice.
@@ -156,7 +156,7 @@ As mentioned in the description Sysmon is a important tool to be enabled for sol
 \subsection{Sysmon Tools}
 % https://github.com/nshalabi/SysmonTools
 \subsubsection{Description}
-Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a GUI. Templates are also provided for further building.
+Sysmon Tools \cite{SysmonTools} contains some useful functions to make better use of Sysmon. Among other things there are different views for the representation of the single entries which were recorded by Sysmon. A Process View is provided which can be used to examine a process in more detail. Related processes are taken into account and represented in a simple data-flow-like view, sorted by chronological order. With the Map View you can include geo-locate IP addresses during the import phase and Map View tries to geo-map the network destinations with ipstack \cite{ipstack}. The All Events View represents a full search by Sysmon and can be filtered and grouped accordingly. Furthermore, Sysmon Tools offers a Sysmon Shell, which can be used to create a customized XML configuration for Sysmon using a graphical user interface (GUI). Templates are also provided for further building.
 \subsubsection{Conclusion}
 This tool can also be a great help for detecting attacks and, with the Sysmon Shell, a robust configuration for Sysmon can be created. However, Sysmon Tool will have no basis for this project.
 
@@ -190,7 +190,7 @@ Hence, CAPI2 enables an organisation to secure its communications and business t
     \textit{CAPI2 Diagnostics in Windows Vista\footnote{Windows Vista and above} provides logging of detailed information about certificate validation, network retrievals, revocation, and other low-level API results and errors. [...] utilizes the event logging and Event Viewer to provide better logging and troubleshooting capabilities for PKI applications based on the CAPI2 API set. \cite{CAPI2}}
 \end{quotation}
 \subsubsection{Conclusion}
-To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system. On the other hand, CAPI2 Diagnostics produces a lot of events and therefor the log size should be chosen wisely. For this reason the recommendation of 4MB from Microsoft shall be applied. \cite{CAPI2}
+To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system. On the other hand, CAPI2 Diagnostics produces a lot of events and therefor the log size should be chosen wisely. For this reason the recommendation of 4 Megabyte (MB) from Microsoft shall be applied. \cite{CAPI2}
 
 
 \clearpage
@@ -203,9 +203,9 @@ This presentation contains interesting information which could be built into the
 
 \subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}\label{JPCertStudy}
 \subsubsection{Description}
-This is a document \cite{JPCERTDetectingLateralMovement} the Japan Computer Emergency Response Team Coordination Center, or short JPCERT/CC, has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and what is most interesting for the project, the logs generated while doing so.
+This is a document \cite{JPCERTDetectingLateralMovement} JPCERT/CC has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and what is most interesting for the project, the logs generated while doing so.
 \subsubsection{Conclusion}
-This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing FAQ'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
+This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing Frequently Asked Questions (FAQ)'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 
 % \subsection{CAPI2}
 

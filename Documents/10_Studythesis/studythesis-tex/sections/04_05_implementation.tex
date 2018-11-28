@@ -65,7 +65,7 @@ Logon/Logoff
 \end{lstlisting}
 Unfortunately, this output is not very ideal for a suitable further processing and analysis of the current configuration. The return value of the command is an ordinary array filled with corresponding strings and therefore the complete array should have been checked for correct content by string comparisons. Furthermore, the command \lstinline|auditpol| does not offer the possibility of remote configuration with regard to an extension of the tool to a whole fleet of computers. For this reason, the idea of building the tool on the basis of this command was rejected.
 \\\\
-Further research has shown that Microsoft provides a Resultant Set of Policies (RSoP) \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test, it quickly became clear that the generated XML provides all necessary information for the further analysis.
+Further research has shown that Microsoft provides a RSoP \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test, it quickly became clear that the generated XML provides all necessary information for the further analysis.
 
 
 \paragraph{Analyse Audit Policies} \ \\
@@ -246,10 +246,10 @@ The now no longer needed CSV files are deleted. The XML with the result set is n
 
 \subsubsection{Approach}
 \paragraph{Get Event Logs}\ \\
-After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command\lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kb. The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command\lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
 \ \\
 To read out the ''Application and Service'' Logs we can not use Get-EventLog. The first approach used the \lstinline|Get-WinEvent| \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
-The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all Logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of Logs is smaller. On the testing environment with a machine with 4 GB Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
+The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all Logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of Logs is smaller. On the testing environment with a machine with 4 Gigabyte (GB) Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
 \paragraph{Analyse Found Event Logs} \ \\
 To analyse the occurred EventIDs the two generated ''CSV'' files are imported into the PowerShell script. The respective checklists, which are based on the \nameref{JPCertStudy}, are embedded in the script. Each id from the checklist is checked if it is present in the respective CSV file. Is this the case, the id is added to the XML-file and marked as present. Did the id no occur in the it will be added and marked as missing. The file looks like the example in ''\nameref{ResultSetGetAndCompareLogs}'' shown.
 \clearpage
@@ -331,10 +331,10 @@ In this script we implemented the ''\nameref{UC05}'', here the description how w
 \subsubsection{Result} \label{resultVisualize}
 The script ''\nameref{UC05}'' runs as follows:
 \begin{itemize}
-    \item Create PDF-document at given folder and ''open'' it
+    \item Create Protable Document Format (PDF) at given folder and ''open'' it
     \item Import audit policies and compare them to a given checklist, result is written and visualized in a table
     \item Check which attack tool categories can be detected with the current audit guidelines and which cannot
-    \item Import the found EventLogs and check if the important EventIDs, according to JPCERT, are found
+    \item Import the found EventLogs and check if the important EventIDs, according to JPCERT/CC, are found
     \item ''Close'' PDF-document
 \end{itemize}
 The resulting PDF looks something like this: \ \\
@@ -377,8 +377,49 @@ We imported the iTextSharp.dll and the functions from \lstinline|PowerShell-PDF|
     }
 \end{lstlisting}
 We return the \$pdf because we will need that in a later function.\\\\
-We then use the function \lstinline|WriteAuditPolicies| to compare the found audit policies and display the incorrectly.
-\begin{lstlisting}[caption=Function WriteAuditPolicies, language=PowerShell]
+We then use the function \lstinline|WriteAuditPolicies| to compare the found audit policies and display the incorrectly. It will use two other functions, \lstinline|CreateAddCellWithColor| and \lstinline|CreateAddCell|.
+\begin{lstlisting}[caption=Functions WriteAuditPolicies \& CreateAddCellWithColor \& CreateAddCell, language=PowerShell]
     function WriteAuditPolicies{
+        $auditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
+        $incorrectAudits = @() # will be returned for later use
+        [xml] auditXml = Get-Content $auditPath
+        $myAudits = $auditXml.AuditPolicies.ChildNodes
+        foreach ($audit in $myAudits) {
+        $localName = $audit.LocalName
+        CreateAddCell $localName # Display auditname into cell
+
+        $checkaudit = $auditChecklist[$localName]
+        $checkauditvalue = $checkaudit[0] # Correct setting
+        $checkauditprio = $checkaudit[1] # Priority of audit
+
+        if ($audit.InnerXml -eq $checkauditvalue) { # Checks if audit values are equal
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 0 255 0 # Display actual audit value into cell, color green  
+        }
+        elseif ($audit.InnerXml.startswith("Succ") 
+        -and $checkauditvalue -eq "Success") { #checks if audit is ''overpowered''
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 0 106 0 # Display actual audit value into cell, color darkgreen
+        }
+        else { #audit is wrong
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 255 0 0  #Display actual audit value into cell, color red
+            $incorrectAudits + $audit.LocalName # Add audit to $incorrectAudits
+        }
+        CreateAddCell $checkauditprio # Displays audit priority into cell
     }
+    return $incorrectAudits
+}
+
+function CreateAddCellWithColor($content, $R, $G, $B) {
+    # Create iTextSharp.text.Paragraph and add content
+    # Create  iTextSharp.text.pdf.PdfPCell with paragraph and set backgroundcolor $R $G $B
+    # Add Cell to Table
+    }
+
+function CreateAddCell($content) {
+        # Create iTextSharp.text.Paragraph and add content
+        # Create  iTextSharp.text.pdf.PdfPCell with paragraph
+        # Add Cell to Table
+}
 \end{lstlisting}
