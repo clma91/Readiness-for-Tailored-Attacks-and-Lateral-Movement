@@ -4,7 +4,7 @@
     \usepackage[utf8]{inputenc}
     \usepackage[nswissgerman, english]{babel}
     \usepackage[hyphens]{url}
-    \usepackage[hidelinks]{hyperref}
+
     \usepackage{graphicx}
     \usepackage{subfig}
     \usepackage{vhistory}
@@ -55,7 +55,7 @@
     % Chapter ohne Nummerierung, Eintrag in Inhaltsverzeichnis
     \newcommand{\kapitel}[1]{
         \stepcounter{chapter}\chapter*{#1}
-        \addcontentsline{toc}{chapter}{#1}
+        % \addcontentsline{toc}{chapter}{#1}
         \markboth{\arabic{chapter} #1}{\arabic{chapter} #1}
     }
     % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis
@@ -133,3 +133,4 @@
     }
     
     \lstset{style=visual-studio-style}
+    \usepackage[hidelinks]{hyperref}
