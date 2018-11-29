@@ -19,7 +19,6 @@ function VisualizeAll($exportFolder) {
     ToolCanBeDetected $incorrectAudits
     $pdf.Add($tableAudit) | Out-Null
     WriteEventLogs $exportFolder
-    
     $pdf.Close()
 }
 
@@ -27,6 +26,7 @@ function VisualizeAuditPolicies($exportFolder) {
     $pdf = OpenPDF $exportFolder
     $incorrectAudits = WriteAuditPolicies $exportFolder
     ToolCanBeDetected $incorrectAudits
+    $pdf.Add($tableAudit) | Out-Null
     $pdf.Close()
 }
 
@@ -137,7 +137,7 @@ function WriteEventLogs($importFolder) {
 
 function ToolCanBeDetected($incorrectAudits) {
     $detectables = @()
-    $notdetectables = @()
+    $notDetectableCategories = @()
     $causingAudit = @()
     [xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
     $toolCategories = $auditsbytool.Tool.ChildNodes
@@ -151,7 +151,7 @@ function ToolCanBeDetected($incorrectAudits) {
         }
     
         if ($checknr -gt 0) {
-            $notdetectables += "`n" + "- " + $toolCategory.LocalName + "(" + $causingAudit + ")"
+            $notDetectableCategories += "`n" + "- " + $toolCategory.LocalName + "(" + $causingAudit + ")"
         } else {
             $detectables += $toolCategory.LocalName
         }
@@ -160,7 +160,7 @@ function ToolCanBeDetected($incorrectAudits) {
     $amoutOfDetecables = $detectables.count
     $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
     Add-Text -Document $pdf -Text $text | Out-Null
-    [String ]$text = "The following attack categories cannot be detected with certainty: $notdetectables"  
+    [String ]$text = "The following attack categories cannot be detected with certainty: $notDetectableCategories"  
     Add-Text -Document $pdf -Text $text | Out-Null
 }
 

@@ -278,7 +278,7 @@ The second part of the function filters the EventIDs from the chaced logs. Subse
     $eventLogs| Select EventID -Unique |Export-CSV $exportEventLogsIntoCSV -NoTypeInfo -Encoding UTF8
     }
 \end{lstlisting}
-After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, we divide this function into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similar it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
+After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, the function is divided into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similar it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 1, language=PowerShell]
     $appAndServLogs = New-Object System.Collections.ArrayList
     $idsForTaskScheduler = ("106", "200", "129", "201", ...
@@ -327,7 +327,7 @@ The next point on the list is importing the found ''EventLogs'' and ''Service An
 The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. At the end all temporary files are deleted.
 \clearpage
 \subsection{Script: Visualize}
-In this script we implemented the ''\nameref{UC05}'', here the description how we have done it.
+In this script the ''\nameref{UC05}'' is implemented, here the description how it was done.
 \subsubsection{Result} \label{resultVisualize}
 The script ''\nameref{UC05}'' runs as follows:
 \begin{itemize}
@@ -342,12 +342,12 @@ The resulting PDF looks something like this: \ \\
 \textbf{AuditPolicies}
 \begin{table}[H]
     \centering
-    \begin{tabular}{| p{5.33cm} |  p{5.33cm} | p{5.33cm} |} \hline
-        Aduit Name & Target & Actual \\ \hline
-        AuditNonSensitivePrivilege & SuccessAndFailure &\cellcolor{green} SuccessAndFailure \\ \hline
-        AuditProcessTermination & Success &\cellcolor{darkgreen} SuccessAndFailure \\ \hline
-        AuditSAM & SuccessAndFailure &\cellcolor{red} NotConfigured \\ \hline
-        ... & ... & ... \\ \hline
+    \begin{tabular}{| p{4.5cm} |  p{4cm} | p{4cm} | p{2.5cm}|} \hline
+        Aduit Name & Target & Actual & Prio\\ \hline
+        AuditNonSensitivePrivilege & SuccessAndFailure &\cellcolor{green} SuccessAndFailure & High\\ \hline
+        AuditProcessTermination & Success &\cellcolor{darkgreen} SuccessAndFailure & Medium \\ \hline
+        AuditSAM & SuccessAndFailure &\cellcolor{red} NotConfigured & Low\\ \hline
+        ... & ... & ... &\\ \hline
     \end{tabular}
 \end{table}\ \\
 With this policies it is possible to detect X out of 14 attack categories \ \\
@@ -364,27 +364,26 @@ The following attack categories cannot be detected with certainty: \\
     \end{tabular}
 \end{table}
 \subsubsection{Approach}
-At first, we toyed with the idea to use ''PowerBI'' \cite{PowerBI}, like Jessica Payne uses it in ''WEFFELS''. But after a short tryout we decided that the tool was too overpowered for our purpose. Also we did not like that the user would have to install a third-party tool to analyse his data. We found the Dynamic Link Library ''iTextSharp''. Originally a C\# library that allows you to generate a PDF directly, which can also be used in PowerShell. This variant is not very versatile and it is difficult to create an appealing design, but it is enough for now. 
+At first, the developers toyed with the idea to use ''PowerBI'' \cite{PowerBI}, like Jessica Payne uses it in ''WEFFELS''. But after a short tryout they decided that the tool was too overpowered for their purpose. Also did they not like that the user would have to install a third-party tool to analyse his data. The Dynamic Link Library (DLL) ''iTextSharp'', originally a C\# library, allows to generate a PDF directly from the code, which can also be used in PowerShell. This variant is not very versatile and it is difficult to create an appealing design, but it is enough for now. 
+
 \subsubsection{Implementation}
 This section describes the implementation of \lstinline|Display missing or wrong system configuration| in detail. For this purpose, the following is referred to in the section ''\ref{resultVisualize} \nameref{resultVisualize}'' described schedule. \\\\
-We imported the iTextSharp.dll and the functions from \lstinline|PowerShell-PDF| \cite{PowerShell-PDF}. The first step is to create a PDF-document and ''open'' it. For this purpose we created the function \lstinline|OpenPDF:|
+The iTextSharp.dll and the functions from \lstinline|PowerShell-PDF| \cite{PowerShell-PDF} were imported. The first step is to create a PDF-document and ''open'' it. For this purpose the function \lstinline|OpenPDF| was created:
 \begin{lstlisting}[caption=Function OpenPDF, language=PowerShell]
-    function OpenPDF{
-        $pdf = New-Object iTextSharp.text.Document 
-        New-PDF -Document $pdf -File #export path
-        $pdf.Open()
-        return $pdf
-    }
+function OpenPDF{
+    $pdf = New-Object iTextSharp.text.Document 
+    New-PDF -Document $pdf -File #export path
+    $pdf.Open()
+   }
 \end{lstlisting}
-We return the \$pdf because we will need that in a later function.\\\\
-We then use the function \lstinline|WriteAuditPolicies| to compare the found audit policies and display the incorrectly. It will use two other functions, \lstinline|CreateAddCellWithColor| and \lstinline|CreateAddCell|.
+The function \lstinline|WriteAuditPolicies| then compares the found audit policies and display the ones who are incorrectly. It will call two other functions, \lstinline|CreateAddCellWithColor| and \lstinline|CreateAddCell|.
 \begin{lstlisting}[caption=Functions WriteAuditPolicies \& CreateAddCellWithColor \& CreateAddCell, language=PowerShell]
-    function WriteAuditPolicies{
-        $auditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
-        $incorrectAudits = @() # will be returned for later use
-        [xml] auditXml = Get-Content $auditPath
-        $myAudits = $auditXml.AuditPolicies.ChildNodes
-        foreach ($audit in $myAudits) {
+function WriteAuditPolicies{
+    $auditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
+    $incorrectAudits = @() # will be returned for later use
+    [xml] auditXml = Get-Content $auditPath
+    $myAudits = $auditXml.AuditPolicies.ChildNodes
+    foreach ($audit in $myAudits) {
         $localName = $audit.LocalName
         CreateAddCell $localName # Display auditname into cell
 
@@ -394,22 +393,30 @@ We then use the function \lstinline|WriteAuditPolicies| to compare the found aud
 
         if ($audit.InnerXml -eq $checkauditvalue) { # Checks if audit values are equal
             CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 0 255 0 # Display actual audit value into cell, color green  
+            CreateAddCellWithColor $audit.InnerXml 0 255 0 
+            # Displays actual audit value into cell, color green  
         }
-        elseif ($audit.InnerXml.startswith("Succ") 
-        -and $checkauditvalue -eq "Success") { #checks if audit is ''overpowered''
+        elseif ($audit.InnerXml.startswith("Succ") #checks if audit is ''overpowered''
+        -and $checkauditvalue -eq "Success") {
             CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 0 106 0 # Display actual audit value into cell, color darkgreen
+            CreateAddCellWithColor $audit.InnerXml 0 106 0 
+            # Displays actual audit value into cell, color darkgreen
         }
         else { #audit is wrong
             CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 255 0 0  #Display actual audit value into cell, color red
-            $incorrectAudits + $audit.LocalName # Add audit to $incorrectAudits
+            CreateAddCellWithColor $audit.InnerXml 255 0 0 
+            #Displays actual audit value into cell, color red
+            $incorrectAudits += $audit.LocalName
         }
         CreateAddCell $checkauditprio # Displays audit priority into cell
     }
     return $incorrectAudits
 }
+
+
+
+
+
 
 function CreateAddCellWithColor($content, $R, $G, $B) {
     # Create iTextSharp.text.Paragraph and add content
@@ -422,4 +429,52 @@ function CreateAddCell($content) {
         # Create  iTextSharp.text.pdf.PdfPCell with paragraph
         # Add Cell to Table
 }
+\end{lstlisting}
+Now that the ''Import audit policies and compare them to a given checklist,result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$incorrectAudits.
+\begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
+    function ToolsCanBeDetected($incorrectAudits){
+        [xml] $auditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
+        $notDetectableCategories = @()
+        $causingAudit = @()
+
+        $Categories = $auditsByCategorie.Category.ChildNodes
+        foreach ($Category in $Categories) {
+            [int]$checknr = 0
+            foreach ($incorrectAudit in $incorrectAudits) {
+                if ($Category.ChildNodes.InnerXml -contains $incorrectAudit) {
+                    $checknr += 1
+                    $causingAudit += $incorrectAudit
+                }
+            }
+        
+            if ($checknr -gt 0) {
+                $notDetectableCategories += $Category.LocalName + "(" + $causingAudit + ")"
+            }
+
+        # Output of the not detectable categories and the causing audits    
+    }
+\end{lstlisting}
+The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because this two tables are created the same way, only one case is shown. Therefore the function \lstinline|WriteEventLogs| was created.
+\begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
+    function WriteEventLogs { 
+        [xml] $eventxml = Get-Content # importPath
+        # Add Title
+        $eventsWindows = $eventxml.Logs.EventLogsID.ChildNodes
+        $result = @()
+        foreach ($event in $eventsWindows) {
+            $result += $event.LocalName
+            $result += $event.InnerXml
+        }
+        #Add result to table
+    }
+\end{lstlisting}
+As a final task, all these function have to be called in the right order, and the opened PDF has to be closed. For this case the simple function \lstinline|VisualizeAll| was created:
+\begin{lstlisting}[caption=Function VisualizeAll, language=PowerShell]
+    function WriteEventLogs { 
+        $pdf = OpenPDF $exportFolder
+        $incorrectAudits = WriteAuditPolicies $exportFolder
+        ToolCanBeDetected $incorrectAudits
+        WriteEventLogs $exportFolder
+        $pdf.Close()
+    }
 \end{lstlisting}

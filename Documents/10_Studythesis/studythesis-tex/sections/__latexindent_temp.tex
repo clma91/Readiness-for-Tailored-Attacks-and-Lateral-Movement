@@ -1,0 +1,43 @@
+ function WriteAuditPolicies{
+        $auditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
+        $incorrectAudits = @() # will be returned for later use
+        [xml] auditXml = Get-Content $auditPath
+        $myAudits = $auditXml.AuditPolicies.ChildNodes
+        foreach ($audit in $myAudits) {
+        $localName = $audit.LocalName
+        CreateAddCell $localName # Display auditname into cell
+
+        $checkaudit = $auditChecklist[$localName]
+        $checkauditvalue = $checkaudit[0] # Correct setting
+        $checkauditprio = $checkaudit[1] # Priority of audit
+
+        if ($audit.InnerXml -eq $checkauditvalue) { # Checks if audit values are equal
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 0 255 0 # Display actual audit value into cell, color green  
+        }
+        elseif ($audit.InnerXml.startswith("Succ") 
+        -and $checkauditvalue -eq "Success") { #checks if audit is ''overpowered''
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 0 106 0 # Display actual audit value into cell, color darkgreen
+        }
+        else { #audit is wrong
+            CreateAddCell $checkauditvalue # Displays correct audit value
+            CreateAddCellWithColor $audit.InnerXml 255 0 0  #Display actual audit value into cell, color red
+            $incorrectAudits + $audit.LocalName # Add audit to $incorrectAudits
+        }
+        CreateAddCell $checkauditprio # Displays audit priority into cell
+    }
+    return $incorrectAudits
+}
+
+function CreateAddCellWithColor($content, $R, $G, $B) {
+    # Create iTextSharp.text.Paragraph and add content
+    # Create  iTextSharp.text.pdf.PdfPCell with paragraph and set backgroundcolor $R $G $B
+    # Add Cell to Table
+    }
+
+function CreateAddCell($content) {
+        # Create iTextSharp.text.Paragraph and add content
+        # Create  iTextSharp.text.pdf.PdfPCell with paragraph
+        # Add Cell to Table
+}
