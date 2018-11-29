@@ -2,10 +2,7 @@
 .SYNOPSIS
     System Readiness Inspector (SRI) checks the readiness for tailored attacks and lateral movement detection
 .DESCRIPTION
-    The Description of the SRI...
-    ...
-    ...
-    ...
+    SRI is a small but helpful tool to determine the readiness of a system for tailored attacks and lateral movement detection. SRI gives you a visualized overview of you audit policies and you eventlogs.
 .PARAMETER Online
     Checks the readiness of the current local system
 .PARAMETER OnlineExportPath
@@ -13,7 +10,7 @@
 .PARAMETER Offline
     Checks only the readiness for a system with a provided Resultant Set of Policies and Event Log exports
     Parameter [ImportPath] <String> must be defined
-    [ImportPath] <String> must provide rsop.xml, security.csv, system.csv, ...
+    [ImportPath] <String> must provide rsop.xml, windowslogs.csv, appandservlogs.csv, ...
 .PARAMETER AuditPolicies
     Checks only the readiness for a system with a provided Resultant Set of Policies export
     Parameter [ImportPath] <String> must be defined
@@ -21,17 +18,29 @@
 .PARAMETER EventLogs
     Checks only the readiness for a system with a provided Event Log exports
     Parameter [ImportPath] <String> must be defined
-    [ImportPath] <String> must provide security.csv, system.csv, ...
+    [ImportPath] <String> must provide windowslogs.csv, appandservlogs.csv, ...
 .PARAMETER ImportPath
-    Offline-Mode: The following files rsop.xml, security.csv, system.csv, ... must remain at the ImportPath
+    Offline-Mode: The following files rsop.xml, windowslogs.csv, appandservlogs.csv, ... must remain at the ImportPath
 .PARAMETER ExportPath
     Defines where the results should be stored
 .PARAMETER CAPI2LogSize
     Defines the LogSize of CAPI2 (default is 4194304 = 4MB - minimal recommondation from microsoft). Zero will be matched as default.
     4MB = 4194304Bytes = 4 * 1024 * 1024Bytes
     Reference: https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-vista/cc749296(v=ws.10)#capi2-diagnostics-in-windows-vista
+.PARAMETER GroupPolicy
+    Checks the readiness of a specific GroupPolicy
+    Parameter [DomainName] <String> must be defined
+    Parameter [GroupPolicyName] <String> must be defined
+.PARAMETER DomainName
+    Defines the domain in which the GroupPolicy to be checked is located
+.PARAMETER GroupPolicyName
+    Defines the GroupPolicy by the Name of the GroupPolicy to be checked
+.PARAMETER AllGroupPolicies
+    Checks the readiness of all Group Policies it can find
+
 .EXAMPLE
     ./sri.ps1 -Online
+
     - Run the System Readiness Inspector locally
     - Results will be written to the current path of execution
     - The CAPI2 log size will set to default (4MB)
@@ -55,11 +64,42 @@
     - The CAPI2 log size will bet overwritten to the given value (in this example: 5242880 = 5MB)
 .EXAMPLE
     .\sri.ps1 -Offline -ImportPath C:/temp/test -ExportPath D:/test
+
+    - Runs the System Readiness Inspector locally
+    - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
+    - The System Readiness Inspector needs one XML-File and two CSV-files, named like this: rsop.xml, windowslogs.csv, appandservlogs.csv
+    - Results will be written to the given path (in this example D:/test)
+
 .EXAMPLE
     .\sri.ps1 -Offline -EventLogs -ImportPath C:/temp/test -ExportPath D:/test
+
+    - Runs the System Readiness Inspector locally
+    - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
+    - The System Readiness Inspector needs two CSV-files named like this: windowslogs.csv, appandservlogs.csv
+       - windowslogs.csv, Either with the PowerShell command Get-EventLogs or export from EventViewer
+       - appandservlogs.csv, Either with wevutil  
+    - Results will be written to the given path (in this example D:/test)
 .EXAMPLE
     .\sri.ps1 -Offline -AuditPolicies -ImportPath C:/temp/test -ExportPath D:/test
+
+    - Runs the System Readiness Inspector locally
+    - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
+    - The System Readiness Inspector needs one XML-File named like this: rsop.xml
+    - Results will be written to the given path (in this example D:/test)
+.EXAMPLE
+    ./sri.ps1 -GroupPolicy -DomainName 'testdomain.ch' -GroupPolicyName 'Default Group Policy'
     
+    - Run the System Readiness Inspector over the given GroupPolicy
+    - EventLogs are neither collected nor checked
+    - Results will be written to the current path of execution
+
+.EXAMPLE
+    ./sri.ps1 -AllGroupPolicies
+    
+    - Run the System Readiness Inspector over all found GroupPolicies
+    - EventLogs are neither collected nor checked
+    - Results will be written to the current path of execution
+
 .NOTES
     Authors: Lukas Kellenberger, Claudio Mattes
     Date:   December 21, 2018
