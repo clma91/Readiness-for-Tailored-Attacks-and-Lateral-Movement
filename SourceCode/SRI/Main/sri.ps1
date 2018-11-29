@@ -96,7 +96,7 @@
 .EXAMPLE
     ./sri.ps1 -AllGroupPolicies
     
-    - Run the System Readiness Inspector over all found GroupPolicies
+    - Run the System Readiness Inspector over all found Group Policies
     - EventLogs are neither collected nor checked
     - Results will be written to the current path of execution
 
