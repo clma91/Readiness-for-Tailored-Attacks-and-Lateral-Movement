@@ -1,6 +1,6 @@
 Add-Type -Path "$PSScriptRoot\itextsharp.dll"
 # Import-Module "$PSScriptRoot\PDF.psm1" -Force
-$tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
+
 function OpenPDF ($exportFolder) {
     $exportPath = $PSScriptRoot + "\results.pdf"
     if ($exportFolder) {
@@ -9,31 +9,36 @@ function OpenPDF ($exportFolder) {
     $pdf = New-Object iTextSharp.text.Document 
     New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
     $pdf.Open()
-    Write-Host "Result PDF is created at $exportPath" -ForegroundColor Green
     return $pdf
 }
 
 function VisualizeAll($exportFolder) {
+    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     $incorrectAudits = WriteAuditPolicies $exportFolder
     ToolCanBeDetected $incorrectAudits
     $pdf.Add($tableAudit) | Out-Null
     WriteEventLogs $exportFolder
-    
     $pdf.Close()
+    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
 }
 
 function VisualizeAuditPolicies($exportFolder) {
+    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     $incorrectAudits = WriteAuditPolicies $exportFolder
     ToolCanBeDetected $incorrectAudits
+    $pdf.Add($tableAudit) | Out-Null
     $pdf.Close()
+    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
 }
 
 function VisualizeEventLogs($exportFolder) {
+    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     WriteEventLogs $exportFolder
     $pdf.Close()
+    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
 }
 
 function CreateAddCellWithColor($content, $R, $G, $B) {

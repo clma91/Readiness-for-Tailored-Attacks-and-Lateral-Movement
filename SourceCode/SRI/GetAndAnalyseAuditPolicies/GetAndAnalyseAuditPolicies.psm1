@@ -105,7 +105,15 @@ Function GetAuditPolicies($importPath) {
         $isCurrentPath = $false
         $pathRSOPXML = $importPath + "\rsop.xml"
     } else {
-        Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+        try {
+            Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+        }
+        catch {
+            Write-Host "Necessary Module `'GroupPolicy`' is not provided within this system" -ForegroundColor Red
+            Write-Host "Please download: `'Remote Server Administration Tools for Windows 10`'" -ForegroundColor Yellow
+            Write-Host "Link https://www.microsoft.com/en-us/download/details.aspx?id=45520" -ForegroundColor Yellow
+            return
+        }
     }
 
     if ([System.IO.File]::Exists($pathRSOPXML)) {
@@ -122,16 +130,16 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-Function GetAuditPoliciesDomain ($domain, $policyName) {
+Function GetDomainAuditPolicies ($domain, $policyName) {
+    $thisDomain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object Domain
+    if(-not ($thisDomain.Domain -eq $domain)) {
+        Write-Host "Your system is not in the domain $domain" -ForegroundColor Red
+        return
+    }
     try {
         $gpo = Get-GPO -Name "$policyName" -ErrorAction Stop
     } catch {
         Write-Host "The Group Policy with the name $policyName does not exist" -ForegroundColor Red
-        return
-    }
-    $thisDomain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object Domain
-    if(-not ($thisDomain.Domain -eq $domain)) {
-        Write-Host "Your system is not in the domain $domain" -ForegroundColor Red
         return
     }
     Write-Host "Get Audit Settings from Domain Policy $domain\$policyName"
@@ -141,21 +149,59 @@ Function GetAuditPoliciesDomain ($domain, $policyName) {
     if (Test-Path $policyCSVPath) {
         $policyCSV = $policyCSVPath + "\audit.csv"
     } else {
-        Write-Host "For this Group Policy exist no defintion"
+        Write-Host "For this Group Policy exist no defintion" -ForegroundColor Yellow
         return
     }
     if ([System.IO.File]::Exists($policyCSV)) {
-        $auditSettingsDomain = @{}
+        $auditSettings = @{}
         $policy = Import-Csv $policyCSV -Encoding UTF8
         foreach($element in $policy) {
-            $auditSettingsDomain.Add($element.Subcategory, $element."Setting Value")
+            $auditSettings.Add($element.Subcategory, $element."Setting Value")
         }
-        Write-Host $auditSettingsDomain.Count
-        return $auditSettingsDomain
+        return $auditSettings
     } else {
-        Write-Host "For this Group Policy exist no auditing defintion"
+        Write-Host "For this Group Policy exist no auditing defintion" -ForegroundColor Yellow
         return
     }
+}
+
+Function GetAllDomainAuditPolicies {
+    Write-Host "Get Audit Settings from all GPOs"
+    $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
+    try {
+        $gpos = Get-GPO -all | Select-Object DisplayName, Id
+    }
+    catch {
+        Write-Host "Your system is not associated with an Active Directory domain or forest" -ForegroundColor Red
+        return
+    }
+    
+    $auditSettingsPerPolicy = @{}
+
+    foreach($gpo in $gpos) {
+        $policyName = $gpo.DisplayName
+        $policyId = $gpo.id
+        $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
+
+        if (Test-Path $policyCSVPath) {
+            $policyCSV = $policyCSVPath + "\audit.csv"
+        } else {
+            Write-Host "For the Group Policy $policyName exist no defintion" -ForegroundColor Yellow
+            continue
+        }
+        if ([System.IO.File]::Exists($policyCSV)) {
+            $auditSettings = @{}
+            $policy = Import-Csv $policyCSV -Encoding UTF8
+            foreach($element in $policy) {
+                $auditSettings.Add($element.Subcategory, $element."Setting Value")
+            }
+            $auditSettingsPerPolicy.Add($gpo.DisplayName, $auditSettings)
+        } else {
+            Write-Host "For the Group Policy $policyName exist no auditing defintion" -ForegroundColor Yellow
+            continue
+        }
+    }
+    return $auditSettingsPerPolicy
 }
 
 Function AnalyseAuditPolicies ($auditSettings){
@@ -189,6 +235,9 @@ Function AnalyseAuditPolicies ($auditSettings){
 
     # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
     foreach($auditSetting in $auditSettings.GetEnumerator()) {
+        if ($auditSettingSubcategoryNames -notcontains $auditsetting.name) {
+            continue
+        }
         if($auditSetting.value -and $auditSetting.name) {
             try {
                 $auditSettingValue = $auditSetting.value
@@ -263,4 +312,4 @@ Function WriteXML($resultCollection, $exportPath) {
     Write-Host "DONE Audit Policies!!!"
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, GetAuditPoliciesDomain, AnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicies, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML

@@ -67,6 +67,10 @@
 
 [CmdletBinding(DefaultParametersetName='None')]
 param(
+    [Parameter(Mandatory = $true, ParameterSetName = "AllGroupPolicies", Position=0)]
+    [switch]
+    $AllGroupPolicies,
+
     [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=0)]
     [switch]
     $GroupPolicy,
@@ -119,45 +123,74 @@ Import-Module ..\GetAndCompareLogs\GetAndCompareLogs.psm1 -Force
 Import-Module ..\VisualiseResults\visualize.psm1 -Force
 
 Function GroupPolicy ($OnlineExportPath) {
-    $auditPoliciesDomain = GetAuditPoliciesDomain $DomainName $GroupPolicyName
-    if ($null -eq $auditPoliciesDomain) {
-        return
+    $auditSettingsDomain = GetDomainAuditPolicies $DomainName $GroupPolicyName
+    if ($auditSettingsDomain) {
+        $auditSettings = AnalyseAuditPolicies $auditSettingsDomain
+        WriteXML $auditSettings $OnlineExportPath
+        VisualizeAuditPolicies $OnlineExportPath
     }
-    $auditPolicies = AnalyseAuditPolicies $auditPoliciesDomain
-    WriteXML $auditPolicies $OnlineExportPath
-    VisualizeAuditPolicies $OnlineExportPath
+}
+
+Function AllGroupPolicies ($OnlineExportPath) {
+    $auditSettingsPerPolicy = GetAllDomainAuditPolicies
+    if ($auditSettingsPerPolicy) {
+        foreach($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
+            Write-Host "Processing Group Policy: " $auditSettingPerPolicy.name
+            $policyName = ($policyName -replace (" "))
+            $resultPDF = $OnlineExportPath + "\results.pdf"
+            $new_resultPDF = $OnlineExportPath + "\results_" + $policyName + ".pdf"
+            $resultOfAuditPolicies = $OnlineExportPath + "\resultOfAuditPolicies.xml"
+            $new_resoltOfAuditPoliceis = $OnlineExportPath + "\resultOfAuditPolicies" + $policyName + ".xml"
+    
+            $auditSetting = AnalyseAuditPolicies $auditSettingPerPolicy.value
+            WriteXML $auditSetting $OnlineExportPath
+            VisualizeAuditPolicies $OnlineExportPath
+    
+            if ([System.IO.File]::Exists($new_resultPDF)) {
+                Remove-Item -Path $new_resultPDF
+            } elseif ([System.IO.File]::Exists($new_resoltOfAuditPoliceis)) {
+                Remove-Item -Path $new_resoltOfAuditPoliceis
+            } else {
+                Rename-Item -Path $resultOfAuditPolicies -NewName $new_resoltOfAuditPoliceis
+                Rename-Item -Path $resultPDF -NewName $new_resultPDF
+            }
+             
+        } 
+    }
 }
 
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
     # Check RSoP
-    $rsopResult = GetAuditPolicies 
-    $auditPolicies = AnalyseAuditPolicies $rsopResult
+    $rsopResult = GetAuditPolicies
+    if($rsopResult) {
+        $auditPolicies = AnalyseAuditPolicies $rsopResult
 
-    <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 
-       is ignored to prevent conflicts between similar settings #>
-    $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
-    $name = "SCENoApplyLegacyAuditPolicy"
-    $auditPoliySubcategoryKey = GetRegistryValue $path $name
-    $auditPolicySubcategory = IsForceAuditPoliySubcategoryEnabeled $auditPoliySubcategoryKey
-
-    # Check if Sysmon is installed and running as a service
-    $sysmonService = GetService("Sysmon*")
-    $sysmon = IsSysmonInstalled $sysmonService
-
-    # Check if CAPI2 is enabled and has a minimum log size of 4MB
-    $capi2 = GetCAPI2
-    $capi2Result = IsCAPI2Enabled $capi2 $CAPI2LogSize
-
-    $resultCollection = MergeHashtables $auditPolicies $auditPolicySubcategory $sysmon $capi2Result
-
-    WriteXML $resultCollection $OnlineExportPath
-
-    GetEventLogsAndExport $OnlineExportPath
-    GetApplicationAndServiceLogs $OnlineExportPath
-    $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
-    if ($eventLogsDone) {
-        VisualizeAll $OnlineExportPath
-    }    
+        <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 
+           is ignored to prevent conflicts between similar settings #>
+        $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
+        $name = "SCENoApplyLegacyAuditPolicy"
+        $auditPoliySubcategoryKey = GetRegistryValue $path $name
+        $auditPolicySubcategory = IsForceAuditPoliySubcategoryEnabeled $auditPoliySubcategoryKey
+    
+        # Check if Sysmon is installed and running as a service
+        $sysmonService = GetService("Sysmon*")
+        $sysmon = IsSysmonInstalled $sysmonService
+    
+        # Check if CAPI2 is enabled and has a minimum log size of 4MB
+        $capi2 = GetCAPI2
+        $capi2Result = IsCAPI2Enabled $capi2 $CAPI2LogSize
+    
+        $resultCollection = MergeHashtables $auditPolicies $auditPolicySubcategory $sysmon $capi2Result
+    
+        WriteXML $resultCollection $OnlineExportPath
+    
+        GetEventLogsAndExport $OnlineExportPath
+        GetApplicationAndServiceLogs $OnlineExportPath
+        $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
+        if ($eventLogsDone) {
+            VisualizeAll $OnlineExportPath
+        }
+    }
 }
 
 Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
@@ -208,6 +241,10 @@ switch ($PsCmdLet.ParameterSetName) {
     'None' {
         Write-Host "Please define the Script-Mode [-GroupPolicy|-Online|-Offline]" -ForegroundColor Red
         continue
+    }
+    'AllGroupPolicies' {
+        $OnlineExportPath = CheckExportPath $OnlineExportPath
+        AllGroupPolicies $OnlineExportPath
     }
     'GroupPolicy' {
         $OnlineExportPath = CheckExportPath $OnlineExportPath
