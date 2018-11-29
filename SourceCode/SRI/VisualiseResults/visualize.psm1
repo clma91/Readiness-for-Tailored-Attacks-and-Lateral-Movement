@@ -214,8 +214,8 @@ function Add-Title([iTextSharp.text.Document]$Document, [string]$Text, [Switch]$
     $p = New-Object iTextSharp.text.Paragraph
     $p.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::BOLD, [iTextSharp.text.BaseColor]::$Color)
     if ($Centered) { $p.Alignment = [iTextSharp.text.Element]::ALIGN_CENTER }
-    $p.SpacingBefore = 20
-    $p.SpacingAfter = 20
+    $p.SpacingBefore = 15
+    $p.SpacingAfter = 15
     $p.Add($Text)
     $Document.Add($p)
 }

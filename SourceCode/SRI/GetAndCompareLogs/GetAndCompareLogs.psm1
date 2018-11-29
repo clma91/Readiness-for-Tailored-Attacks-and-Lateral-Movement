@@ -103,10 +103,10 @@ function ImportCompareExport($importPath, $exportPath){
     $xmlWriter.Flush()
     $xmlWriter.Close()
     
-    # if ($importPath -eq $exportPath) {
-    #     Remove-Item $importEventLogs
-    #     Remove-Item $importAppAndServLogs
-    # }
+    if ($importPath -eq $exportPath) {
+        Remove-Item $importEventLogs
+        Remove-Item $importAppAndServLogs
+    }
     return $true
 }
 
