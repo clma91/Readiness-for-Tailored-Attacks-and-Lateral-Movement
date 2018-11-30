@@ -105,25 +105,25 @@
     Date:   December 21, 2018
 #>
 
-[CmdletBinding(DefaultParametersetName='None')]
+[CmdletBinding(DefaultParametersetName = 'None')]
 param(
-    [Parameter(Mandatory = $true, ParameterSetName = "AllGroupPolicies", Position=0)]
+    [Parameter(Mandatory = $true, ParameterSetName = "AllGroupPolicies", Position = 0)]
     [switch]
     $AllGroupPolicies,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=0)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 0)]
     [switch]
     $GroupPolicy,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=1)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 1)]
     [String]
     $DomainName,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position=2)]
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 2)]
     [String]
     $GroupPolicyName,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "Online", Position=0)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Online", Position = 0)]
     [switch]
     $Online,
 
@@ -131,24 +131,24 @@ param(
     [String]
     $OnlineExportPath,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "Offline", Position=0)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Offline", Position = 0)]
     [switch]
     $Offline,
 
-    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position=1)]
+    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position = 1)]
     [switch]
     $AuditPolicies,
 
-    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position=1)]
+    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position = 1)]
     [switch]
     $EventLogs,
 
-    [Parameter(Mandatory = $true, ParameterSetName = "Offline", Position=2)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Offline", Position = 2)]
     [ValidateNotNullOrEmpty()]
     [String]
     $ImportPath,
 
-    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position=3)]
+    [Parameter(Mandatory = $false, ParameterSetName = "Offline", Position = 3)]
     [String]
     $ExportPath,
 
@@ -158,9 +158,9 @@ param(
     $CAPI2LogSize
 )
 #Requires -RunAsAdministrator
-Import-Module ..\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1 -Force
-Import-Module ..\GetAndCompareLogs\GetAndCompareLogs.psm1 -Force
-Import-Module ..\VisualiseResults\visualize.psm1 -Force
+Import-Module ("$PSScriptRoot\Modules\GetAndAnalyseAuditPolicies.psm1") -Force
+Import-Module ("$PSScriptRoot\Modules\GetAndCompareLogs.psm1") -Force
+Import-Module ("$PSScriptRoot\Modules\Visualize.psm1") -Force
 
 Function GroupPolicy ($OnlineExportPath) {
     $auditSettingsDomain = GetDomainAuditPolicies $DomainName $GroupPolicyName
@@ -174,13 +174,13 @@ Function GroupPolicy ($OnlineExportPath) {
 Function AllGroupPolicies ($OnlineExportPath) {
     $auditSettingsPerPolicy = GetAllDomainAuditPolicies
     if ($auditSettingsPerPolicy) {
-        foreach($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
+        foreach ($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
             Write-Host "Processing Group Policy: " $auditSettingPerPolicy.name
             $policyName = ($policyName -replace (" "))
             $resultPDF = $OnlineExportPath + "\results.pdf"
             $new_resultPDF = $OnlineExportPath + "\results_" + $policyName + ".pdf"
-            $resultOfAuditPolicies = $OnlineExportPath + "\resultOfAuditPolicies.xml"
-            $new_resoltOfAuditPoliceis = $OnlineExportPath + "\resultOfAuditPolicies" + $policyName + ".xml"
+            $resultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
+            $new_resoltOfAuditPoliceis = $OnlineExportPath + "\result_audit_policies" + $policyName + ".xml"
     
             $auditSetting = AnalyseAuditPolicies $auditSettingPerPolicy.value
             WriteXML $auditSetting $OnlineExportPath
@@ -188,13 +188,14 @@ Function AllGroupPolicies ($OnlineExportPath) {
     
             if ([System.IO.File]::Exists($new_resultPDF)) {
                 Remove-Item -Path $new_resultPDF
-            } elseif ([System.IO.File]::Exists($new_resoltOfAuditPoliceis)) {
+            }
+            elseif ([System.IO.File]::Exists($new_resoltOfAuditPoliceis)) {
                 Remove-Item -Path $new_resoltOfAuditPoliceis
-            } else {
-                Rename-Item -Path $resultOfAuditPolicies -NewName $new_resoltOfAuditPoliceis
+            }
+            else {
+                Rename-Item -Path $resultAuditPolicies -NewName $new_resoltOfAuditPoliceis
                 Rename-Item -Path $resultPDF -NewName $new_resultPDF
             }
-             
         } 
     }
 }
@@ -202,7 +203,7 @@ Function AllGroupPolicies ($OnlineExportPath) {
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
     # Check RSoP
     $rsopResult = GetAuditPolicies
-    if($rsopResult) {
+    if ($rsopResult) {
         $auditPolicies = AnalyseAuditPolicies $rsopResult
 
         <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 
@@ -259,20 +260,23 @@ Function Offline ($ImportPath, $ExportPath) {
 
 Function CheckExportPath($exportPath) {
     if ($exportPath) {
-        if(Test-Path -Path $exportPath) {
+        if (Test-Path -Path $exportPath) {
             return $exportPath
-        } else {
+        }
+        else {
             return $null
         } 
-    } else {
+    }
+    else {
         return $PSScriptRoot
     }
 }
 
 Function CheckGroupPolicyModule {
-    if(Get-Module -Name "GroupPolicy") {
+    if (Get-Module -Name "GroupPolicy") {
         return $true
-    } else {
+    }
+    else {
         return $false
     }
 }
@@ -290,27 +294,23 @@ switch ($PsCmdLet.ParameterSetName) {
         $OnlineExportPath = CheckExportPath $OnlineExportPath
         $ImportPath = $OnlineExportPath
 
-        if($OnlineExportPath) {
+        if ($OnlineExportPath) {
             GroupPolicy $OnlineExportPath
-        } else {
+        }
+        else {
             Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
         continue
     }
     'Online' {
         Write-Host "Online-Mode"
-        # if (-not (CheckGroupPolicyModule)) {
-        #     Write-Host "Necessary Module `'GroupPolicy`' is not provided within this system" -ForegroundColor Red
-        #     Write-Host "Please download: `'Remote Server Administration Tools for Windows 10`'" -ForegroundColor DarkRed
-        #     Write-Host "Link https://www.microsoft.com/en-us/download/details.aspx?id=45520" -ForegroundColor DarkRed 
-        #     continue
-        # }
         $OnlineExportPath = CheckExportPath $OnlineExportPath
         $ImportPath = $OnlineExportPath
 
-        if($OnlineExportPath) {
+        if ($OnlineExportPath) {
             Online $OnlineExportPath $CAPI2LogSize
-        } else {
+        }
+        else {
             Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
         continue
@@ -319,26 +319,31 @@ switch ($PsCmdLet.ParameterSetName) {
         $ExportPath = CheckExportPath $ExportPath
         try {
             $ImportPathExist = Test-Path -Path $ImportPath
-        } catch {
+        }
+        catch {
             $ImportPathExist = $false
         }            
 
-        if($ExportPath) {
-            if(-not $ImportPathExist) {
+        if ($ExportPath) {
+            if (-not $ImportPathExist) {
                 Write-Host "Defined ImportPath does not exist or your user has no access rights" -ForegroundColor Red
-            } else {
+            }
+            else {
                 if ($AuditPolicies) {
                     Write-Host "Offline-Mode AuditPolicies"
                     OfflineAuditPolicies $ImportPath $ExportPath
-                } elseif ($EventLogs) {
+                }
+                elseif ($EventLogs) {
                     Write-Host "Offline-Mode EventLogs"
                     OfflineEventLogs $ImportPath $ExportPath
-                } else {
+                }
+                else {
                     Write-Host "Offline-Mode"
                     Offline $ImportPath $ExportPath
                 }
             }
-        } else {
+        }
+        else {
             Write-Host "Defined ExportPath $ExportPath does not exist or your user has no access rights" -ForegroundColor Red
         }
         continue

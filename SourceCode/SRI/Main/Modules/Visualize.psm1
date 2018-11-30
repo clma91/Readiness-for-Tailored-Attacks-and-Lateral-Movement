@@ -1,18 +1,18 @@
 Add-Type -Path "$PSScriptRoot\itextsharp.dll"
 
 Function GetTargetListAuditPolicies {
-    [xml]$targetList = Get-Content ($PSScriptRoot + "\targetlist_auditpolicies.xml")
+    [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
     $auditSettings = @{}
-    foreach($element in $targetList.AuditPolicies.ChildNodes) {
+    foreach ($element in $targetList.AuditPolicies.ChildNodes) {
         $values = @($element.InnerXML, $element.priority)
         $auditSettings.Add($element.Localname, $values)
     }
     return $auditSettings
 }
 function OpenPDF ($exportFolder) {
-    $exportPath = $PSScriptRoot + "\results.pdf"
+    $exportPath = "$PSScriptRoot\results.pdf"
     if ($exportFolder) {
-        $exportPath = $exportFolder + "\results.pdf"
+        $exportPath = "$exportFolder\results.pdf"
     }  
     $pdf = New-Object iTextSharp.text.Document 
     New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
@@ -42,7 +42,6 @@ function VisualizeAuditPolicies($exportFolder) {
 }
 
 function VisualizeEventLogs($exportFolder) {
-    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     WriteEventLogs $exportFolder
     $pdf.Close()
@@ -67,13 +66,12 @@ function CreateAddCell($content) {
 }
 
 function WriteAuditPolicies($importFolder) {
-    $auditPath = $PSScriptRoot + "\resultOfAuditPolicies.xml"
+    $auditPath = "$PSScriptRoot\result_audit_policies.xml"
     if ($importFolder) {
-        $auditPath = $importFolder + "\resultOfAuditPolicies.xml"
+        $auditPath = "$importFolder\result_audit_policies.xml"
     }    
     [xml] $auditXml = Get-Content $auditPath
-    $auditChecklist = @{AuditNonSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditUserAccountManagement = @("Success", "Low"); AuditDetailedFileShare = @("SuccessAndFailure", "Low"); AuditKernelObject = @("SuccessAndFailure", "High"); AuditSAM = @("SuccessAndFailure", "Low"); AuditKerberosAuthenticationService = @("SuccessAndFailure", "Low"); AuditHandleManipulation = @("Success", "Low"); AuditRegistry = @("SuccessAndFailure", "High"); AuditProcessTermination = @("Success", "High"); AuditFileSystem = @("SuccessAndFailure", "High"); 'AuditMPSSVCRule-LevelPolicyChange' = @("Success", "Low"); AuditSpecialLogon = @("Success", "Low"); AuditLogoff = @("Success", "Medium"); AuditSensitivePrivilegeUse = @("SuccessAndFailure", "Low"); AuditLogon = @("Success", "Medium"); AuditSecurityGroupManagement = @("SuccessAndFailure", "Low"); AuditFileShare = @("SuccessAndFailure", "Low"); AuditKerberosServiceTicketOperations = @("SuccessAndFailure", "Low"); AuditFilteringPlatformConnection = @("Success", "Low"); AuditProcessCreation = @("Success", "High"); ForceAuditPolicySubcategory = @("Enabled", "-"); Sysmon = @("InstalledAndRunning", "High"); CAPI2 = @("EnabledGoodLogSize", "-"); CAPI2LogSize = @(4194304, "-"); AuditOtherObjectAccessEvents = @("SuccessAndFailure", "Low")}
-    # $auditChecklist = GetTargetListAuditPolicies
+    $auditChecklist = GetTargetListAuditPolicies
     
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    
@@ -123,9 +121,9 @@ function WriteAuditPolicies($importFolder) {
 }
 
 function WriteEventLogs($importFolder) {
-    $eventpath = $PSScriptRoot + "\resultOfEventLogs.xml"
+    $eventpath = "$PSScriptRoot\result_event_logs.xml"
     if ($importFolder) {
-        $eventpath = $importFolder + "\resultOfEventLogs.xml"
+        $eventpath = "$importFolder\result_event_logs.xml"
     }    
     $pdf.NewPage() | Out-Null
     [xml] $eventxml = Get-Content $eventpath
@@ -145,7 +143,6 @@ function WriteEventLogs($importFolder) {
         $resulta += $e.LocalName
         $resulta += $e.InnerXml
     }
-
     Add-Table -Document $pdf -Dataset $resulta -Cols 2 -Centered | Out-Null
 }
 
@@ -153,7 +150,7 @@ function ToolCanBeDetected($incorrectAudits) {
     $detectables = @()
     $notDetectableCategories = @()
     $causingAudit = @()
-    [xml] $auditsbytool = Get-Content "$PSScriptRoot\AuditByTool.xml"
+    [xml] $auditsbytool = Get-Content "$PSScriptRoot\..\Config\audit_by_category.xml"
     $toolCategories = $auditsbytool.Tool.ChildNodes
     foreach ($toolCategory in $toolCategories) {
         [int]$checknr = 0
@@ -166,7 +163,8 @@ function ToolCanBeDetected($incorrectAudits) {
     
         if ($checknr -gt 0) {
             $notDetectableCategories += "`n" + "- " + $toolCategory.LocalName + "(" + $causingAudit + ")"
-        } else {
+        }
+        else {
             $detectables += $toolCategory.LocalName
         }
         $causingAudit = ""
@@ -240,7 +238,6 @@ function Add-Table([iTextSharp.text.Document]$Document, [string[]]$Dataset, [int
     $t = New-Object iTextSharp.text.pdf.PDFPTable($Cols)
     $t.SpacingBefore = 5
     $t.SpacingAfter = 5
-  
     
     if (!$Centered) { $t.HorizontalAlignment = 0 }
     foreach ($data in $Dataset) {
