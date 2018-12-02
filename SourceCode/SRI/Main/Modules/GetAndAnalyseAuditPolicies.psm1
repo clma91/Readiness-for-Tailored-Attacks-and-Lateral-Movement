@@ -2,10 +2,6 @@ Function GetCAPI2 {
     return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
 }
 
-Function GetCAPI2Remote ($computer) {
-    return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml /r:$computer
-}
-
 Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     Write-Host "Check CAPI2"
     $capi2Enabled = $capi2.channel.enabled
@@ -18,17 +14,15 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
         $result.Add("CAPI2", "EnabledGoodLogSize")
         $result.Add("CAPI2LogSize", "$currentLogSize")
-        return $result
     }
     elseif ($capi2Enabled -eq "true" -and $currentLogSize -lt $requiredLogSize) {
         $result.Add("CAPI2", "EnabledBadLogSize")
         $result.Add("CAPI2LogSize", "$currentLogSize")
-        return $result
     }
     else {
         $result.Add("CAPI2", "Disabled")
-        return $result
     }
+    return $result
 }
 
 Function GetRegistryValue($path, $name) {
@@ -40,13 +34,7 @@ Function GetRegistryValue($path, $name) {
     }
 }
 
-Function GetRegistryValueRemote($path, $name, $computer) {
-    $registry = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $computer) # requires service 'Remote Registry' running on remote computer
-    $registryKey = $Reg.OpenSubKey($path)
-    return $RegKey.GetValue($name)
-}
-
-Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
+Function IsForceAuditPolicyEnabeled($auditPoliySubcategoryKey) {
     Write-Host "Check `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
     $result = @{}
 
@@ -66,30 +54,13 @@ Function IsForceAuditPoliySubcategoryEnabeled($auditPoliySubcategoryKey) {
     }
 }
 
-Function GetService($serviceName) {
-    Try {
-        return Get-Service -Name $serviceName -ErrorAction Stop
-    }
-    Catch [Microsoft.PowerShell.Commands.ServiceCommandException] {
-        return $null
-    }
-}
-
-Function GetServiceRemote($serviceName, $computer) {
-    Try {
-        return Get-Service -Name $serviceName -ComputerName $computer -ErrorAction Stop
-    }
-    Catch [Microsoft.PowerShell.Commands.ServiceCommandException] {
-        return $null
-    }
-}
-
 Function IsSysmonInstalled($service) {
     Write-Host "Check Sysmon"
+    $service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
     $result = @{}
 
     if ($service) {
-        if ($service.Status -ne "Running") {
+        if ($service.State -ne "Running") {
             $result.Add("Sysmon", "InstalledNotRunning")
             return $result
         }
@@ -102,6 +73,17 @@ Function IsSysmonInstalled($service) {
         $result.Add("Sysmon", "NotInstalled")
         return $result
     }
+}
+
+Function GetAuditPoliciesTargetList {
+    [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
+    $auditSettings = @()
+    foreach ($element in $targetList.AuditPolicies.ChildNodes) {
+        if ($element.Localname.StartsWith("Audit")) {
+            $auditSettings += ($element.Localname -replace (" "))
+        }
+    }
+    return $auditSettings
 }
 
 Function GetAuditPolicies($importPath) {
@@ -134,7 +116,7 @@ Function GetAuditPolicies($importPath) {
     } 
 
     if ($isCurrentPath) {
-        Remove-Item $pathRSOPXML
+        # Remove-Item $pathRSOPXML
     }
         
     return $rsopResult
@@ -221,7 +203,7 @@ Function GetAllDomainAuditPolicies {
 
 Function AnalyseAuditPolicies ($auditSettings) {
     Write-Host "Analyse"
-    $auditSettingSubcategoryNames = @("Audit Sensitive Privilege Use", "Audit Kerberos Service Ticket Operations", "Audit Registry", "Audit Security Group Management", "Audit File System", "Audit Process Termination", "Audit Logoff", "Audit Process Creation", "Audit Filtering Platform Connection", "Audit File Share", "Audit Kernel Object", "Audit MPSSVC Rule-Level Policy Change", "Audit Non Sensitive Privilege Use", "Audit Logon", "Audit SAM", "Audit Handle Manipulation", "Audit Special Logon", "Audit Detailed File Share", "Audit Kerberos Authentication Service", "Audit User Account Management", "Audit Other Object Access Events")
+    $targetAuditSettings = GetAuditPoliciesTargetList
     enum AuditSettingValues {
         NoAuditing
         Success
@@ -236,21 +218,23 @@ Function AnalyseAuditPolicies ($auditSettings) {
         $auditSettings = @{}
         foreach ($auditSettingRSoP in $auditSettingsRSoP) {
             if ($auditSettingRSoP) {
-                $auditSettings.Add($auditSettingRSoP.SubcategoryName, $auditSettingRSoP.SettingValue)
+                $auditSettings.Add(($auditSettingRSoP.SubcategoryName -replace (" ")), $auditSettingRSoP.SettingValue)
             }
         }
     } 
     
-    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured
-    foreach ($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
+    <# Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study 
+    "Detecting Lateral Movement through Tracking Event Logs" are configured #>
+    foreach ($auditSettingSubcategoryName in $targetAuditSettings) {
         if ($auditSettings.keys -notcontains $auditSettingSubcategoryName) {
             $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
         }
     }
 
-    # Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner
+    <# Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study 
+    "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner #>
     foreach ($auditSetting in $auditSettings.GetEnumerator()) {
-        if ($auditSettingSubcategoryNames -notcontains $auditsetting.name) {
+        if ($targetAuditSettings -notcontains $auditsetting.name) {
             continue
         }
         if ($auditSetting.value -and $auditSetting.name) {
@@ -324,7 +308,7 @@ Function WriteXML($resultCollection, $exportPath) {
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
-    Write-Host "DONE Audit Policies!!!"
+    Write-Host "Done Audit Policies"
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicies, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicies, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML

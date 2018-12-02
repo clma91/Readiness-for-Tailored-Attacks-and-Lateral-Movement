@@ -1,6 +1,6 @@
 Add-Type -Path "$PSScriptRoot\itextsharp.dll"
 
-Function GetTargetListAuditPolicies {
+Function GetAuditPoliciesTargetList {
     [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
     $auditSettings = @{}
     foreach ($element in $targetList.AuditPolicies.ChildNodes) {
@@ -71,7 +71,7 @@ function WriteAuditPolicies($importFolder) {
         $auditPath = "$importFolder\result_audit_policies.xml"
     }    
     [xml] $auditXml = Get-Content $auditPath
-    $auditChecklist = GetTargetListAuditPolicies
+    $auditChecklist = GetAuditPoliciesTargetList
     
     Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
    

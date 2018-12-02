@@ -3,7 +3,6 @@
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
 	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
 	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
-	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
@@ -16,10 +15,11 @@
 	<AuditFileShare>SuccessAndFailure</AuditFileShare>
 	<AuditProcessCreation>Success</AuditProcessCreation>
 	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
-	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
-	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
+	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
 	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
+	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledAndRunning</Sysmon>

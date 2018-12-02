@@ -309,7 +309,7 @@ Function WriteXML($resultCollection, $exportPath) {
     $xmlWriter.WriteEndDocument()
     $xmlWriter.Flush()
     $xmlWriter.Close()
-    Write-Host "DONE Audit Policies!!!"
+    Write-Host "Done Audit Policies"
 }
 
 Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPoliySubcategoryEnabeled, GetService, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicies, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
