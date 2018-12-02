@@ -127,9 +127,12 @@
         keywordstyle=\color{red}
     }
 
+    \definecolor{violetkeywords}{RGB}{190,119,227}
     \lstdefinelanguage{Powershell}
     {
-        morecomment=[l]{\#}
+        morecomment=[l]{\#},
+        % morekeywords={foreach, if, elseif, in, continue, return, switch, try, catch},
+        % keywordstyle=\bfseries\color{violetkeywords}
     }
     
     \lstset{style=visual-studio-style}

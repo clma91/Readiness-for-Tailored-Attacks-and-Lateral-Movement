@@ -1,6 +1,6 @@
 \section{Implementation}
 
-\subsection{Script: GetAndAnalyseAuditPolicies}
+\subsection{Module: GetAndAnalyseAuditPolicies}
 The basic idea was to implement the use case ''\nameref{UC01}'' separately from the use case ''\nameref{UC02}''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following describes how the two use cases were implemented.
 
 \subsubsection{Result}\label{GetAndAnalyseAuditPoliciesResult}
@@ -9,36 +9,36 @@ Both Use Cases were implemented together in one script. The script follows the f
     \item Reading and caching of the RSoP
     \item Verification that all defined audit policies are in place
     \item Verification that all defined audit policies are correctly configured
-    \item Check if ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled in registry to prevent conflicts between similar settings
+    \item Check if ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled in registry to prevent conflicts between security settings
     \item Check if Sysmon is installed and running as a service
     \item Check whether CAPI2 is enabled
 \end{itemize}
-Each result of the individual steps is then collected in a common XML file. Finally, the environment and files that are no longer needed are deleted, so that only the result XML is available for further processing. A result could possibly look like the following listing:
+Each result of the individual steps is collected in hashtables and merged together to be exported to a XML file. Finally, the environment and files that are no longer needed are deleted, so that only the result XML is available for further processing. A result could possibly look like the following listing:
 \begin{lstlisting}[caption=Example Result Audit Policy Analysis, language=xml]
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <AuditPolicies>
+    <AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
+    <AuditOtherObjectAccessEvents>NotConfigured</AuditOtherObjectAccessEvents>
+    <AuditUserAccountManagement>NotConfigured</AuditUserAccountManagement>
+    <AuditKernelObject>NotConfigured</AuditKernelObject>
+    <AuditSAM>NotConfigured</AuditSAM>
+    <AuditKerberosAuthenticationService>NotConfigured</AuditKerberosAuthenticationService>
+    <AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
     <AuditRegistry>NotConfigured</AuditRegistry>
     <AuditProcessTermination>NotConfigured</AuditProcessTermination>
-    <AuditProcessCreation>NotConfigured</AuditProcessCreation>
-    <AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
-    <AuditKernelObject>NotConfigured</AuditKernelObject>
-    <AuditNonSensitivePrivilegeUse>NotConfigured</AuditNonSensitivePrivilegeUse>
-    <AuditHandleManipulation>NotConfigured</AuditHandleManipulation>
+    <AuditFileSystem>NotConfigured</AuditFileSystem>
+    <AuditMPSSVCRule-LevelPolicyChange>NotConfigured</AuditMPSSVCRule-LevelPolicyChange>
+    <AuditSpecialLogon>NotConfigured</AuditSpecialLogon>
+    <AuditFileShare>NotConfigured</AuditFileShare>
+    <AuditLogoff>NotConfigured</AuditLogoff>
     <AuditDetailedFileShare>NotConfigured</AuditDetailedFileShare>
-    <AuditFileSystem>Success</AuditFileSystem>
-    <AuditKerberosAuthenticationService>Failure</AuditKerberosAuthenticationService>
-    <AuditKerberosServiceTicketOperations>Success</AuditKerberosServiceTicketOperations>
-    <AuditLogoff>SuccessAndFailure</AuditLogoff>
-    <AuditFileShare>NoAuditing</AuditFileShare>
-    <AuditSAM>SuccessAndFailure</AuditSAM>
-    <AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-    <AuditUserAccountManagement>SuccessAndFailure</AuditUserAccountManagement>
-    <AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
-    <AuditSpecialLogon>SuccessAndFailure</AuditSpecialLogon>
-    <AuditLogon>SuccessAndFailure</AuditLogon>
-    <AuditMPSSVCRule-LevelPolicyChange>Failure</AuditMPSSVCRule-LevelPolicyChange>
+    <AuditSensitivePrivilegeUse>NotConfigured</AuditSensitivePrivilegeUse>
+    <AuditLogon>NotConfigured</AuditLogon>
+    <AuditFilteringPlatformConnection>NotConfigured</AuditFilteringPlatformConnection>
+    <AuditProcessCreation>NotConfigured</AuditProcessCreation>
     <ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
-    <Sysmon>Installed</Sysmon>
+    <Sysmon>InstalledAndRunning</Sysmon>
+    <CAPI2LogSize>4194304</CAPI2LogSize>
     <CAPI2>EnabledGoodLogSize</CAPI2>
 </AuditPolicies>
 \end{lstlisting}
@@ -65,7 +65,7 @@ Logon/Logoff
 \end{lstlisting}
 Unfortunately, this output is not very ideal for a suitable further processing and analysis of the current configuration. The return value of the command is an ordinary array filled with corresponding strings and therefore the complete array should have been checked for correct content by string comparisons. Furthermore, the command \lstinline|auditpol| does not offer the possibility of remote configuration with regard to an extension of the tool to a whole fleet of computers. For this reason, the idea of building the tool on the basis of this command was rejected.
 \\\\
-Further research has shown that Microsoft provides a RSoP \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test, it quickly became clear that the generated XML provides all necessary information for the further analysis.
+Further research has shown that Microsoft provides a RSoP \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test, it quickly became clear that the generated XML provides all necessary information for the further analysis. Unfortunately, the \lstinline|Get-GPResultantSetOfPolicy| command is not available by default on all systems. However, this command is used and the missing Module: ''GroupPolicy'', which is used to activate the command, will be prerequisite for the script. \cite{GroupPolicy} \cite{RSAT}
 
 
 \paragraph{Analyse Audit Policies} \ \\
@@ -78,15 +78,23 @@ This section describes the implementation of \lstinline|GetAndCheckAuditPolicies
 \\\\
 The first step is to read the RSoP from the local system with the command \lstinline|Get-GPResultantSetOfPolicy|. The XML that is retrieved is then temporarily cached in the execution path of the script and read in again for further processing.
 \begin{lstlisting}[caption=Get-GPResultantSetOfPolicy, language=PowerShell]
-$currentPath = (Resolve-Path .\).Path
-$pathRSOPXML = $currentPath + "\LocalUserAndComputerReport.xml"
-Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null;
-[xml]$rsopResult = Get-Content $pathRSOPXML;
+try {
+    Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+}
+catch {
+    Write-Host "Necessary Module: `'GroupPolicy`' is not provided 
+                    within this system" -ForegroundColor Red
+    return
+}
+
+if ([System.IO.File]::Exists($pathRSOPXML)) {
+    [xml]$rsopResult = Get-Content $pathRSOPXML
+}
 \end{lstlisting}
 \vspace{1cm}
 \begin{multicols}{2}
     \ \\\\\\ \
-    The generated XML is an extraction of the GPOs and contains only the configurations set from them.
+    The generated XML (RSoP) is an extraction of the GPOs and contains only the configurations set from them.
     Afterwards the analisis begins and the entries are searched in the XML file, in which the required configurations for the ''Advanced Audit Policies'' are stored (see figure \ref{fig:AdvancedAuditPolicies}).
     \begin{figure}[H]
         \centering
@@ -94,109 +102,155 @@ Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null;
         \caption{GPO - Advanced Audit Policies}\label{fig:AdvancedAuditPolicies}
     \end{figure}
 \end{multicols}
-The first step of the analysis is to search for missing configurations. The system iterates over the queried \lstinline|AuditSettings| and searches for missing configurations.
+The first step of the analysis is to search for missing configurations. The system iterates over the queried \lstinline|AuditSettings| and searches for missing configurations. Any missing setting will be written in a hashtable \lstinline|result| for further processing.
 \begin{lstlisting}[caption=GetAndCheckAuditPolicies: Search missing configurations, language=PowerShell]
 $auditSettings = $rsopResult.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
 
-foreach($auditSettingSubcategoryName in $auditSettingSubcategoryNames) {
-    if($auditSettings.SubcategoryName -notcontains $auditSettingSubcategoryName){
-        # Write to XML
+foreach ($auditSettingSubcategoryName in $targetAuditSettings) {
+    if ($auditSettings.keys -notcontains $auditSettingSubcategoryName) {
+        $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
     }
 }
 \end{lstlisting}
 
 \clearpage
 After checking for missing configurations the set settings are checked for correctness according to \nameref{JPCertStudy}.
-
-\begin{lstlisting}[caption=, language=PowerShell]
-foreach($auditSetting in $auditSettings) {
-    # check if $auditSetting is not Null
-    if($auditSetting) { 
-        # try to get audit setting value, if not No Auditing is configured system will throw exception -> set value to 0 for NoAuditing
+\begin{lstlisting}[caption=GetAndCheckAuditPolicies: Get configured audit settings from RSoP, language=PowerShell]
+foreach ($auditSetting in $auditSettings.GetEnumerator()) {
+    if ($targetAuditSettings -notcontains $auditsetting.name) {
+        continue
+    }
+    if ($auditSetting.value -and $auditSetting.name) {
         try {
-            $auditSettingValue = $auditSetting.SettingValue 
+            $auditSettingValue = $auditSetting.value
         }
         catch {
             $auditSettingValue = 0
         }
-        $auditSubcategoryName = $auditSetting.SubcategoryName 
+        $auditSubcategoryName = $auditSetting.name 
         switch ($auditSettingValue) {
             NoAuditing {  
-                # Write SubcategoryName as tag with value  'NoAuditing' to XML
+                $auditSettingValueString = "NoAuditing"
                 continue
             }
             Success {
-                # Write SubcategoryName as tag with value 'Success' to XML
+                $auditSettingValueString = "Success"
                 continue
             } 
             Failure {
-                # Write SubcategoryName as tag with value 'Failure' to XML
+                $auditSettingValueString = "Failure"
                 continue
             }
             SuccessAndFailure {
-                # Write SubcategoryName as tag with value 'SuccessAndFailure' to XML
+                $auditSettingValueString = "SuccessAndFailure"
                 continue
             }
             Default { continue }
         }
+        $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
     }    
 }
+\end{lstlisting} \ \\
+When checking the audit policies is done the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
+
+\begin{lstlisting}[caption=GetRegistryValue,language=PowerShell]
+Function GetRegistryValue($path, $name) {
+    return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+}
+\end{lstlisting} \ \\
+The registry entry is captured in a separate function to provide a the possibility for tests. This function is called with the following parameters \cite{ForceAudit} to get the searched registry entry:
+
+\begin{lstlisting}[language=PowerShell]
+$path = "HKLM:\System\CurrentControlSet\Control\Lsa"
+$name = "SCENoApplyLegacyAuditPolicy"
 \end{lstlisting}
-After checking the audit policies which can be configured through ''Advanced Audit Policies'' the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
-\begin{lstlisting}[caption=Function IsForceAuditPoliySubcategoryEnabeled, language=PowerShell]
-Function IsForceAuditPoliySubcategoryEnabeled {
-    $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
-    $name = "SCENoApplyLegacyAuditPolicy"
-    try {
-        $auditPoliySubcategoryKey = Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+
+
+\begin{lstlisting}[caption=Function IsForceAuditPolicyEnabeled, language=PowerShell]
+Function IsForceAuditPolicyEnabeled ($auditPoliySubcategoryKey) {
+    $result = @{}
+
+    if ($auditPoliySubcategoryKey) {
         if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
-            return "Enabled"
-        } else {
-            return "Disabled"
+            $result.Add("ForceAuditPolicySubcategory", "Enabled")
+            return $result
+        }
+        else {
+            $result.Add("ForceAuditPolicySubcategory", "Disabled")
+            return $result
         }
     }
-    catch {
-        return "NotDefined"
+    else {
+        $result.Add("ForceAuditPolicySubcategory", "NotDefined")
+        return $result
     }
 }
-\end{lstlisting}
-The next step is to check if Sysmon as a service (also not contained in the RSoP) is installed and if so is it running or not. 
+\end{lstlisting}\ \\
+The next step is to check if Sysmon as a service is installed (also not contained in the RSoP) and if so is it running or not. Since a service can be renamed to hide it from the bad guys, the \lstinline|Get-Service| command cannot make a 100\% statement about whether the service is actually installed. For this reason the description of the service is queried, which does not change with renaming. \cite{Sysmon1}
 \begin{lstlisting}[caption=Function IsSysmonInstalled, language=PowerShell]
-Function IsSysmonInstalled {
-    $service = $null
+Function IsSysmonInstalled($service) {
+    Write-Host "Check Sysmon"
+    $service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
+    $result = @{}
 
-    try {
-        $service = Get-Service -Name Sysmon*
-    } catch {
-        return "NotInstalled"
+    if ($service) {
+        if ($service.State -ne "Running") {
+            $result.Add("Sysmon", "InstalledNotRunning")
+            return $result
+        }
+        else {
+            $result.Add("Sysmon", "InstalledAndRunning")
+            return $result
+        }
     }
-    
-    if ($service.Status -ne "Running") {
-        return "InstalledNotRunning"
-    } else {
-        return "Installed"
+    else {
+        $result.Add("Sysmon", "NotInstalled")
+        return $result
     }
 }
 \end{lstlisting}
-As a last step the script is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. Unfortunately, this information is also not available via the RSoP. Therefore the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} 
+
+\clearpage
+
+As a last step the script is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. The decision for 4MB is mentioned in the section ''\ref{CAPI2} \nameref{CAPI2}''. Unfortunately, this information is also not available via the RSoP. Therefore the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} In order to enable testing here as well, a Get function for the event log entry has been created.
+
+\begin{lstlisting}[caption=Function GetCAPI2, language=PowerShell]
+Function GetCAPI2 {
+    return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+}
+\end{lstlisting}\ \\
+The log size is stored in the Windows system as mebibyte (MiB). This is the reason for defining the initial log size to \lstinline|4194304|. The following conversion from 4 MB to mebibyte should make it clear:
+\begin{center}
+    \textsc{4 MB = 4 $\cdot$ 1024 $\cdot$ 1024 Bytes = 4194304 Bytes }
+\end{center}
 \begin{lstlisting}[caption=Function IsCAPI2Enabled, language=PowerShell]
-Function IsCAPI2Enabled {
-    [xml]$capi2 = wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
+    Write-Host "Check CAPI2"
     $capi2Enabled = $capi2.channel.enabled
-    $capi2LogSize = $capi2.channel.logging.maxsize -as [int]
-    if ($capi2Enabled -eq "true" -and $capi2LogSize -ge 4194304) {
-        return "EnabledGoodLogSize"
-    } elseif ($capi2Enabled -eq "true" -and $capi2LogSize -lt 4194304) {
-        return "EnabledBadLogSize"
-    } else {
-        return "Disabled"
+    $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
+    $result = @{}
+    if ($requiredLogSize -lt 4194304) {
+        $requiredLogSize = 4194304
     }
-}    
+
+    if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
+        $result.Add("CAPI2", "EnabledGoodLogSize")
+        $result.Add("CAPI2LogSize", "$currentLogSize")
+    }
+    elseif ($capi2Enabled -eq "true" -and $currentLogSize -lt $requiredLogSize) {
+        $result.Add("CAPI2", "EnabledBadLogSize")
+        $result.Add("CAPI2LogSize", "$currentLogSize")
+    }
+    else {
+        $result.Add("CAPI2", "Disabled")
+    }
+    return $result
+}  
 \end{lstlisting}
 At the end of the script all temporary files are removed.
 \clearpage
 
-\subsection{Script: GetAndCompareLogs}
+\subsection{Module: GetAndCompareLogs}
 This section describes the implementation of the ''\nameref{UC03}'' as well as ''\nameref{UC04}''. Both use cases were fulfilled in the PowerShell script ''GetAndCompareLogs''. Here is a description how the use cases were implemented.
 
 \subsubsection{Result} \label{ResultSetGetAndCompareLogs}
@@ -326,7 +380,7 @@ The next point on the list is importing the found ''EventLogs'' and ''Service An
 \end{lstlisting}
 The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. At the end all temporary files are deleted.
 \clearpage
-\subsection{Script: Visualize}
+\subsection{Module: Visualize}
 In this script the ''\nameref{UC05}'' is implemented, here the description how it was done.
 \subsubsection{Result} \label{resultVisualize}
 The script ''\nameref{UC05}'' runs as follows:
@@ -478,3 +532,11 @@ As a final task, all these function have to be called in the right order, and th
         $pdf.Close()
     }
 \end{lstlisting}
+
+
+
+
+\subsection{Main Script: SRI}
+\subsubsection{Result}
+\subsubsection{Approach}
+\subsubsection{Implementation}
