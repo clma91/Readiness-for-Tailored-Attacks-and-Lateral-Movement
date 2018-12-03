@@ -3,7 +3,7 @@ Function GetCAPI2 {
 }
 
 Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
-    Write-Host "Check CAPI2"
+    Write-Host "Checking CAPI2"
     $capi2Enabled = $capi2.channel.enabled
     $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
     $result = @{}
@@ -34,12 +34,12 @@ Function GetRegistryValue($path, $name) {
     }
 }
 
-Function IsForceAuditPolicyEnabeled($auditPoliySubcategoryKey) {
-    Write-Host "Check `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
+Function IsForceAuditPolicyEnabeled($auditPolicySubcategoryKey) {
+    Write-Host "Checking `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
     $result = @{}
 
-    if ($auditPoliySubcategoryKey) {
-        if ($auditPoliySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
+    if ($auditPolicySubcategoryKey) {
+        if ($auditPolicySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
             $result.Add("ForceAuditPolicySubcategory", "Enabled")
             return $result
         }
@@ -55,7 +55,7 @@ Function IsForceAuditPolicyEnabeled($auditPoliySubcategoryKey) {
 }
 
 Function IsSysmonInstalled($service) {
-    Write-Host "Check Sysmon"
+    Write-Host "Checking Sysmon"
     $service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
     $result = @{}
 
@@ -95,6 +95,7 @@ Function GetAuditPolicies($importPath) {
         $isCurrentPath = $false
         $pathRSOPXML = "$importPath\rsop.xml"
     }
+
     else {
         try {
             Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
@@ -122,12 +123,9 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-Function GetDomainAuditPolicies ($domain, $policyName) {
-    $thisDomain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object Domain
-    if (-not ($thisDomain.Domain -eq $domain)) {
-        Write-Host "Your system is not in the domain $domain" -ForegroundColor Red
-        return
-    }
+Function GetDomainAuditPolicies ($policyName) {
+    $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
+    
     try {
         $gpo = Get-GPO -Name "$policyName" -ErrorAction Stop
     }
@@ -146,6 +144,7 @@ Function GetDomainAuditPolicies ($domain, $policyName) {
         Write-Host "For this Group Policy exist no defintion" -ForegroundColor Yellow
         return
     }
+
     if ([System.IO.File]::Exists($policyCSV)) {
         $auditSettings = @{}
         $policy = Import-Csv $policyCSV -Encoding UTF8
@@ -202,7 +201,7 @@ Function GetAllDomainAuditPolicies {
 }
 
 Function AnalyseAuditPolicies ($auditSettings) {
-    Write-Host "Analyse"
+    Write-Host "Analysing Audit Policies"
     $targetAuditSettings = GetAuditPoliciesTargetList
     enum AuditSettingValues {
         NoAuditing
@@ -289,7 +288,7 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
 }
 
 Function WriteXML($resultCollection, $exportPath) {
-    Write-Host "Write Result XML"
+    Write-Host "Writing Result XML"
     $resultXML = "$exportPath\result_audit_policies.xml"
     $encoding = New-Object System.Text.UTF8Encoding($false)
     $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $encoding)

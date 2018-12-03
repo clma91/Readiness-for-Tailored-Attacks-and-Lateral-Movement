@@ -107,22 +107,6 @@
 
 [CmdletBinding(DefaultParametersetName = 'None')]
 param(
-    [Parameter(Mandatory = $true, ParameterSetName = "AllGroupPolicies", Position = 0)]
-    [switch]
-    $AllGroupPolicies,
-
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 0)]
-    [switch]
-    $GroupPolicy,
-
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 1)]
-    [String]
-    $DomainName,
-
-    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 2)]
-    [String]
-    $GroupPolicyName,
-
     [Parameter(Mandatory = $true, ParameterSetName = "Online", Position = 0)]
     [switch]
     $Online,
@@ -155,7 +139,19 @@ param(
     [Parameter(Mandatory = $false, ParameterSetName = "Offline")]
     [Parameter(Mandatory = $false, ParameterSetName = "Online")]
     [int]
-    $CAPI2LogSize
+    $CAPI2LogSize,
+
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 0)]
+    [switch]
+    $GroupPolicy,
+
+    [Parameter(Mandatory = $true, ParameterSetName = "GroupPolicy", Position = 1)]
+    [String]
+    $GroupPolicyName,
+
+    [Parameter(Mandatory = $true, ParameterSetName = "AllGroupPolicies", Position = 0)]
+    [switch]
+    $AllGroupPolicies    
 )
 #Requires -RunAsAdministrator
 Import-Module ("$PSScriptRoot\Modules\GetAndAnalyseAuditPolicies.psm1") -Force
@@ -163,7 +159,7 @@ Import-Module ("$PSScriptRoot\Modules\GetAndCompareLogs.psm1") -Force
 Import-Module ("$PSScriptRoot\Modules\Visualize.psm1") -Force
 
 Function GroupPolicy ($OnlineExportPath) {
-    $auditSettingsDomain = GetDomainAuditPolicies $DomainName $GroupPolicyName
+    $auditSettingsDomain = GetDomainAuditPolicies $GroupPolicyName
     if ($auditSettingsDomain) {
         $auditSettings = AnalyseAuditPolicies $auditSettingsDomain
         WriteXML $auditSettings $OnlineExportPath
@@ -226,15 +222,19 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
         $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
         if ($eventLogsDone) {
             VisualizeAll $OnlineExportPath
+        } else {
+            VisualizeAuditPolicies $OnlineExportPath
         }
     }
 }
 
 Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
     $rsopResult = GetAuditPolicies $ImportPath
-    $auditPolicies = AnalyseAuditPolicies $rsopResult
-    WriteXML $auditPolicies $ExportPath
-    VisualizeAuditPolicies $ExportPath
+    if ($rsopResult) {
+        $auditPolicies = AnalyseAuditPolicies $rsopResult
+        WriteXML $auditPolicies $ExportPath
+        VisualizeAuditPolicies $ExportPath
+    }
 }
 
 Function OfflineEventLogs ($ImportPath, $ExportPath) {
@@ -246,11 +246,15 @@ Function OfflineEventLogs ($ImportPath, $ExportPath) {
 
 Function Offline ($ImportPath, $ExportPath) {
     $rsopResult = GetAuditPolicies $ImportPath
-    $auditPolicies = AnalyseAuditPolicies $rsopResult
-    WriteXML $auditPolicies $ExportPath
-    $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
-    if ($eventLogsDone) {
-        VisualizeAll $ExportPath
+    if ($rsopResult) {
+        $auditPolicies = AnalyseAuditPolicies $rsopResult
+        WriteXML $auditPolicies $ExportPath
+        $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
+        if ($eventLogsDone) {
+            VisualizeAll $ExportPath
+        } else {
+            VisualizeAuditPolicies $ExportPath
+        }
     }
 }
 
