@@ -123,7 +123,7 @@ Function GetAuditPolicies($importPath) {
     return $rsopResult
 }
 
-Function GetDomainAuditPolicies ($policyName) {
+Function GetDomainAuditPolicy ($policyName) {
     $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
     
     try {
@@ -141,7 +141,7 @@ Function GetDomainAuditPolicies ($policyName) {
         $policyCSV = $policyCSVPath + "\audit.csv"
     }
     else {
-        Write-Host "For this Group Policy exist no defintion" -ForegroundColor Yellow
+        Write-Host "For this Group Policy exist no definition" -ForegroundColor Yellow
         return
     }
 
@@ -154,7 +154,7 @@ Function GetDomainAuditPolicies ($policyName) {
         return $auditSettings
     }
     else {
-        Write-Host "For this Group Policy exist no auditing defintion" -ForegroundColor Yellow
+        Write-Host "For this Group Policy exist no auditing definition" -ForegroundColor Yellow
         return
     }
 }
@@ -310,4 +310,4 @@ Function WriteXML($resultCollection, $exportPath) {
     Write-Host "Done Audit Policies"
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicies, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicy, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML

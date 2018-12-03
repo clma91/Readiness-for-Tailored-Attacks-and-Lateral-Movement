@@ -158,44 +158,6 @@ Import-Module ("$PSScriptRoot\Modules\GetAndAnalyseAuditPolicies.psm1") -Force
 Import-Module ("$PSScriptRoot\Modules\GetAndCompareLogs.psm1") -Force
 Import-Module ("$PSScriptRoot\Modules\Visualize.psm1") -Force
 
-Function GroupPolicy ($OnlineExportPath) {
-    $auditSettingsDomain = GetDomainAuditPolicies $GroupPolicyName
-    if ($auditSettingsDomain) {
-        $auditSettings = AnalyseAuditPolicies $auditSettingsDomain
-        WriteXML $auditSettings $OnlineExportPath
-        VisualizeAuditPolicies $OnlineExportPath
-    }
-}
-
-Function AllGroupPolicies ($OnlineExportPath) {
-    $auditSettingsPerPolicy = GetAllDomainAuditPolicies
-    if ($auditSettingsPerPolicy) {
-        foreach ($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
-            Write-Host "Processing Group Policy: " $auditSettingPerPolicy.name
-            $policyName = ($policyName -replace (" "))
-            $resultPDF = $OnlineExportPath + "\results.pdf"
-            $new_resultPDF = $OnlineExportPath + "\results_" + $policyName + ".pdf"
-            $resultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
-            $new_resoltOfAuditPolicies = $OnlineExportPath + "\result_audit_policies" + $policyName + ".xml"
-    
-            $auditSetting = AnalyseAuditPolicies $auditSettingPerPolicy.value
-            WriteXML $auditSetting $OnlineExportPath
-            VisualizeAuditPolicies $OnlineExportPath
-    
-            if ([System.IO.File]::Exists($new_resultPDF)) {
-                Remove-Item -Path $new_resultPDF
-            }
-            elseif ([System.IO.File]::Exists($new_resoltOfAuditPolicies)) {
-                Remove-Item -Path $new_resoltOfAuditPolicies
-            }
-            else {
-                Rename-Item -Path $resultAuditPolicies -NewName $new_resoltOfAuditPolicies
-                Rename-Item -Path $resultPDF -NewName $new_resultPDF
-            }
-        } 
-    }
-}
-
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
     $rsopResult = GetAuditPolicies
     if ($rsopResult) {
@@ -255,6 +217,44 @@ Function Offline ($ImportPath, $ExportPath) {
         } else {
             VisualizeAuditPolicies $ExportPath
         }
+    }
+}
+
+Function GroupPolicy ($OnlineExportPath) {
+    $auditSettingsDomain = GetDomainAuditPolicy $GroupPolicyName
+    if ($auditSettingsDomain) {
+        $auditSettings = AnalyseAuditPolicies $auditSettingsDomain
+        WriteXML $auditSettings $OnlineExportPath
+        VisualizeAuditPolicies $OnlineExportPath
+    }
+}
+
+Function AllGroupPolicies ($OnlineExportPath) {
+    $auditSettingsPerPolicy = GetAllDomainAuditPolicies
+    if ($auditSettingsPerPolicy) {
+        foreach ($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
+            Write-Host "Processing Group Policy: " $auditSettingPerPolicy.name
+            $policyName = ($policyName -replace (" "))
+            $resultPDF = $OnlineExportPath + "\results.pdf"
+            $new_resultPDF = $OnlineExportPath + "\results_" + $policyName + ".pdf"
+            $resultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
+            $new_resoltOfAuditPolicies = $OnlineExportPath + "\result_audit_policies" + $policyName + ".xml"
+    
+            $auditSetting = AnalyseAuditPolicies $auditSettingPerPolicy.value
+            WriteXML $auditSetting $OnlineExportPath
+            VisualizeAuditPolicies $OnlineExportPath
+    
+            if ([System.IO.File]::Exists($new_resultPDF)) {
+                Remove-Item -Path $new_resultPDF
+            }
+            elseif ([System.IO.File]::Exists($new_resoltOfAuditPolicies)) {
+                Remove-Item -Path $new_resoltOfAuditPolicies
+            }
+            else {
+                Rename-Item -Path $resultAuditPolicies -NewName $new_resoltOfAuditPolicies
+                Rename-Item -Path $resultPDF -NewName $new_resultPDF
+            }
+        } 
     }
 }
 

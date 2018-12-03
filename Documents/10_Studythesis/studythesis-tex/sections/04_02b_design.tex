@@ -11,12 +11,12 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries System} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        8222\footnotemark[1] & Shadow copy has been created \\ \hline
-        20001\footnotemark[1] & Driver Management concluded the process to install driver  \\ \hline
+        8222\footnotemark[2] & Shadow copy has been created \\ \hline
+        20001\footnotemark[2] & Driver Management concluded the process to install driver  \\ \hline
     \end{tabular}
     \caption{Mandatory System Event Logs}
 \end{table}
-\footnotetext[1]{Recorded by default Windows settings}
+\footnotetext[2]{Recorded by default Windows settings}
 
 
 \begin{table}[H]
@@ -24,11 +24,11 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TaskScheduler > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        102\footnotemark[1] & Task completed \\ \hline
-        106\footnotemark[1] & A task has been registered \\ \hline
-        129\footnotemark[1] & A task process has been created \\ \hline
-        200\footnotemark[1] & The operation that has been started \\ \hline
-        201\footnotemark[1] & The operation has been completed \\ \hline
+        102\footnotemark[2] & Task completed \\ \hline
+        106\footnotemark[2] & A task has been registered \\ \hline
+        129\footnotemark[2] & A task process has been created \\ \hline
+        200\footnotemark[2] & The operation that has been started \\ \hline
+        201\footnotemark[2] & The operation has been completed \\ \hline
     \end{tabular}
     \caption{Mandatory TaskScheduler Event Logs}
 \end{table}
@@ -38,8 +38,8 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Windows Remote Management > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        6\footnotemark[1] & Creating WSMan Session \\ \hline
-        169\footnotemark[1] & User authentication authenticated successfully \\ \hline
+        6\footnotemark[2] & Creating WSMan Session \\ \hline
+        169\footnotemark[2] & User authentication authenticated successfully \\ \hline
     \end{tabular}
     \caption{Mandatory Windows Remote Management Event Logs}
 \end{table}
@@ -49,8 +49,8 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TerminalServices-LocalSessionManager > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        21\footnotemark[1] & Remote Desktop Services: Session logon succeeded\\ \hline
-        24\footnotemark[1] & Remote Desktop Services: Session has been disconnected \\ \hline
+        21\footnotemark[2] & Remote Desktop Services: Session logon succeeded\\ \hline
+        24\footnotemark[2] & Remote Desktop Services: Session has been disconnected \\ \hline
     \end{tabular}
     \caption{Mandatory TerminalServices-LocalSessionManager Event Logs}
 \end{table}
@@ -60,28 +60,26 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Sysmon > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        1\footnotemark[2] & Process create \\ \hline
-        2\footnotemark[2] & A process changed a file creation time \\ \hline
-        5\footnotemark[2] & Process terminated \\ \hline
-        8\footnotemark[2] & CreateRemoteThread \\ \hline
-        9\footnotemark[2] & RawAccessRead: detects when the process is using ''\textbackslash\textbackslash.\textbackslash'' \\ \hline
+        1\footnotemark[3] & Process create \\ \hline
+        2\footnotemark[3] & A process changed a file creation time \\ \hline
+        5\footnotemark[3] & Process terminated \\ \hline
+        8\footnotemark[3] & CreateRemoteThread \\ \hline
+        9\footnotemark[3] & RawAccessRead: detects when the process is using ''\textbackslash\textbackslash.\textbackslash'' \\ \hline
     \end{tabular}
     \caption{Mandatory Sysmon Event Logs}
 \end{table}
 \nocite{Sysmon-Presentation}
-
-\setcounter{footnote}{1}
 
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TaskScheduler > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        102\footnotemark[1] & Task completed \\ \hline
-        106\footnotemark[1] & Task registered \\ \hline
-        129\footnotemark[1] & Created Task Process \\ \hline
-        200\footnotemark[1] & Action started \\ \hline
-        201\footnotemark[1] & Action completed \\ \hline
+        102\footnotemark[2] & Task completed \\ \hline
+        106\footnotemark[2] & Task registered \\ \hline
+        129\footnotemark[2] & Created Task Process \\ \hline
+        200\footnotemark[2] & Action started \\ \hline
+        201\footnotemark[2] & Action completed \\ \hline
     \end{tabular}
     \caption{Mandatory TaskScheduler Event Logs}
 \end{table}
@@ -91,8 +89,8 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > WinRM > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        6\footnotemark[1] & Creating WSMan Session \\ \hline
-        169\footnotemark[1] & User authentication: authenticated successfully \\ \hline
+        6\footnotemark[2] & Creating WSMan Session \\ \hline
+        169\footnotemark[2] & User authentication: authenticated successfully \\ \hline
     \end{tabular}
     \caption{Mandatory Windows Remote Management Event Logs}
 \end{table}
@@ -102,24 +100,24 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > TerminalServices > LocalSessionManager > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        21\footnotemark[1] & Remote Desktop Services: Session logon succeeded \\ \hline
-        24\footnotemark[1] & Remote Desktop Services: Session has been disconnected \\ \hline
+        21\footnotemark[2] & Remote Desktop Services: Session logon succeeded \\ \hline
+        24\footnotemark[2] & Remote Desktop Services: Session has been disconnected \\ \hline
     \end{tabular}
     \caption{Mandatory Windows Local Session Manager Event Logs}
 \end{table}
 
-\footnotetext[1]{Recorded by default Windows settings}
-\footnotetext[2]{Recorded by default Sysmon settings}
+\footnotetext[2]{Recorded by default Windows settings}
+\footnotetext[3]{Recorded by default Sysmon settings}
+
 \clearpage
 
 \
-\footnotetext[1]{Recorded by default Windows settings}
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Security} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        104\footnotemark[1] & The System log file was cleared \\ \hline
+        104\footnotemark[2] & The System log file was cleared \\ \hline
         4624 & An account was successfully logged on \\ \hline
         4634 & An account was logged off \\ \hline
         4648 & A logon was attempted using explicit credentials \\ \hline
@@ -146,12 +144,13 @@ The following tables lists the event logs which are mandatory and must be logged
         5145 & A network share object was accessed \\ \hline
         5154 & WFP has permitted an application or service to listen on a port for incoming connections \\ \hline
         5156 & WFP has allowed a connection \\ \hline
-        7036\footnotemark[1] & The service state has changed \\ \hline
-        7045\footnotemark[1] & A service was installed in the system \\ \hline
+        7036\footnotemark[2] & The service state has changed \\ \hline
+        7045\footnotemark[2] & A service was installed in the system \\ \hline
     \end{tabular}
     \caption{Mandatory Security Event Logs}
 \end{table}
-
+\footnotetext[2]{Recorded by default Windows settings}
+\setcounter{footnote}{3}
 \clearpage
 
 \subsection{Correlation: Advanced Audit Policy Setting and Event Log IDs}\label{Correlation}
