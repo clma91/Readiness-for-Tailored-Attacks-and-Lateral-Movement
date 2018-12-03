@@ -259,7 +259,75 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \caption{Advanced Audit Policy Setting Privilege Use}
 \end{table}
 
+\clearpage
 
+\subsection{Attack Categories}
+JPCERT/CC has divided the attack tool examined in their report into several attack categories. When developing the tool, the developers relied on this list:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{7.5cm} | p{8.5cm} |}\hline
+        \textbf{Attack category} & \textbf{Tools}  \\ \hline
+        \multirow{9}{*}{Command Execution} & PsExec \\ & WMIC \\ & PowerShell Remote Command Execution \\  & wmiexec.vbs \\ & BeginX \\  & WinRM \\ & WinRS \\  & AT Command \\ & BITS \\ \hline
+        \multirow{12}{*}{Password Hash Acquisation} & PWDump7
+        \\ & PWDumpX \\ & Quarks PwDump \\ & Mimikatz (Obtaining Password Hash) \\ & Mimikatz (Obtaining Ticket) \\ & WCE (Windows Credentials Editor) \\ & gsecdump \\ & lslsass \\ & Find-GPOPasswords.ps1 \\ & Mail PassView \\ & WebBrowserPassView \\ & Remote Desktop PassView \\ \hline
+        \multirow{2}{*}{\shortstack[l]{Malicious Communication Relay\\ (Packet Tunneling)}} & Htran \\ &  Fake wpad \\ \hline
+        Remote Login & RDP \\ \hline
+        \multirow{2}{*}{Pass-the-ticket, Pass-the-hash} & WCE (Remote Login) \\ & Mimikatz (Remote Login)\\ \hline
+        \multirow{2}{*}{Escalation to SYSTEM Privileges} & MS14-058 Exploit\\ & MS15-078 Exploit\\ \hline
+        Privilege Escalation & SDB UAC Bypass \\ \hline
+        \multirow{2}{*}{\shortstack[l]{Capturing the DomainAdministrator\\ and AccountCredentials}} & ntdsutil \\ & vssadmin \\ \hline
+        Adding or Deleting a Local User/Group & net user \\ \hline
+        \multirow{3}{*}{File Sharing} & netuse \\ & net share\\ & icacls\\ \hline
+    \end{tabular}
+\end{table}
+\begin{table}[H]
+        \begin{tabular}{| p{7.5cm} | p{8.5cm} |}\hline
+        \multirow{4}{*}{\shortstack[l]{Capturing Active DirectoryDatabase\\(Creation of Domain Administrator or \\ Addition of a User to Administrator Group)}} & \\ & ntdsutil \\ & vssadmin \\ & \\ \hline
+        \multirow{2}{*}{Deleting Evidence} & sdelete \\ & timestomp\\ \hline
+        Deleting Eventlog & wevutil \\ \hline
+        \multirow{2}{*}{Acquisition of Account Information} & csde \\ & ldifde\\ & dsquery \\ \hline
+    \end{tabular}
+    \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}}
+\end{table}
+\clearpage
+\subsection{Audit Priority}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
+        \textbf{Audit} & \textbf{Prio} & \textbf{Explanation} \\ \hline
+        Audit File System & High & Is needed to be able to detect many attack categories, events are logged when users attempt to access file system objects \\ \hline
+        Audit Kernel Object & High & Is needed to be able to detect many attack categories, events are logged when a process has exited \\ \hline
+        Audit Process Creation & High & Is needed to be able to detect many attack categories, events are logged when a process is created (starts)\\ \hline
+        Audit Process Termination & High & Is needed to be able to detect almost all attack categories, events are logged when users attempt to access the system kernel \\ \hline
+        Audit Registry & High & Is needed to be able to detect many attack categories, events are logged when attempt was made to access registry objects \\ \hline
+        Audit Special Logon & High & Events are logged when a member of a ''Special Group'', that has administrator-equivalent privileges, logs on \\ \hline
+        Force Audit Policy Subcategory & High & Force audit policy subcategory settings to override audit policy category settings\\ \hline
+        Sysmon & High & Logs detailed information about process creations, network connections, and changes to file creation time \\ \hline
+        Audit Detailed File Share & Medium & Events are logged when users attempt to access files and folders on a shared folder \\ \hline
+        Audit Logon & Medium & Is needed to be able to detect many attack categories, events are logged when a user is logging on to a device \\ \hline
+        Audit MPSSVCRule-LevelPolicyChange & Medium & Events are logged when changes are made to policy rules for the Microsoft Protection Service\\ \hline
+        Audit Security Group Management & Medium & Microsoft prioritises  this audit setting as ''Medium'', Events are logged when specific security group management tasks are performed \\ \hline
+        Audit Sensitive Privilege Use & Medium & Logs events that show the usage of sensitive privileges, for example ''Act as part of the operating system'' \\ \hline
+        Audit User Account Management & Medium & Microsoft prioritises this audit setting as ''Medium'', when specific user account management tasks are performed \\ \hline
+        Audit File Share & Low & Logs events related to file shares: creation, deletion, modification, and access attempts \\ \hline
+        Audit Filtering Platform Connection & Low & Events are logged when connections are allowed or blocked by the Windows Filtering Platform \\ \hline
+        Audit Handle Manipulation & Low & Creates the event '' 4658: The handle to an object was closed'' in various subcategories and shows duplication and close actions\\ \hline
+        Audit Kerberos Authentication Service & Low & Logs events for Kerberos authentication ticket-granting ticket requests \\ \hline
+    \end{tabular}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
+        Audit Kerberos Service Ticket Operations & Low &Logs security audit events for Kerberos service ticket requests \\ \hline
+        Audit Logoff & Low & Events are logged when a user is logging off a device\\ \hline
+        Audit Non Sensitive Privilege Use & Low & Logs events that show usage of non-sensitive privileges, for example ''Add workstations to domain'' \\ \hline
+        Audit Other Object Access Events & Low & Monitor operations with scheduled tasks \\ \hline
+        Audit SAM & Low & Logs events when user attempts to access Security Account Manager objects \\ \hline
+        CAPI2 & Low & Not essential \\ \hline
+        CAPI2LogSize & Low & Not essential \\ \hline
+    \end{tabular}
+    \caption{Audit Policy Priority \cite{SecAuditFAQ}}
+\end{table}
 
 \clearpage
 
