@@ -288,27 +288,29 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XMLWriter, [String] $StartE
     $XMLWriter.WriteEndElement()
 }
 
-Function WriteXML($ResultCollection, $ExportPath) {
-    Write-Host "Writing Result XML"
-    $ResultXML = "$ExportPath\result_audit_policies.xml"
-    $Encoding = New-Object System.Text.UTF8Encoding($false)
-    $XMLWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
-
-    $XMLWriter.Formatting = "Indented"
-    $XMLWriter.Indentation = 1
-    $XMLWriter.IndentChar = "`t"
-    $XMLWriter.WriteStartDocument()
-    $XMLWriter.WriteStartElement("AuditPolicies")
-
-    foreach ($Item in $ResultCollection.keys) {
-        WriteXMLElement $XMLWriter $Item $ResultCollection.$Item
+Function WriteXML([Hashtable] $ResultCollection, [String] $ExportPath) {
+    if ($ResultCollection) {
+        Write-Host "Writing Result XML"
+        $ResultXML = "$ExportPath\result_audit_policies.xml"
+        $Encoding = New-Object System.Text.UTF8Encoding($false)
+        $XMLWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
+    
+        $XMLWriter.Formatting = "Indented"
+        $XMLWriter.Indentation = 1
+        $XMLWriter.IndentChar = "`t"
+        $XMLWriter.WriteStartDocument()
+        $XMLWriter.WriteStartElement("AuditPolicies")
+    
+        foreach ($Item in $ResultCollection.keys) {
+            WriteXMLElement $XMLWriter $Item $ResultCollection.$Item
+        }
+    
+        $XMLWriter.WriteEndElement()
+        $XMLWriter.WriteEndDocument()
+        $XMLWriter.Flush()
+        $XMLWriter.Close()
+        Write-Host "Done Audit Policies"
     }
-
-    $XMLWriter.WriteEndElement()
-    $XMLWriter.WriteEndDocument()
-    $XMLWriter.Flush()
-    $XMLWriter.Close()
-    Write-Host "Done Audit Policies"
 }
 
 Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, GetAuditPolicies, GetDomainAuditPolicy, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML

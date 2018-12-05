@@ -125,10 +125,6 @@ Describe "IsSysmonInstalled" {
     }
 }
 
-Describe "GetAuditPoliciesTargetList" {
-    It "checks if returned array contains all audit settings"
-}
-
 Describe "AnalyseAuditPolicies" {
     [xml]$emptyXML = Get-Content ($testFilesPath + "\empty.xml")
     [xml]$rsopXML = Get-Content ($testFilesPath + "\rsop.xml")
@@ -299,5 +295,58 @@ Describe "AnalyseAuditPolicies" {
             $result.keys | should -Contain "AuditFilteringPlatformConnection"
             $result.values | should -Contain "Success"
         }
+    }
+}
+
+Describe "MergeHashtables" {
+    $FirstHashTable = @{
+        key1 = "value1" 
+        key2 = "value2"
+    }
+    $SecondHashTable = @{
+        key3 = "value3" 
+        key4 = "value4"
+    }
+    It "checks if the hashtables are merged correctly" {
+        $Result = MergeHashtables $FirstHashTable $SecondHashTable
+
+        $Result.keys | should -Contain "key1"
+        $Result.keys | should -Contain "key2"
+        $Result.keys | should -Contain "key3"
+        $Result.keys | should -Contain "key4"
+
+        $Result.values | should -Contain "value1"
+        $Result.values | should -Contain "value2"
+        $Result.values | should -Contain "value3"
+        $Result.values | should -Contain "value4"
+    }
+    It "checks if MergeHashtables without input returns an hashtable which is NULL and has empty keys and values" {
+        $Result = MergeHashtables
+
+        $Result | should -Not -BeNullOrEmpty
+        $Result.keys | should -BeNullOrEmpty 
+        $Result.values | should -BeNullOrEmpty 
+    }
+}
+
+Describe "WriteXML" {
+    $ResultCollection = @{
+        AuditNonSensitivePrivilegeUse = "SuccessAndFailure"
+        AuditOtherObjectAccessEvents = "SuccessAndFailure"
+    }
+
+    It "checks WriteXML without input writes no XML-file" {
+        WriteXML
+        $XMLPath = "$PSScriptRoot\result_audit_policies.xml"
+        Test-Path -LiteralPath $XMLPath | Should -Be $false
+    }
+
+    It "checks if result_audit_policies.xml is written" {
+        $CurrentPath = $PSScriptRoot
+        WriteXML $ResultCollection $CurrentPath
+        $XMLPath = "$CurrentPath\result_audit_policies.xml"
+        
+        Test-Path -LiteralPath $XMLPath | Should -Be $true  
+        Remove-Item $XMLPath 
     }
 }
