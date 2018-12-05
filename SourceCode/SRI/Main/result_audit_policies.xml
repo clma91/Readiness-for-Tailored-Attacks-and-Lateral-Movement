@@ -3,24 +3,24 @@
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
 	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
 	<AuditUserAccountManagement>Success</AuditUserAccountManagement>
-	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSAM>SuccessAndFailure</AuditSAM>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
-	<AuditLogoff>NotConfigured</AuditLogoff>
-	<AuditProcessTermination>Success</AuditProcessTermination>
 	<AuditHandleManipulation>Success</AuditHandleManipulation>
+	<AuditRegistry>SuccessAndFailure</AuditRegistry>
+	<AuditProcessTermination>Success</AuditProcessTermination>
+	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditSpecialLogon>Success</AuditSpecialLogon>
-	<AuditRegistry>SuccessAndFailure</AuditRegistry>
-	<AuditFileShare>SuccessAndFailure</AuditFileShare>
-	<AuditProcessCreation>Success</AuditProcessCreation>
-	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
-	<AuditFileSystem>SuccessAndFailure</AuditFileSystem>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
+	<AuditLogoff>NotConfigured</AuditLogoff>
+	<AuditDetailedFileShare>SuccessAndFailure</AuditDetailedFileShare>
 	<AuditSensitivePrivilegeUse>SuccessAndFailure</AuditSensitivePrivilegeUse>
-	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
+	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
 	<AuditSecurityGroupManagement>SuccessAndFailure</AuditSecurityGroupManagement>
+	<AuditFileShare>SuccessAndFailure</AuditFileShare>
+	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
 	<AuditFilteringPlatformConnection>Success</AuditFilteringPlatformConnection>
+	<AuditProcessCreation>Success</AuditProcessCreation>
 	<ForceAuditPolicySubcategory>Enabled</ForceAuditPolicySubcategory>
 	<Sysmon>InstalledAndRunning</Sysmon>
 	<CAPI2LogSize>4194304</CAPI2LogSize>

@@ -25,7 +25,7 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     return $result
 }
 
-Function GetRegistryValue($path, $name) {
+Function GetRegistryValue([String] $path, [String] $name) {
     try {
         return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
     }
@@ -34,7 +34,7 @@ Function GetRegistryValue($path, $name) {
     }
 }
 
-Function IsForceAuditPolicyEnabeled($auditPolicySubcategoryKey) {
+Function IsForceAuditPolicyEnabeled([Object] $auditPolicySubcategoryKey) {
     Write-Host "Checking `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
     $result = @{}
 
@@ -54,7 +54,7 @@ Function IsForceAuditPolicyEnabeled($auditPolicySubcategoryKey) {
     }
 }
 
-Function IsSysmonInstalled($service) {
+Function IsSysmonInstalled {
     Write-Host "Checking Sysmon"
     $service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
     $result = @{}
@@ -86,11 +86,11 @@ Function GetAuditPoliciesTargetList {
     return $auditSettings
 }
 
-Function GetAuditPolicies($importPath) {
-    Write-Host "Get RSoP"
+Function GetAuditPolicies([String] $importPath) {
     $isCurrentPath = $true
     $pathRSOPXML = "$PSScriptRoot\..\rsop.xml"
-
+    Write-Host "Get RSoP"
+    
     if ($importPath) {
         $isCurrentPath = $false
         $pathRSOPXML = "$importPath\rsop.xml"
@@ -117,13 +117,13 @@ Function GetAuditPolicies($importPath) {
     } 
 
     if ($isCurrentPath) {
-        # Remove-Item $pathRSOPXML
+        Remove-Item $pathRSOPXML
     }
         
     return $rsopResult
 }
 
-Function GetDomainAuditPolicy ($policyName) {
+Function GetDomainAuditPolicy ([String] $policyName) {
     $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
     
     try {
@@ -141,7 +141,7 @@ Function GetDomainAuditPolicy ($policyName) {
         $policyCSV = $policyCSVPath + "\audit.csv"
     }
     else {
-        Write-Host "For this Group Policy exist no definition" -ForegroundColor Yellow
+        Write-Host "For this Group Policy exist no definition" -ForegroundColor Red
         return
     }
 
@@ -154,7 +154,7 @@ Function GetDomainAuditPolicy ($policyName) {
         return $auditSettings
     }
     else {
-        Write-Host "For this Group Policy exist no auditing definition" -ForegroundColor Yellow
+        Write-Host "For this Group Policy exist no auditing definition" -ForegroundColor Red
         return
     }
 }
@@ -181,7 +181,7 @@ Function GetAllDomainAuditPolicies {
             $policyCSV = $policyCSVPath + "\audit.csv"
         }
         else {
-            Write-Host "For the Group Policy $policyName exist no defintion" -ForegroundColor Yellow
+            Write-Host "For the Group Policy $policyName exist no defintion" -ForegroundColor Red
             continue
         }
         if ([System.IO.File]::Exists($policyCSV)) {
@@ -193,7 +193,7 @@ Function GetAllDomainAuditPolicies {
             $auditSettingsPerPolicy.Add($gpo.DisplayName, $auditSettings)
         }
         else {
-            Write-Host "For the Group Policy $policyName exist no auditing defintion" -ForegroundColor Yellow
+            Write-Host "For the Group Policy $policyName exist no auditing defintion" -ForegroundColor Red
             continue
         }
     }

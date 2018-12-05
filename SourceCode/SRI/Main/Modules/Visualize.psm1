@@ -9,7 +9,7 @@ Function GetAuditPoliciesTargetList {
     }
     return $auditSettings
 }
-function OpenPDF ($exportFolder) {
+function OpenPDF ([String] $exportFolder) {
     $exportPath = "$PSScriptRoot\results.pdf"
     if ($exportFolder) {
         $exportPath = "$exportFolder\results.pdf"
@@ -20,7 +20,7 @@ function OpenPDF ($exportFolder) {
     return $pdf
 }
 
-function VisualizeAll($exportFolder) {
+function VisualizeAll([String] $exportFolder) {
     $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     $incorrectAudits = WriteAuditPolicies $exportFolder
@@ -28,27 +28,27 @@ function VisualizeAll($exportFolder) {
     $pdf.Add($tableAudit) | Out-Null
     WriteEventLogs $exportFolder
     $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
+    Write-Host "Result PDF is created at $exportFolder"
 }
 
-function VisualizeAuditPolicies($exportFolder) {
+function VisualizeAuditPolicies([String] $exportFolder) {
     $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
     $pdf = OpenPDF $exportFolder
     $incorrectAudits = WriteAuditPolicies $exportFolder
     ToolCanBeDetected $incorrectAudits
     $pdf.Add($tableAudit) | Out-Null
     $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
+    Write-Host "Result PDF is created at $exportFolder"
 }
 
-function VisualizeEventLogs($exportFolder) {
+function VisualizeEventLogs([String] $exportFolder) {
     $pdf = OpenPDF $exportFolder
     WriteEventLogs $exportFolder
     $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder" -ForegroundColor Green
+    Write-Host "Result PDF is created at $exportFolder"
 }
 
-function CreateAddCellWithColor($content, $R, $G, $B) {
+function CreateAddCellWithColor([String] $content, [int] $R, [int] $G, [int] $B) {
     $p = New-Object iTextSharp.text.Paragraph
     $p.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
     $p.Add($content)
@@ -57,7 +57,7 @@ function CreateAddCellWithColor($content, $R, $G, $B) {
     $tableAudit.AddCell($cell) | Out-Null
 }
 
-function CreateAddCell($content) {
+function CreateAddCell([String] $content) {
     $p = New-Object iTextSharp.text.Paragraph
     $p.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
     $p.Add($content)
@@ -65,7 +65,7 @@ function CreateAddCell($content) {
     $tableAudit.AddCell($cell) | Out-Null
 }
 
-function WriteAuditPolicies($importFolder) {
+function WriteAuditPolicies([String] $importFolder) {
     $auditPath = "$PSScriptRoot\result_audit_policies.xml"
     if ($importFolder) {
         $auditPath = "$importFolder\result_audit_policies.xml"
@@ -120,7 +120,7 @@ function WriteAuditPolicies($importFolder) {
     return $incorrectAudits
 }
 
-function WriteEventLogs($importFolder) {
+function WriteEventLogs([String] $importFolder) {
     $eventpath = "$PSScriptRoot\result_event_logs.xml"
     if ($importFolder) {
         $eventpath = "$importFolder\result_event_logs.xml"
@@ -146,7 +146,7 @@ function WriteEventLogs($importFolder) {
     Add-Table -Document $pdf -Dataset $resulta -Cols 2 -Centered | Out-Null
 }
 
-function ToolCanBeDetected($incorrectAudits) {
+function ToolCanBeDetected([Array] $incorrectAudits) {
     $detectables = @()
     $notDetectableCategories = @()
     $causingAudit = @()
@@ -199,7 +199,7 @@ Function New-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$Top
         [void][iTextSharp.text.pdf.PdfWriter]::GetInstance($Document, [System.IO.File]::Create($File))
     }
     catch {
-        Write-Host Please close PDF $File -ForegroundColor Red
+        Write-Host "Please close PDF $File" -ForegroundColor Red
         Break
     }
     $Document.AddAuthor($Author)

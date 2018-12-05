@@ -34,7 +34,7 @@
 .PARAMETER DomainName
     Defines the domain in which the GroupPolicy to be checked is located
 .PARAMETER GroupPolicyName
-    Defines the GroupPolicy by the Name of the GroupPolicy to be checked
+    Defines the GroupPolicy by the name of the GroupPolicy to be checked
 .PARAMETER AllGroupPolicies
     Checks the readiness of all Group Policies it can find
 
@@ -42,7 +42,7 @@
     ./sri.ps1 -Online
 
     - Run the System Readiness Inspector locally
-    - Results will be written to the current path of execution
+    - Results will be written to the current Path of execution
     - The CAPI2 log size will set to default (4MB)
 .EXAMPLE
     ./sri.ps1 -Online C:/ExportSRI/
@@ -51,16 +51,15 @@
     PS C:\>./sri.ps1 -Online -OnlineExportPath C:/ExportSRI/
 
     - Run the System Readiness Inspector locally
-    - Results will be written to the given path (in this example: C:/ExportSRI/)
+    - Results will be written to the given Path (in this example: C:/ExportSRI/)
     - The CAPI2 log size will set to default (4MB)
 .EXAMPLE
     ./sri.ps1 -Online C:/ExportSRI/ 5242880
     or
-    
     PS C:\>./sri.ps1 -Online -OnlineExportPath C:/ExportSRI/ -CAPI2LogSize 5242880
 
     - Run the System Readiness Inspector locally
-    - Results will be written to the given path (in this example: C:/ExportSRI/)
+    - Results will be written to the given Path (in this example: C:/ExportSRI/)
     - The CAPI2 log size will bet overwritten to the given value (in this example: 5242880 = 5MB)
 .EXAMPLE
     .\sri.ps1 -Offline -ImportPath C:/temp/test -ExportPath D:/test
@@ -68,7 +67,7 @@
     - Runs the System Readiness Inspector locally
     - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
     - The System Readiness Inspector needs one XML-File and two CSV-files, named like this: rsop.xml, windowslogs.csv, appandservlogs.csv
-    - Results will be written to the given path (in this example D:/test)
+    - Results will be written to the given Path (in this example D:/test)
 
 .EXAMPLE
     .\sri.ps1 -Offline -EventLogs -ImportPath C:/temp/test -ExportPath D:/test
@@ -78,27 +77,27 @@
     - The System Readiness Inspector needs two CSV-files named like this: windowslogs.csv, appandservlogs.csv
        - windowslogs.csv, Either with the PowerShell command Get-EventLogs or export from EventViewer
        - appandservlogs.csv, Either with wevutil  
-    - Results will be written to the given path (in this example D:/test)
+    - Results will be written to the given Path (in this example D:/test)
 .EXAMPLE
     .\sri.ps1 -Offline -AuditPolicies -ImportPath C:/temp/test -ExportPath D:/test
 
     - Runs the System Readiness Inspector locally
     - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
     - The System Readiness Inspector needs one XML-File named like this: rsop.xml
-    - Results will be written to the given path (in this example D:/test)
+    - Results will be written to the given Path (in this example D:/test)
 .EXAMPLE
     ./sri.ps1 -GroupPolicy -DomainName 'testdomain.ch' -GroupPolicyName 'Default Group Policy'
     
     - Run the System Readiness Inspector over the given GroupPolicy
     - EventLogs are neither collected nor checked
-    - Results will be written to the current path of execution
+    - Results will be written to the current Path of execution
 
 .EXAMPLE
     ./sri.ps1 -AllGroupPolicies
     
     - Run the System Readiness Inspector over all found Group Policies
     - EventLogs are neither collected nor checked
-    - Results will be written to the current path of execution
+    - Results will be written to the current Path of execution
 
 .NOTES
     Authors: Lukas Kellenberger, Claudio Mattes
@@ -159,23 +158,23 @@ Import-Module ("$PSScriptRoot\Modules\GetAndCompareLogs.psm1") -Force
 Import-Module ("$PSScriptRoot\Modules\Visualize.psm1") -Force
 
 Function Online ($OnlineExportPath, $CAPI2LogSize) {
-    $rsopResult = GetAuditPolicies
-    if ($rsopResult) {
-        $auditPolicies = AnalyseAuditPolicies $rsopResult
+    $RsopResult = GetAuditPolicies
+    if ($RsopResult) {
+        $AuditPolicies = AnalyseAuditPolicies $RsopResult
 
         <# Check if setting forcing basic security auditing (Security Settings\Local Policies\Security Options) 
            is ignored to prevent conflicts between similar settings #>
-        $path = "HKLM:\System\CurrentControlSet\Control\Lsa"
-        $name = "SCENoApplyLegacyAuditPolicy"
-        $auditPoliySubcategoryKey = GetRegistryValue $path $name
+        $Path = "HKLM:\System\CurrentControlSet\Control\Lsa"
+        $Name = "SCENoApplyLegacyAuditPolicy"
+        $auditPoliySubcategoryKey = GetRegistryValue $Path $Name
         $auditPolicySubcategory = IsForceAuditPolicyEnabeled $auditPoliySubcategoryKey
     
-        $sysmon = IsSysmonInstalled $sysmonService
+        $sysmon = IsSysmonInstalled
     
         $capi2 = GetCAPI2
         $capi2Result = IsCAPI2Enabled $capi2 $CAPI2LogSize
     
-        $resultCollection = MergeHashtables $auditPolicies $auditPolicySubcategory $sysmon $capi2Result
+        $resultCollection = MergeHashtables $AuditPolicies $auditPolicySubcategory $sysmon $capi2Result
     
         WriteXML $resultCollection $OnlineExportPath
     
@@ -184,17 +183,18 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
         $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
         if ($eventLogsDone) {
             VisualizeAll $OnlineExportPath
-        } else {
+        }
+        else {
             VisualizeAuditPolicies $OnlineExportPath
         }
     }
 }
 
 Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
-    $rsopResult = GetAuditPolicies $ImportPath
-    if ($rsopResult) {
-        $auditPolicies = AnalyseAuditPolicies $rsopResult
-        WriteXML $auditPolicies $ExportPath
+    $RsopResult = GetAuditPolicies $ImportPath
+    if ($RsopResult) {
+        $AuditPolicies = AnalyseAuditPolicies $RsopResult
+        WriteXML $AuditPolicies $ExportPath
         VisualizeAuditPolicies $ExportPath
     }
 }
@@ -207,14 +207,15 @@ Function OfflineEventLogs ($ImportPath, $ExportPath) {
 }
 
 Function Offline ($ImportPath, $ExportPath) {
-    $rsopResult = GetAuditPolicies $ImportPath
-    if ($rsopResult) {
-        $auditPolicies = AnalyseAuditPolicies $rsopResult
-        WriteXML $auditPolicies $ExportPath
+    $RsopResult = GetAuditPolicies $ImportPath
+    if ($RsopResult) {
+        $AuditPolicies = AnalyseAuditPolicies $RsopResult
+        WriteXML $AuditPolicies $ExportPath
         $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
         if ($eventLogsDone) {
             VisualizeAll $ExportPath
-        } else {
+        }
+        else {
             VisualizeAuditPolicies $ExportPath
         }
     }
@@ -283,7 +284,7 @@ Function CheckGroupPolicyModule {
 
 switch ($PsCmdLet.ParameterSetName) {
     'None' {
-        Write-Host "Please define the Script-Mode [-GroupPolicy|-Online|-Offline]" -ForegroundColor Red
+        Write-Host "Please define the Script-Mode [-Online|-Offline|-GroupPolicy|-AllGroupPolicies]"  -ForegroundColor Red
         continue
     }
     'AllGroupPolicies' {
@@ -313,7 +314,7 @@ switch ($PsCmdLet.ParameterSetName) {
             Online $OnlineExportPath $CAPI2LogSize
         }
         else {
-            Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
+            Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights"  -ForegroundColor Red
         }
         continue
     }
@@ -328,7 +329,7 @@ switch ($PsCmdLet.ParameterSetName) {
 
         if ($ExportPath) {
             if (-not $ImportPathExist) {
-                Write-Host "Defined ImportPath does not exist or your user has no access rights" -ForegroundColor Red
+                Write-Host "Defined ImportPath does not exist or your user has no access rights"  -ForegroundColor Red
             }
             else {
                 if ($AuditPolicies) {

@@ -1,4 +1,4 @@
-function GetEventLogsAndExport($exportPath){
+function GetEventLogsAndExport([String] $exportPath){
     $logNames = @("System", "Security")
     $exportPathCSV = "$exportPath\eventlogs.csv"
 
@@ -27,7 +27,7 @@ Function GetTargetAppAndServLogs {
     }
     return $appAndServLogs
 }
-function GetApplicationAndServiceLogs($exportPath) {
+function GetApplicationAndServiceLogs([String] $exportPath) {
     $idsForTaskScheduler = (106, 200, 129, 201, 102)
     $idsForWindowsRemoteManagement = (6, 169)
     $idsForLocalSessionManager = (21, 24)
@@ -62,7 +62,7 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startE
     $xmlWriter.WriteEndElement()
 }
 
-function ImportCompareExport($importPath, $exportPath){
+function ImportCompareExport([String] $importPath, [String] $exportPath){
     $eventLogIdsToCheck = GetTargetWindowsLogs
     $appAndServIdsToCheck = GetTargetAppAndServLogs
     $resultXML = "$exportPath\result_event_logs.xml"
