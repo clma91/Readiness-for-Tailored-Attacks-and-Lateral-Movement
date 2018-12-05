@@ -1,179 +1,179 @@
 Add-Type -Path "$PSScriptRoot\itextsharp.dll"
 
 Function GetAuditPoliciesTargetList {
-    [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
-    $auditSettings = @{}
-    foreach ($element in $targetList.AuditPolicies.ChildNodes) {
-        $values = @($element.InnerXML, $element.priority)
-        $auditSettings.Add($element.Localname, $values)
+    [xml]$TargetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
+    $AuditSettings = @{}
+    foreach ($Element in $TargetList.AuditPolicies.ChildNodes) {
+        $Values = @($Element.InnerXML, $Element.priority)
+        $AuditSettings.Add($Element.Localname, $Values)
     }
-    return $auditSettings
+    return $AuditSettings
 }
-function OpenPDF ([String] $exportFolder) {
-    $exportPath = "$PSScriptRoot\results.pdf"
-    if ($exportFolder) {
-        $exportPath = "$exportFolder\results.pdf"
+Function OpenPDF ([String] $ExportFolder) {
+    $ExportPath = "$PSScriptRoot\results.pdf"
+    if ($ExportFolder) {
+        $ExportPath = "$ExportFolder\results.pdf"
     }  
-    $pdf = New-Object iTextSharp.text.Document 
-    New-PDF -Document $pdf -File $exportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
-    $pdf.Open()
-    return $pdf
+    $Pdf = New-Object iTextSharp.text.Document 
+    New-PDF -Document $Pdf -File $ExportPath -TopMargin 20 -BottomMargin 20 -LeftMargin 5 -RightMargin 5 -Author "SRI" | Out-Null
+    $Pdf.Open()
+    return $Pdf
 }
 
-function VisualizeAll([String] $exportFolder) {
-    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
-    $pdf = OpenPDF $exportFolder
-    $incorrectAudits = WriteAuditPolicies $exportFolder
-    ToolCanBeDetected $incorrectAudits
-    $pdf.Add($tableAudit) | Out-Null
-    WriteEventLogs $exportFolder
-    $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder"
+Function VisualizeAll([String] $ExportFolder) {
+    $TableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
+    $Pdf = OpenPDF $ExportFolder
+    $IncorrectAudits = WriteAuditPolicies $ExportFolder
+    ToolCanBeDetected $IncorrectAudits
+    $Pdf.Add($TableAudit) | Out-Null
+    WriteEventLogs $ExportFolder
+    $Pdf.Close()
+    Write-Host "Result PDF is created at $ExportFolder"
 }
 
-function VisualizeAuditPolicies([String] $exportFolder) {
-    $tableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
-    $pdf = OpenPDF $exportFolder
-    $incorrectAudits = WriteAuditPolicies $exportFolder
-    ToolCanBeDetected $incorrectAudits
-    $pdf.Add($tableAudit) | Out-Null
-    $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder"
+Function VisualizeAuditPolicies([String] $ExportFolder) {
+    $TableAudit = New-Object iTextSharp.text.pdf.PDFPTable(4)
+    $Pdf = OpenPDF $ExportFolder
+    $IncorrectAudits = WriteAuditPolicies $ExportFolder
+    ToolCanBeDetected $IncorrectAudits
+    $Pdf.Add($TableAudit) | Out-Null
+    $Pdf.Close()
+    Write-Host "Result PDF is created at $ExportFolder"
 }
 
-function VisualizeEventLogs([String] $exportFolder) {
-    $pdf = OpenPDF $exportFolder
-    WriteEventLogs $exportFolder
-    $pdf.Close()
-    Write-Host "Result PDF is created at $exportFolder"
+Function VisualizeEventLogs([String] $ExportFolder) {
+    $Pdf = OpenPDF $ExportFolder
+    WriteEventLogs $ExportFolder
+    $Pdf.Close()
+    Write-Host "Result PDF is created at $ExportFolder"
 }
 
-function CreateAddCellWithColor([String] $content, [int] $R, [int] $G, [int] $B) {
-    $p = New-Object iTextSharp.text.Paragraph
-    $p.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
-    $p.Add($content)
-    $cell = New-Object iTextSharp.text.pdf.PdfPCell($p)
-    $cell.BackgroundColor = New-Object iTextSharp.text.BaseColor($R, $G, $B)
-    $tableAudit.AddCell($cell) | Out-Null
+Function CreateAddCellWithColor([String] $Content, [int] $R, [int] $G, [int] $B) {
+    $P = New-Object iTextSharp.text.Paragraph
+    $P.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
+    $P.Add($Content)
+    $Cell = New-Object iTextSharp.text.pdf.PdfPCell($P)
+    $Cell.BackgroundColor = New-Object iTextSharp.text.BaseColor($R, $G, $B)
+    $TableAudit.AddCell($Cell) | Out-Null
 }
 
-function CreateAddCell([String] $content) {
-    $p = New-Object iTextSharp.text.Paragraph
-    $p.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
-    $p.Add($content)
-    $cell = New-Object iTextSharp.text.pdf.PdfPCell($p);
-    $tableAudit.AddCell($cell) | Out-Null
+Function CreateAddCell([String] $Content) {
+    $P = New-Object iTextSharp.text.Paragraph
+    $P.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
+    $P.Add($Content)
+    $Cell = New-Object iTextSharp.text.pdf.PdfPCell($P);
+    $TableAudit.AddCell($Cell) | Out-Null
 }
 
-function WriteAuditPolicies([String] $importFolder) {
-    $auditPath = "$PSScriptRoot\result_audit_policies.xml"
-    if ($importFolder) {
-        $auditPath = "$importFolder\result_audit_policies.xml"
+Function WriteAuditPolicies([String] $ImportFolder) {
+    $AuditPath = "$PSScriptRoot\result_audit_policies.xml"
+    if ($ImportFolder) {
+        $AuditPath = "$ImportFolder\result_audit_policies.xml"
     }    
-    [xml] $auditXml = Get-Content $auditPath
-    $auditChecklist = GetAuditPoliciesTargetList
+    [xml] $AuditXml = Get-Content $AuditPath
+    $AuditChecklist = GetAuditPoliciesTargetList
     
-    Add-Title -Document $pdf -Text "AuditPolicies" -Centered | Out-Null
+    Add-Title -Document $Pdf -Text "AuditPolicies" -Centered | Out-Null
    
-    $tableAudit.SpacingBefore = 20
-    $tableAudit.SpacingAfter = 20
-    $myaudits = $auditXml.AuditPolicies.ChildNodes
+    $TableAudit.SpacingBefore = 20
+    $TableAudit.SpacingAfter = 20
+    $MyAudits = $AuditXml.AuditPolicies.ChildNodes
     CreateAddCell "AuditName"
     CreateAddCell "Target"
     CreateAddCell "Actual"
     CreateAddCell "Prio"
 
-    foreach ($audit in $myaudits) {
-        $incorrectAudits = @()
-        $localName = $audit.LocalName
-        CreateAddCell $localName
-        $checkaudit = $auditChecklist[$localName]
-        $checkauditvalue = $checkaudit[0]
-        $checkauditprio = $checkaudit[1]
-        if ($audit.InnerXml -eq $checkauditvalue) {
-            CreateAddCell $checkauditvalue
-            CreateAddCellWithColor $audit.InnerXml 0 255 0
+    foreach ($Audit in $MyAudits) {
+        $IncorrectAudits = @()
+        $LocalName = $Audit.LocalName
+        CreateAddCell $LocalName
+        $CheckAudit = $AuditChecklist[$LocalName]
+        $CheckAuditValue = $CheckAudit[0]
+        $CheckAuditPrio = $CheckAudit[1]
+        if ($Audit.InnerXml -eq $CheckAuditValue) {
+            CreateAddCell $CheckAuditValue
+            CreateAddCellWithColor $Audit.InnerXml 0 255 0
         }
-        elseif ($audit.InnerXml.startswith("Succ") -and $checkauditvalue -eq "Success") {
-            CreateAddCell $checkauditvalue
-            CreateAddCellWithColor $audit.InnerXml 0 106 0
+        elseif ($Audit.InnerXml.startswith("Succ") -and $CheckAuditValue -eq "Success") {
+            CreateAddCell $CheckAuditValue
+            CreateAddCellWithColor $Audit.InnerXml 0 106 0
         }
-        elseif ((-not(!$checkauditvalue)) -and $checkauditvalue.GetType() -eq [System.Int32]) {
-            $auditint = [uint32]$audit.InnerXml
-            if (-not ($auditint -lt $checkauditvalue)) {
-                CreateAddCell $checkauditvalue.ToString()
-                CreateAddCellWithColor $audit.InnerXml 0 255 0
+        elseif ((-not(!$CheckAuditValue)) -and $CheckAuditValue.GetType() -eq [System.Int32]) {
+            $AuditInt = [uint32]$Audit.InnerXml
+            if (-not ($AuditInt -lt $CheckAuditValue)) {
+                CreateAddCell $CheckAuditValue.ToString()
+                CreateAddCellWithColor $Audit.InnerXml 0 255 0
             }
             else {
-                CreateAddCell $checkauditvalue.ToString()
-                CreateAddCellWithColor $audit.InnerXml 255 0 0
-                $incorrectAudits + $audit.LocalName
+                CreateAddCell $CheckAuditValue.ToString()
+                CreateAddCellWithColor $Audit.InnerXml 255 0 0
+                $IncorrectAudits + $Audit.LocalName
             }
         }
         else {
-            CreateAddCell $checkauditvalue
-            CreateAddCellWithColor $audit.InnerXml 255 0 0
-            $incorrectAudits + $audit.LocalName
+            CreateAddCell $CheckAuditValue
+            CreateAddCellWithColor $Audit.InnerXml 255 0 0
+            $IncorrectAudits + $Audit.LocalName
         }
-        CreateAddCell $checkauditprio 
+        CreateAddCell $CheckAuditPrio 
     }
-    return $incorrectAudits
+    return $IncorrectAudits
 }
 
-function WriteEventLogs([String] $importFolder) {
-    $eventpath = "$PSScriptRoot\result_event_logs.xml"
-    if ($importFolder) {
-        $eventpath = "$importFolder\result_event_logs.xml"
+Function WriteEventLogs([String] $ImportFolder) {
+    $EventPath = "$PSScriptRoot\result_event_logs.xml"
+    if ($ImportFolder) {
+        $EventPath = "$ImportFolder\result_event_logs.xml"
     }    
-    $pdf.NewPage() | Out-Null
-    [xml] $eventxml = Get-Content $eventpath
-    Add-Title -Document $pdf -Text "WindowsLogs" -Centered | Out-Null
-    $eventswin = $eventxml.Logs.EventLogsID.ChildNodes
-    $resulte = @()
-    foreach ($e in $eventswin) {
-        $resulte += $e.LocalName
-        $resulte += $e.InnerXml
+    $Pdf.NewPage() | Out-Null
+    [xml] $EventXml = Get-Content $EventPath
+    Add-Title -Document $Pdf -Text "WindowsLogs" -Centered | Out-Null
+    $EventsWin = $EventXml.Logs.EventLogsID.ChildNodes
+    $ResultWin = @()
+    foreach ($EventWin in $EventsWin) {
+        $ResultWin += $EventWin.LocalName
+        $ResultWin += $EventWin.InnerXml
     }
-    Add-Table -Document $pdf -Dataset $resulte -Cols 2 -Centered | Out-Null
+    Add-Table -Document $Pdf -Dataset $ResultWin -Cols 2 -Centered | Out-Null
 
-    Add-Title -Document $pdf -Text "AppAndServLogs" -Centered | Out-Null
-    $eventsapp = $eventxml.Logs.AppAndServID.ChildNodes
-    $resulta = @()
-    foreach ($e in $eventsapp) {
-        $resulta += $e.LocalName
-        $resulta += $e.InnerXml
+    Add-Title -Document $Pdf -Text "AppAndServLogs" -Centered | Out-Null
+    $EventsApp = $EventXml.Logs.AppAndServID.ChildNodes
+    $ResultApp = @()
+    foreach ($EventApp in $EventsApp) {
+        $ResultApp += $EventApp.LocalName
+        $ResultApp += $EventApp.InnerXml
     }
-    Add-Table -Document $pdf -Dataset $resulta -Cols 2 -Centered | Out-Null
+    Add-Table -Document $Pdf -Dataset $ResultApp -Cols 2 -Centered | Out-Null
 }
 
-function ToolCanBeDetected([Array] $incorrectAudits) {
-    $detectables = @()
-    $notDetectableCategories = @()
-    $causingAudit = @()
-    [xml] $auditsbytool = Get-Content "$PSScriptRoot\..\Config\audit_by_category.xml"
-    $toolCategories = $auditsbytool.Tool.ChildNodes
-    foreach ($toolCategory in $toolCategories) {
-        [int]$checknr = 0
-        foreach ($incorrectAudit in $incorrectAudits) {
-            if ($toolCategory.ChildNodes.InnerXml -contains $incorrectAudit) {
-                $checknr += 1
-                $causingAudit += $incorrectAudit + ", "
+Function ToolCanBeDetected([Array] $IncorrectAudits) {
+    $Detectables = @()
+    $NotDetectableCategories = @()
+    $CausingAudit = @()
+    [xml] $AuditsByCategory = Get-Content "$PSScriptRoot\..\Config\audit_by_category.xml"
+    $ToolCategories = $AuditsByCategory.Category.ChildNodes
+    foreach ($ToolCategory in $ToolCategories) {
+        [int]$CheckNr = 0
+        foreach ($IncorrectAudit in $IncorrectAudits) {
+            if ($ToolCategory.ChildNodes.InnerXml -contains $IncorrectAudit) {
+                $CheckNr += 1
+                $CausingAudit += $IncorrectAudit + ", "
             }
         }
     
-        if ($checknr -gt 0) {
-            $notDetectableCategories += "`n" + "- " + $toolCategory.LocalName + "(" + $causingAudit + ")"
+        if ($CheckNr -gt 0) {
+            $NotDetectableCategories += "`n" + "- " + $ToolCategory.LocalName + "(" + $CausingAudit + ")"
         }
         else {
-            $detectables += $toolCategory.LocalName
+            $Detectables += $ToolCategory.LocalName
         }
-        $causingAudit = ""
+        $CausingAudit = ""
     }
-    $amoutOfDetecables = $detectables.count
-    $text = "With this policies it is possible to detect  $amoutOfDetecables out of 14 attack categories"
-    Add-Text -Document $pdf -Text $text | Out-Null
-    [String ]$text = "The following attack categories cannot be detected with certainty: $notDetectableCategories"  
-    Add-Text -Document $pdf -Text $text | Out-Null
+    $AmoutOfDetecables = $Detectables.count
+    $Text = "With this policies it is possible to detect $AmoutOfDetecables out of 14 attack categories"
+    Add-Text -Document $Pdf -Text $Text | Out-Null
+    [String ]$text = "The following attack categories cannot be detected with certainty: $NotDetectableCategories"  
+    Add-Text -Document $Pdf -Text $Text | Out-Null
 }
 
 Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
@@ -206,46 +206,46 @@ Function New-PDF([iTextSharp.text.Document]$Document, [string]$File, [int32]$Top
 }
 
 # Add a text paragraph to the document, optionally with a font name, size and color
-function Add-Text([iTextSharp.text.Document]$Document, [string]$Text, [string]$FontName = "Arial", [int32]$FontSize = 10, [string]$Color = "BLACK") {
-    $p = New-Object iTextSharp.text.Paragraph
-    $p.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
-    $p.SpacingBefore = 2
-    $p.SpacingAfter = 2
-    $p.IndentationLeft = 60
-    $p.Add($Text)
-    $Document.Add($p)
+Function Add-Text([iTextSharp.text.Document]$Document, [string]$Text, [string]$FontName = "Arial", [int32]$FontSize = 10, [string]$Color = "BLACK") {
+    $P = New-Object iTextSharp.text.Paragraph
+    $P.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
+    $P.SpacingBefore = 2
+    $P.SpacingAfter = 2
+    $P.IndentationLeft = 60
+    $P.Add($Text)
+    $Document.Add($P)
 }
 
 # Add a title to the document, optionally with a font name, size, color and centered
-function Add-Title([iTextSharp.text.Document]$Document, [string]$Text, [Switch]$Centered, [string]$FontName = "Arial", [int32]$FontSize = 16, [string]$Color = "BLACK") {
-    $p = New-Object iTextSharp.text.Paragraph
-    $p.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::BOLD, [iTextSharp.text.BaseColor]::$Color)
-    if ($Centered) { $p.Alignment = [iTextSharp.text.Element]::ALIGN_CENTER }
-    $p.SpacingBefore = 15
-    $p.SpacingAfter = 15
-    $p.Add($Text)
-    $Document.Add($p)
+Function Add-Title([iTextSharp.text.Document]$Document, [string]$Text, [Switch]$Centered, [string]$FontName = "Arial", [int32]$FontSize = 16, [string]$Color = "BLACK") {
+    $P = New-Object iTextSharp.text.Paragraph
+    $P.Font = [iTextSharp.text.FontFactory]::GetFont($FontName, $FontSize, [iTextSharp.text.Font]::BOLD, [iTextSharp.text.BaseColor]::$Color)
+    if ($Centered) { $P.Alignment = [iTextSharp.text.Element]::ALIGN_CENTER }
+    $P.SpacingBefore = 15
+    $P.SpacingAfter = 15
+    $P.Add($Text)
+    $Document.Add($P)
 }
 # Add an image to the document, optionally scaled
-function Add-Image([iTextSharp.text.Document]$Document, [string]$File, [int32]$Scale = 100) {
+Function Add-Image([iTextSharp.text.Document]$Document, [string]$File, [int32]$Scale = 100) {
     [iTextSharp.text.Image]$img = [iTextSharp.text.Image]::GetInstance($File)
     $img.ScalePercent(50)
     $Document.Add($img)
 }
 
 # Add a table to the document with an array as the data, a number of columns, and optionally centered
-function Add-Table([iTextSharp.text.Document]$Document, [string[]]$Dataset, [int32]$Cols = 3, [Switch]$Centered) {
+Function Add-Table([iTextSharp.text.Document]$Document, [string[]]$Dataset, [int32]$Cols = 3, [Switch]$Centered) {
     $t = New-Object iTextSharp.text.pdf.PDFPTable($Cols)
     $t.SpacingBefore = 5
     $t.SpacingAfter = 5
     
     if (!$Centered) { $t.HorizontalAlignment = 0 }
     foreach ($data in $Dataset) {
-        $p = New-Object iTextSharp.text.Paragraph
-        $p.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
-        $p.Add($data)
-        $cell = New-Object iTextSharp.text.pdf.PdfPCell($p)
-        $t.AddCell($cell);
+        $P = New-Object iTextSharp.text.Paragraph
+        $P.Font = [iTextSharp.text.FontFactory]::GetFont("Arial", 10, [iTextSharp.text.Font]::NORMAL, [iTextSharp.text.BaseColor]::$Color)
+        $P.Add($data)
+        $Cell = New-Object iTextSharp.text.pdf.PdfPCell($P)
+        $t.AddCell($Cell);
     }
     $Document.Add($t)
 }

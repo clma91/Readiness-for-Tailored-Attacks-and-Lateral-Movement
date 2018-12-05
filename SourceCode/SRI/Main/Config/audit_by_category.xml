@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<Tool>
+<Category>
   <CommandExecution>
     <AuditPolicy>AuditLogon</AuditPolicy>
     <AuditPolicy>AuditLogoff</AuditPolicy>
@@ -123,5 +123,4 @@
     <AuditPolicy>AuditRegistry</AuditPolicy>
     <AuditPolicy>AuditFilteringPlatformConnection</AuditPolicy>
   </AcquisitionOfAccountInformation>
-
-</Tool>
+</Category>
