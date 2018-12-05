@@ -1,8 +1,5 @@
 # Pester tests
-$localPath = (Resolve-Path .\).Path
-$azurePath = $PSScriptRoot 
-
-$currentPath = $azurePath
+$currentPath = $PSScriptRoot 
 $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
 $testFilesPath = $currentPath + "\TestFiles"
 Import-Module $modulePath -Force
@@ -61,7 +58,7 @@ Describe "IsForceAuditPoliySubcategoryEnabeled" {
 
     Context "registry value SCENoApplyLegacyAuditPolicy = 1" {
         It "checks if function returns ForceAuditPolicySubcategory Enabled" {
-            $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy1
+            $result = IsForceAuditPolicyEnabeled $SCENoApplyLegacyAuditPolicy1
 
             $result.keys | Should -Contain "ForceAuditPolicySubcategory"
             $result.values | Should -Contain "Enabled"
@@ -69,7 +66,7 @@ Describe "IsForceAuditPoliySubcategoryEnabeled" {
     }
     Context "registry value SCENoApplyLegacyAuditPolicy = 0" {
         It "checks if function returns ForceAuditPolicySubcategory Enabled" {
-            $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy0
+            $result = IsForceAuditPolicyEnabeled $SCENoApplyLegacyAuditPolicy0
 
             $result.keys | Should -Contain "ForceAuditPolicySubcategory"
             $result.values | Should -Contain "Disabled"
@@ -77,206 +74,230 @@ Describe "IsForceAuditPoliySubcategoryEnabeled" {
     }
 }
 
-Describe "IsSysmonInstalled" {
-    $sysmon64ServiceRunning = @{DisplayName="Sysmon64";Status="Running";}
-    $sysmonServiceRunning = @{DisplayName="Sysmon";Status="Running";}
-    $sysmon64ServiceStopped = @{DisplayName="Sysmon64";Status="Stopped";}
-    $sysmonServiceStopped = @{DisplayName="Sysmon";Status="Stopped";}
-    $sysmonNotInstalled = $null
-
-    Context "Sysmon64" {
-        It "checks if Sysmon64 is installed and running" {
-            $result = IsSysmonInstalled $sysmon64ServiceRunning
-
-            $result.keys | should -Contain "Sysmon"
-            $result.values | should -Contain "InstalledAndRunning"
-        }
-
-        It "checks if Sysmon64 is installed but not running" {
-            $result = IsSysmonInstalled $sysmon64ServiceStopped
-
-            $result.keys | should -Contain "Sysmon"
-            $result.values | should -Contain "InstalledNotRunning"
-        }
+Describe "IsForceAuditPolicyEnabeled" {
+    $AuditPolicyEnabled = [PSCustomObject]@{
+        SCENoApplyLegacyAuditPolicy = 1
+        PSPath                      = "Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa"
+        PSParentPath                = "Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control"
+        PSChildName                 = "Lsa"
+        PSDrive                     = "HKLM"
+        PSProvider                  = "Microsoft.PowerShell.Core\Registry"
     }
+    $AuditPolicyDisabled = [PSCustomObject]@{
+        SCENoApplyLegacyAuditPolicy = 0
+        PSPath                      = "Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa"
+        PSParentPath                = "Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control"
+        PSChildName                 = "Lsa"
+        PSDrive                     = "HKLM"
+        PSProvider                  = "Microsoft.PowerShell.Core\Registry"
+    }
+    $AuditPolicyNotDefined = $null
 
-    Context "Sysmon" {
-        It "checks if Sysmon is installed and running" {
-            $result = IsSysmonInstalled $sysmonServiceRunning
+    It "checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Enabled" {
+        $result = IsForceAuditPolicyEnabeled $AuditPolicyEnabled
 
-            $result.keys | should -Contain "Sysmon"
-            $result.values | should -Contain "InstalledAndRunning"
-        }
+        $result | Should BeOfType System.Collections.Hashtable
+        $result.keys | should -Contain "ForceAuditPolicySubcategory"
+        $result.values | should -Contain "Enabled"
+    }
+    It "checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Disabled" {
+        $result = IsForceAuditPolicyEnabeled $AuditPolicyDisabled
 
-        It "checks if Sysmon is installed but not running" {
-            $result = IsSysmonInstalled $sysmonServiceStopped
+        $result | Should BeOfType System.Collections.Hashtable
+        $result.keys | should -Contain "ForceAuditPolicySubcategory"
+        $result.values | should -Contain "Disabled"
+    }
+    It "checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory NotDefined" {
+        $result = IsForceAuditPolicyEnabeled $AuditPolicyNotDefined
 
-            $result.keys | should -Contain "Sysmon"
-            $result.values | should -Contain "InstalledNotRunning"
-        }
-
-        It "checks if Sysmon is not installed" {
-            $result = IsSysmonInstalled $sysmonNotInstalled
-
-            $result.keys | should -Contain "Sysmon"
-            $result.values | should -Contain "NotInstalled"
-        }
+        $result | Should BeOfType System.Collections.Hashtable
+        $result.keys | should -Contain "ForceAuditPolicySubcategory"
+        $result.values | should -Contain "NotDefined"
     }
 }
 
-# Describe "AnalyseAuditPolicies" {
-#     [xml]$emptyXML = Get-Content ($testFilesPath + "\empty.xml")
-#     [xml]$rsopXML = Get-Content ($testFilesPath + "\rsop.xml")
+Describe "IsSysmonInstalled" {
+    It "checks if Sysmon is installed and running" {
+        $result = IsSysmonInstalled
+
+        $result | Should BeOfType System.Collections.Hashtable
+        $result.keys | should -Contain "Sysmon"
+    }
+}
+
+Describe "GetAuditPoliciesTargetList" {
+    It "checks if returned array contains all audit settings"
+}
+
+Describe "AnalyseAuditPolicies" {
+    [xml]$emptyXML = Get-Content ($testFilesPath + "\empty.xml")
+    [xml]$rsopXML = Get-Content ($testFilesPath + "\rsop.xml")
     
-#     It "checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
+    Context "checks if all data is in returned hashtable if empty XML is provided" {
+        $result = AnalyseAuditPolicies $emptyXML
+        It "checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" {
+            $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" {
+            $result.keys | should -Contain "AuditSensitivePrivilegeUse"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditLogoff NotConfigured" {
+            $result.keys | should -Contain "AuditLogoff"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" {
+            $result.keys | should -Contain "AuditUserAccountManagement"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" {
+            $result.keys | should -Contain "AuditDetailedFileShare"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditSAM NotConfigured" {
+            $result.keys | should -Contain "AuditSAM"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditKernelObject NotConfigured" {
+            $result.keys | should -Contain "AuditKernelObject"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" {
+            $result.keys | should -Contain "AuditKerberosAuthenticationService"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" {
+            $result.keys | should -Contain "AuditHandleManipulation"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditRegistry NotConfigured" {
+            $result.keys | should -Contain "AuditRegistry"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" {
+            $result.keys | should -Contain "AuditProcessTermination"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditFileSystem NotConfigured" {
+            $result.keys | should -Contain "AuditFileSystem"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" {
+            $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" {
+            $result.keys | should -Contain "AuditSpecialLogon"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditFileShare NotConfigured" {
+            $result.keys | should -Contain "AuditFileShare"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" {
+            $result.keys | should -Contain "AuditProcessCreation"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditLogon NotConfigured" {
+            $result.keys | should -Contain "AuditLogon"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" {
+            $result.keys | should -Contain "AuditSecurityGroupManagement"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" {
+            $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" {
+            $result.keys | should -Contain "AuditFilteringPlatformConnection"
+            $result.values | should -Contain "NotConfigured"
+        }
+    }
 
-#         $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditSensitivePrivilegeUse"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditLogoff NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditLogoff"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditUserAccountManagement"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditDetailedFileShare"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditSAM NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditSAM"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditKernelObject NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditKernelObject"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditKerberosAuthenticationService"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditHandleManipulation"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditRegistry NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditRegistry"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditProcessTermination"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditFileSystem NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditFileSystem"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditSpecialLogon"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditFileShare NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditFileShare"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditProcessCreation"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditLogon NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditLogon"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditSecurityGroupManagement"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-#     It "checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" {
-#         $result = AnalyseAuditPolicies $emptyXML
-
-#         $result.keys | should -Contain "AuditFilteringPlatformConnection"
-#         $result.values | should -Contain "NotConfigured"
-#     }
-
-#     It "checks if rsop xml returns hashtable with all audit-keys NotConfigured, NoAuditing, Success, Failure and SuccessAndFailure" {
-#         $result = AnalyseAuditPolicies $rsopXML
-
-#         $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
-#         $result.keys | should -Contain "AuditSensitivePrivilegeUse"
-#         $result.keys | should -Contain "AuditLogoff"
-#         $result.keys | should -Contain "AuditUserAccountManagement"
-#         $result.keys | should -Contain "AuditDetailedFileShare"
-#         $result.keys | should -Contain "AuditSAM"
-#         $result.keys | should -Contain "AuditKernelObject"
-#         $result.keys | should -Contain "AuditKerberosAuthenticationService"
-#         $result.keys | should -Contain "AuditHandleManipulation"
-#         $result.keys | should -Contain "AuditRegistry"
-#         $result.keys | should -Contain "AuditProcessTermination"
-#         $result.keys | should -Contain "AuditFileSystem"
-#         $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
-#         $result.keys | should -Contain "AuditSpecialLogon"
-#         $result.keys | should -Contain "AuditFileShare"
-#         $result.keys | should -Contain "AuditProcessCreation"
-#         $result.keys | should -Contain "AuditLogon"
-#         $result.keys | should -Contain "AuditSecurityGroupManagement"
-#         $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
-#         $result.keys | should -Contain "AuditFilteringPlatformConnection"
-#         $result.values | should -Contain "NotConfigured"
-#         $result.values | should -Contain "NoAuditing"
-#         $result.values | should -Contain "Success"
-#         $result.values | should -Contain "Failure"
-#         $result.values | should -Contain "SuccessAndFailure"
-#     }
-
-# }
+    Context "checks if all data is in returned hashtable if RSoP-XML is provided" {
+        $result = AnalyseAuditPolicies $rsopXML
+        It "checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse Success" {
+            $result.keys | should -Contain "AuditNonSensitivePrivilegeUse"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditSensitivePrivilegeUse SuccessAndFailure" {
+            $result.keys | should -Contain "AuditSensitivePrivilegeUse"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditLogoff NotConfigured" {
+            $result.keys | should -Contain "AuditLogoff"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditUserAccountManagement Success" {
+            $result.keys | should -Contain "AuditUserAccountManagement"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditDetailedFileShare NoAuditing" {
+            $result.keys | should -Contain "AuditDetailedFileShare"
+            $result.values | should -Contain "NoAuditing"
+        }
+        It "checks if empty xml returns hashtable with AuditSAM SuccessAndFailure" {
+            $result.keys | should -Contain "AuditSAM"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditKernelObject NotConfigured" {
+            $result.keys | should -Contain "AuditKernelObject"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditKerberosAuthenticationService SuccessAndFailure" {
+            $result.keys | should -Contain "AuditKerberosAuthenticationService"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditHandleManipulation Success" {
+            $result.keys | should -Contain "AuditHandleManipulation"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditRegistry NotConfigured" {
+            $result.keys | should -Contain "AuditRegistry"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditProcessTermination Success" {
+            $result.keys | should -Contain "AuditProcessTermination"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditFileSystem SuccessAndFailure" {
+            $result.keys | should -Contain "AuditFileSystem"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange Success" {
+            $result.keys | should -Contain "AuditMPSSVCRule-LevelPolicyChange"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditSpecialLogon Success" {
+            $result.keys | should -Contain "AuditSpecialLogon"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditFileShare SuccessAndFailure" {
+            $result.keys | should -Contain "AuditFileShare"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditProcessCreation Success" {
+            $result.keys | should -Contain "AuditProcessCreation"
+            $result.values | should -Contain "Success"
+        }
+        It "checks if empty xml returns hashtable with AuditLogon NotConfigured" {
+            $result.keys | should -Contain "AuditLogon"
+            $result.values | should -Contain "NotConfigured"
+        }
+        It "checks if empty xml returns hashtable with AuditSecurityGroupManagement SuccessAndFailure" {
+            $result.keys | should -Contain "AuditSecurityGroupManagement"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations SuccessAndFailure" {
+            $result.keys | should -Contain "AuditKerberosServiceTicketOperations"
+            $result.values | should -Contain "SuccessAndFailure"
+        }
+        It "checks if empty xml returns hashtable with AuditFilteringPlatformConnection Success" {
+            $result.keys | should -Contain "AuditFilteringPlatformConnection"
+            $result.values | should -Contain "Success"
+        }
+    }
+}
