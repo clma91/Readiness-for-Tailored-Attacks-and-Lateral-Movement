@@ -1,104 +1,105 @@
 Function GetCAPI2 {
-    return wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml
+    return [xml](wevtutil gl Microsoft-Windows-CAPI2/Operational /f:xml)
 }
 
-Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
+Function IsCAPI2Enabled([xml] $CAPI2, [uint32] $RequiredLogSize) {
     Write-Host "Checking CAPI2"
-    $capi2Enabled = $capi2.channel.enabled
-    $currentLogSize = $capi2.channel.logging.maxsize -as [uint32]
-    $result = @{}
-    if ($requiredLogSize -lt 4194304) {
-        $requiredLogSize = 4194304
+    $CAPI2Enabled = $CAPI2.channel.enabled
+    $CurrentLogSize = $CAPI2.channel.logging.maxsize -as [uint32]
+    $Result = @{}
+    if ($RequiredLogSize -lt 4194304) {
+        $RequiredLogSize = 4194304
     }
 
-    if ($capi2Enabled -eq "true" -and $currentLogSize -ge $requiredLogSize) {
-        $result.Add("CAPI2", "EnabledGoodLogSize")
-        $result.Add("CAPI2LogSize", "$currentLogSize")
+    if ($CAPI2Enabled -eq "true" -and $CurrentLogSize -ge $RequiredLogSize) {
+        $Result.Add("CAPI2", "EnabledGoodLogSize")
+        $Result.Add("CAPI2LogSize", "$CurrentLogSize")
     }
-    elseif ($capi2Enabled -eq "true" -and $currentLogSize -lt $requiredLogSize) {
-        $result.Add("CAPI2", "EnabledBadLogSize")
-        $result.Add("CAPI2LogSize", "$currentLogSize")
+    elseif ($CAPI2Enabled -eq "true" -and $CurrentLogSize -lt $RequiredLogSize) {
+        $Result.Add("CAPI2", "EnabledBadLogSize")
+        $Result.Add("CAPI2LogSize", "$CurrentLogSize")
     }
     else {
-        $result.Add("CAPI2", "Disabled")
+        $Result.Add("CAPI2", "Disabled")
     }
-    return $result
+    return $Result
 }
 
-Function GetRegistryValue([String] $path, [String] $name) {
+Function GetRegistryValue([String] $Path, [String] $Name) {
     try {
-        return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+        return Get-ItemProperty -Path $Path -Name $Name -ErrorAction Stop
     }
     catch {
         return $null
     }
 }
 
-Function IsForceAuditPolicyEnabeled([Object] $auditPolicySubcategoryKey) {
+Function IsForceAuditPolicyEnabeled([Object] $AuditPolicySubcategoryKey) {
     Write-Host "Checking `'Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings`'"
-    $result = @{}
+    $Result = @{}
 
-    if ($auditPolicySubcategoryKey) {
-        if ($auditPolicySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
-            $result.Add("ForceAuditPolicySubcategory", "Enabled")
-            return $result
+    if ($AuditPolicySubcategoryKey) {
+        if ($AuditPolicySubcategoryKey.SCENoApplyLegacyAuditPolicy -eq 1) {
+            $Result.Add("ForceAuditPolicySubcategory", "Enabled")
+            return $Result
         }
         else {
-            $result.Add("ForceAuditPolicySubcategory", "Disabled")
-            return $result
+            $Result.Add("ForceAuditPolicySubcategory", "Disabled")
+            return $Result
         }
     }
     else {
-        $result.Add("ForceAuditPolicySubcategory", "NotDefined")
-        return $result
+        $Result.Add("ForceAuditPolicySubcategory", "NotDefined")
+        return $Result
     }
 }
 
 Function IsSysmonInstalled {
     Write-Host "Checking Sysmon"
-    $service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
-    $result = @{}
+    $Service = Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
+    $Result = @{}
 
-    if ($service) {
-        if ($service.State -ne "Running") {
-            $result.Add("Sysmon", "InstalledNotRunning")
-            return $result
+    if ($Service) {
+        if ($Service.State -ne "Running") {
+            $Result.Add("Sysmon", "InstalledNotRunning")
+            return $Result
         }
         else {
-            $result.Add("Sysmon", "InstalledAndRunning")
-            return $result
+            $Result.Add("Sysmon", "InstalledAndRunning")
+            return $Result
         }
     }
     else {
-        $result.Add("Sysmon", "NotInstalled")
-        return $result
+        $Result.Add("Sysmon", "NotInstalled")
+        return $Result
     }
 }
 
 Function GetAuditPoliciesTargetList {
     [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
-    $auditSettings = @()
-    foreach ($element in $targetList.AuditPolicies.ChildNodes) {
-        if ($element.Localname.StartsWith("Audit")) {
-            $auditSettings += ($element.Localname -replace (" "))
+    $AuditSettings = @()
+
+    foreach ($Element in $targetList.AuditPolicies.ChildNodes) {
+        if ($Element.Localname.StartsWith("Audit")) {
+            $AuditSettings += ($Element.Localname -replace (" "))
         }
     }
-    return $auditSettings
+    return $AuditSettings
 }
 
-Function GetAuditPolicies([String] $importPath) {
-    $isCurrentPath = $true
-    $pathRSOPXML = "$PSScriptRoot\..\rsop.xml"
+Function GetAuditPolicies([String] $ImportPath) {
+    $IsCurrentPath = $true
+    $PathRSoPXML = "$PSScriptRoot\..\rsop.xml"
     Write-Host "Get RSoP"
-    
-    if ($importPath) {
-        $isCurrentPath = $false
-        $pathRSOPXML = "$importPath\rsop.xml"
+
+    if ($ImportPath) {
+        $IsCurrentPath = $false
+        $PathRSoPXML = "$ImportPath\rsop.xml"
     }
 
     else {
         try {
-            Get-GPResultantSetOfPolicy -ReportType Xml -Path  $pathRSOPXML | Out-Null
+            Get-GPResultantSetOfPolicy -ReportType Xml -Path  $PathRSoPXML | Out-Null
         }
         catch {
             Write-Host "Necessary Module `'GroupPolicy`' is not provided within this system" -ForegroundColor Red
@@ -108,50 +109,50 @@ Function GetAuditPolicies([String] $importPath) {
         }
     }
 
-    if ([System.IO.File]::Exists($pathRSOPXML)) {
-        [xml]$rsopResult = Get-Content $pathRSOPXML
+    if ([System.IO.File]::Exists($PathRSoPXML)) {
+        [xml]$RSoPResult = Get-Content $PathRSoPXML
     }
     else {
-        Write-Host "File $pathRSOPXML does not exist!" -ForegroundColor Red
+        Write-Host "File $PathRSoPXML does not exist!" -ForegroundColor Red
         return
     } 
 
-    if ($isCurrentPath) {
-        Remove-Item $pathRSOPXML
+    if ($IsCurrentPath) {
+        Remove-Item $PathRSoPXML
     }
         
-    return $rsopResult
+    return $RSoPResult
 }
 
-Function GetDomainAuditPolicy ([String] $policyName) {
-    $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
+Function GetDomainAuditPolicy ([String] $PolicyName) {
+    $Domain = Get-CimInstance Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
     
     try {
-        $gpo = Get-GPO -Name "$policyName" -ErrorAction Stop
+        $GPO = Get-GPO -Name "$PolicyName" -ErrorAction Stop
     }
     catch {
-        Write-Host "The Group Policy with the name $policyName does not exist" -ForegroundColor Red
+        Write-Host "The Group Policy with the name $PolicyName does not exist" -ForegroundColor Red
         return
     }
-    Write-Host "Get Audit Settings from Domain Policy $domain\$policyName"
-    $policyId = Get-GPO -Name $policyName | Select-Object -ExpandProperty id
-    $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
+    Write-Host "Get Audit Settings from Domain Policy $Domain\$PolicyName"
+    $PolicyId = Get-GPO -Name $PolicyName | Select-Object -ExpandProperty id
+    $PolicyCSVPath = "\\$Domain\SYSVOL\$Domain\Policies\{$PolicyId}\MACHINE\Microsoft\Windows NT\Audit"
 
-    if (Test-Path $policyCSVPath) {
-        $policyCSV = $policyCSVPath + "\audit.csv"
+    if (Test-Path $PolicyCSVPath) {
+        $PolicyCSV = $PolicyCSVPath + "\audit.csv"
     }
     else {
         Write-Host "For this Group Policy exist no definition" -ForegroundColor Red
         return
     }
 
-    if ([System.IO.File]::Exists($policyCSV)) {
-        $auditSettings = @{}
-        $policy = Import-Csv $policyCSV -Encoding UTF8
-        foreach ($element in $policy) {
-            $auditSettings.Add($element.Subcategory, $element."Setting Value")
+    if ([System.IO.File]::Exists($PolicyCSV)) {
+        $AuditSettings = @{}
+        $Policy = Import-Csv $PolicyCSV -Encoding UTF8
+        foreach ($Element in $Policy) {
+            $AuditSettings.Add($Element.Subcategory, $Element."Setting Value")
         }
-        return $auditSettings
+        return $AuditSettings
     }
     else {
         Write-Host "For this Group Policy exist no auditing definition" -ForegroundColor Red
@@ -161,112 +162,112 @@ Function GetDomainAuditPolicy ([String] $policyName) {
 
 Function GetAllDomainAuditPolicies {
     Write-Host "Get Audit Settings from all GPOs"
-    $domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
+    $Domain = Get-CimInstance Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
     try {
-        $gpos = Get-GPO -all | Select-Object DisplayName, Id
+        $GPOs = Get-GPO -all | Select-Object DisplayName, Id
     }
     catch {
         Write-Host "Your system is not associated with an Active Directory domain or forest" -ForegroundColor Red
         return
     }
     
-    $auditSettingsPerPolicy = @{}
+    $AuditSettingsPerPolicy = @{}
 
-    foreach ($gpo in $gpos) {
-        $policyName = $gpo.DisplayName
-        $policyId = $gpo.id
-        $policyCSVPath = "\\$domain\SYSVOL\$domain\Policies\{$policyId}\MACHINE\Microsoft\Windows NT\Audit"
+    foreach ($GPO in $GPOs) {
+        $PolicyName = $GPO.DisplayName
+        $PolicyId = $GPO.Id
+        $PolicyCSVPath = "\\$Domain\SYSVOL\$Domain\Policies\{$PolicyId}\MACHINE\Microsoft\Windows NT\Audit"
 
-        if (Test-Path $policyCSVPath) {
-            $policyCSV = $policyCSVPath + "\audit.csv"
+        if (Test-Path $PolicyCSVPath) {
+            $PolicyCSV = $PolicyCSVPath + "\audit.csv"
         }
         else {
-            Write-Host "For the Group Policy $policyName exist no defintion" -ForegroundColor Red
+            Write-Host "For the Group Policy $PolicyName exist no defintion" -ForegroundColor Red
             continue
         }
-        if ([System.IO.File]::Exists($policyCSV)) {
-            $auditSettings = @{}
-            $policy = Import-Csv $policyCSV -Encoding UTF8
-            foreach ($element in $policy) {
-                $auditSettings.Add($element.Subcategory, $element."Setting Value")
+        if ([System.IO.File]::Exists($PolicyCSV)) {
+            $AuditSettings = @{}
+            $Policy = Import-Csv $PolicyCSV -Encoding UTF8
+            foreach ($Element in $Policy) {
+                $AuditSettings.Add($Element.Subcategory, $Element."Setting Value")
             }
-            $auditSettingsPerPolicy.Add($gpo.DisplayName, $auditSettings)
+            $AuditSettingsPerPolicy.Add($GPO.DisplayName, $AuditSettings)
         }
         else {
-            Write-Host "For the Group Policy $policyName exist no auditing defintion" -ForegroundColor Red
+            Write-Host "For the Group Policy $PolicyName exist no auditing defintion" -ForegroundColor Red
             continue
         }
     }
-    return $auditSettingsPerPolicy
+    return $AuditSettingsPerPolicy
 }
 
-Function AnalyseAuditPolicies ($auditSettings) {
+Function AnalyseAuditPolicies ($AuditSettings) {
     Write-Host "Analysing Audit Policies"
-    $targetAuditSettings = GetAuditPoliciesTargetList
+    $TargetAuditSettings = GetAuditPoliciesTargetList
     enum AuditSettingValues {
         NoAuditing
         Success
         Failure
         SuccessAndFailure
     }
-    [AuditSettingValues]$auditSettingValue = 0
-    $result = @{}
+    [AuditSettingValues]$AuditSettingValue = 0
+    $Result = @{}
 
-    if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-        $auditSettingsRSoP = $auditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
-        $auditSettings = @{}
-        foreach ($auditSettingRSoP in $auditSettingsRSoP) {
-            if ($auditSettingRSoP) {
-                $auditSettings.Add(($auditSettingRSoP.SubcategoryName -replace (" ")), $auditSettingRSoP.SettingValue)
+    if ($AuditSettings.GetType() -eq [System.Xml.XmlDocument]) {
+        $AuditSettingsRSoP = $AuditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
+        $AuditSettings = @{}
+        foreach ($AuditSettingRSoP in $AuditSettingsRSoP) {
+            if ($AuditSettingRSoP) {
+                $AuditSettings.Add(($AuditSettingRSoP.SubcategoryName -replace (" ")), $AuditSettingRSoP.SettingValue)
             }
         }
     } 
     
     <# Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study 
     "Detecting Lateral Movement through Tracking Event Logs" are configured #>
-    foreach ($auditSettingSubcategoryName in $targetAuditSettings) {
-        if ($auditSettings.keys -notcontains $auditSettingSubcategoryName) {
-            $result.Add(($auditSettingSubcategoryName -replace (" ")), "NotConfigured")
+    foreach ($TargetAuditSetting in $TargetAuditSettings) {
+        if ($AuditSettings.keys -notcontains $TargetAuditSetting) {
+            $Result.Add(($TargetAuditSetting -replace (" ")), "NotConfigured")
         }
     }
 
     <# Check if all needed Advanced Audit Policies accoriding to JPCERT/CCs study 
     "Detecting Lateral Movement through Tracking Event Logs" are configured in the right manner #>
-    foreach ($auditSetting in $auditSettings.GetEnumerator()) {
-        if ($targetAuditSettings -notcontains $auditsetting.name) {
+    foreach ($AuditSetting in $AuditSettings.GetEnumerator()) {
+        if ($TargetAuditSettings -notcontains $auditsetting.Name) {
             continue
         }
-        if ($auditSetting.value -and $auditSetting.name) {
+        if ($AuditSetting.Value -and $AuditSetting.Name) {
             try {
-                $auditSettingValue = $auditSetting.value
+                $AuditSettingValue = $AuditSetting.Value
             }
             catch {
-                $auditSettingValue = 0
+                $AuditSettingValue = 0
             }
-            $auditSubcategoryName = $auditSetting.name 
-            switch ($auditSettingValue) {
+            $AuditSubcategoryName = $AuditSetting.Name 
+            switch ($AuditSettingValue) {
                 NoAuditing {  
-                    $auditSettingValueString = "NoAuditing"
+                    $AuditSettingValueString = "NoAuditing"
                     continue
                 }
                 Success {
-                    $auditSettingValueString = "Success"
+                    $AuditSettingValueString = "Success"
                     continue
                 } 
                 Failure {
-                    $auditSettingValueString = "Failure"
+                    $AuditSettingValueString = "Failure"
                     continue
                 }
                 SuccessAndFailure {
-                    $auditSettingValueString = "SuccessAndFailure"
+                    $AuditSettingValueString = "SuccessAndFailure"
                     continue
                 }
                 Default { continue }
             }
-            $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
+            $Result.Add(($AuditSubcategoryName -replace (" ")), $AuditSettingValueString)
         }    
     }
-    return $result
+    return $Result
 }
 
 Function MergeHashtables {
@@ -281,32 +282,32 @@ Function MergeHashtables {
     return $Output
 }
 
-Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $startElement, [String] $value) {
-    $xmlWriter.WriteStartElement($startElement)
-    $xmlWriter.WriteValue($value)
-    $xmlWriter.WriteEndElement()
+Function WriteXMLElement([System.XMl.XmlTextWriter] $XMLWriter, [String] $StartElement, [String] $Value) {
+    $XMLWriter.WriteStartElement($StartElement)
+    $XMLWriter.WriteValue($Value)
+    $XMLWriter.WriteEndElement()
 }
 
-Function WriteXML($resultCollection, $exportPath) {
+Function WriteXML($ResultCollection, $ExportPath) {
     Write-Host "Writing Result XML"
-    $resultXML = "$exportPath\result_audit_policies.xml"
-    $encoding = New-Object System.Text.UTF8Encoding($false)
-    $xmlWriter = New-Object System.XMl.XmlTextWriter($resultXML, $encoding)
+    $ResultXML = "$ExportPath\result_audit_policies.xml"
+    $Encoding = New-Object System.Text.UTF8Encoding($false)
+    $XMLWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
 
-    $xmlWriter.Formatting = "Indented"
-    $xmlWriter.Indentation = 1
-    $xmlWriter.IndentChar = "`t"
-    $xmlWriter.WriteStartDocument()
-    $xmlWriter.WriteStartElement("AuditPolicies")
+    $XMLWriter.Formatting = "Indented"
+    $XMLWriter.Indentation = 1
+    $XMLWriter.IndentChar = "`t"
+    $XMLWriter.WriteStartDocument()
+    $XMLWriter.WriteStartElement("AuditPolicies")
 
-    foreach ($item in $resultCollection.keys) {
-        WriteXMLElement $xmlWriter $item $resultCollection.$item
+    foreach ($Item in $ResultCollection.keys) {
+        WriteXMLElement $XMLWriter $Item $ResultCollection.$Item
     }
 
-    $xmlWriter.WriteEndElement()
-    $xmlWriter.WriteEndDocument()
-    $xmlWriter.Flush()
-    $xmlWriter.Close()
+    $XMLWriter.WriteEndElement()
+    $XMLWriter.WriteEndDocument()
+    $XMLWriter.Flush()
+    $XMLWriter.Close()
     Write-Host "Done Audit Policies"
 }
 

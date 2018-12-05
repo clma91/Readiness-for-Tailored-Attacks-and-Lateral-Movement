@@ -1,257 +1,153 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="40" errors="0" failures="20" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-26" time="22:27:43">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="20" errors="0" failures="9" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-12-05" time="14:30:10">
   <environment user="Claudio" machine-name="CLMA1040" cwd="D:\_Studium\zSemester5\SA\GitRepo\SourceCode" user-domain="CLMA1040" platform="Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="34.5781" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="40.9654" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.Tests.ps1" executed="True" result="Failure" success="False" time="2.3798" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1" executed="True" result="Failure" success="False" time="3.2751" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="IsCAPI2Enabled" executed="True" result="Success" success="True" time="1.0488" asserts="0" description="IsCAPI2Enabled">
+          <test-suite type="TestFixture" name="GetCAPI2" executed="True" result="Failure" success="False" time="0.2696" asserts="0" description="GetCAPI2">
             <results>
-              <test-suite type="TestFixture" name="xml with disabled CAPI2" executed="True" result="Success" success="True" time="0.8134" asserts="0" description="xml with disabled CAPI2">
+              <test-case description="should return a XML" name="GetCAPI2.should return a XML" time="0.2696" asserts="0" success="False" result="Failure" executed="True">
+                <failure>
+                  <message>Expected the value to have type [xml] or any of its subtypes, but got '&lt;?xml version="1.0" encoding="UTF-8"?&gt;' with type [string].</message>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 15
+15:         $CAPI2 | Should BeOfType System.Xml.XmlDocument</stack-trace>
+                </failure>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="IsCAPI2Enabled" executed="True" result="Success" success="True" time="0.3862" asserts="0" description="IsCAPI2Enabled">
+            <results>
+              <test-suite type="TestFixture" name="xml with disabled CAPI2" executed="True" result="Success" success="True" time="0.2067" asserts="0" description="xml with disabled CAPI2">
                 <results>
-                  <test-case description="checks if function returns Disable" name="IsCAPI2Enabled.xml with disabled CAPI2.checks if function returns Disable" time="0.8134" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns Disable" name="IsCAPI2Enabled.xml with disabled CAPI2.checks if function returns Disable" time="0.2067" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="xml with enabled CAPI2 but bad log size of 1048576" executed="True" result="Success" success="True" time="0.156" asserts="0" description="xml with enabled CAPI2 but bad log size of 1048576">
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but bad log size of 1048576" executed="True" result="Success" success="True" time="0.0943" asserts="0" description="xml with enabled CAPI2 but bad log size of 1048576">
                 <results>
-                  <test-case description="checks if function returns EnabledBadLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns EnabledBadLogSize" time="0.1345" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if function returns LogSize of 1048576" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns LogSize of 1048576" time="0.0215" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns EnabledBadLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns EnabledBadLogSize" time="0.0729" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 1048576" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns LogSize of 1048576" time="0.0214" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="xml with enabled CAPI2 but good log size of 4980736" executed="True" result="Success" success="True" time="0.0794" asserts="0" description="xml with enabled CAPI2 but good log size of 4980736">
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but good log size of 4980736" executed="True" result="Success" success="True" time="0.0853" asserts="0" description="xml with enabled CAPI2 but good log size of 4980736">
                 <results>
-                  <test-case description="checks if function returns EnabledGoodLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns EnabledGoodLogSize" time="0.0558" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if function returns LogSize of 4980736" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns LogSize of 4980736" time="0.0236" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns EnabledGoodLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns EnabledGoodLogSize" time="0.0632" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 4980736" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns LogSize of 4980736" time="0.0221" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="IsForceAuditPoliySubcategoryEnabeled" executed="True" result="Success" success="True" time="0.1743" asserts="0" description="IsForceAuditPoliySubcategoryEnabeled">
+          <test-suite type="TestFixture" name="IsForceAuditPoliySubcategoryEnabeled" executed="True" result="Failure" success="False" time="0.3631" asserts="0" description="IsForceAuditPoliySubcategoryEnabeled">
             <results>
-              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 1" executed="True" result="Success" success="True" time="0.1211" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 1">
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 1" executed="True" result="Failure" success="False" time="0.2045" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 1">
                 <results>
-                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 1.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.1211" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 1.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.2045" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>The term 'IsForceAuditPoliySubcategoryEnabeled' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 64
+64:             $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy1
+</stack-trace>
+                    </failure>
+                  </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 0" executed="True" result="Success" success="True" time="0.0531" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 0">
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 0" executed="True" result="Failure" success="False" time="0.1585" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 0">
                 <results>
-                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 0.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.0531" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 0.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.1585" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>The term 'IsForceAuditPoliySubcategoryEnabeled' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 72
+72:             $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy0
+</stack-trace>
+                    </failure>
+                  </test-case>
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="IsSysmonInstalled" executed="True" result="Success" success="True" time="0.2092" asserts="0" description="IsSysmonInstalled">
+          <test-suite type="TestFixture" name="IsSysmonInstalled" executed="True" result="Failure" success="False" time="2.2562" asserts="0" description="IsSysmonInstalled">
             <results>
-              <test-suite type="TestFixture" name="Sysmon64" executed="True" result="Success" success="True" time="0.1065" asserts="0" description="Sysmon64">
+              <test-suite type="TestFixture" name="Sysmon64" executed="True" result="Failure" success="False" time="0.9663" asserts="0" description="Sysmon64">
                 <results>
-                  <test-case description="checks if Sysmon64 is installed and running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed and running" time="0.0832" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if Sysmon64 is installed but not running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed but not running" time="0.0233" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon64 is installed and running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed and running" time="0.5576" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon64 is installed but not running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed but not running" time="0.4087" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected 'InstalledNotRunning' to be found in collection InstalledAndRunning, but it was not found.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 99
+99:             $result.values | should -Contain "InstalledNotRunning"</stack-trace>
+                    </failure>
+                  </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="Sysmon" executed="True" result="Success" success="True" time="0.1027" asserts="0" description="Sysmon">
+              <test-suite type="TestFixture" name="Sysmon" executed="True" result="Failure" success="False" time="1.2899" asserts="0" description="Sysmon">
                 <results>
-                  <test-case description="checks if Sysmon is installed and running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed and running" time="0.0583" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if Sysmon is installed but not running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed but not running" time="0.023" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if Sysmon is not installed" name="IsSysmonInstalled.Sysmon.checks if Sysmon is not installed" time="0.0213" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon is installed and running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed and running" time="0.4391" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if Sysmon is installed but not running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed but not running" time="0.3986" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected 'InstalledNotRunning' to be found in collection InstalledAndRunning, but it was not found.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 115
+115:             $result.values | should -Contain "InstalledNotRunning"</stack-trace>
+                    </failure>
+                  </test-case>
+                  <test-case description="checks if Sysmon is not installed" name="IsSysmonInstalled.Sysmon.checks if Sysmon is not installed" time="0.4522" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected 'NotInstalled' to be found in collection InstalledAndRunning, but it was not found.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 122
+122:             $result.values | should -Contain "NotInstalled"</stack-trace>
+                    </failure>
+                  </test-case>
                 </results>
               </test-suite>
-            </results>
-          </test-suite>
-          <test-suite type="TestFixture" name="AnalyseAuditPolicies" executed="True" result="Failure" success="False" time="0.9475" asserts="0" description="AnalyseAuditPolicies">
-            <results>
-              <test-case description="checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" time="0.1055" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" time="0.0973" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditLogoff NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditLogoff NotConfigured" time="0.0249" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" time="0.0265" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" time="0.0282" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditSAM NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditSAM NotConfigured" time="0.0477" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditKernelObject NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditKernelObject NotConfigured" time="0.0297" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" time="0.0292" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" time="0.0291" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditRegistry NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditRegistry NotConfigured" time="0.0344" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" time="0.0256" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditFileSystem NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditFileSystem NotConfigured" time="0.0298" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" time="0.0278" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" time="0.0253" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditFileShare NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditFileShare NotConfigured" time="0.0355" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" time="0.0235" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditLogon NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditLogon NotConfigured" time="0.0214" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" time="0.0227" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" time="0.0251" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" name="AnalyseAuditPolicies.checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" time="0.0236" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>You cannot call a method on a null-valued expression.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndAnalyseAuditPolicies\GetAndAnalyseAuditPolicies.psm1: line 172
-172:     if ($auditSettings.GetType() -eq [System.Xml.XmlDocument]) {
-</stack-trace>
-                </failure>
-              </test-case>
-              <test-case description="checks if rsop xml returns hashtable with all audit-keys NotConfigured, NoAuditing, Success, Failure and SuccessAndFailure" name="AnalyseAuditPolicies.checks if rsop xml returns hashtable with all audit-keys NotConfigured, NoAuditing, Success, Failure and SuccessAndFailure" time="0.2349" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndCompareLogs\GetAndCompareLogs.Tests.ps1" executed="True" result="Success" success="True" time="32.1983" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\GetAndCompareLogs\GetAndCompareLogs.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1" executed="True" result="Failure" success="False" time="37.6903" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="read Get-EventLogs" executed="True" result="Success" success="True" time="11.7662" asserts="0" description="read Get-EventLogs">
+          <test-suite type="TestFixture" name="read Get-EventLogs" executed="True" result="Success" success="True" time="13.1119" asserts="0" description="read Get-EventLogs">
             <results>
-              <test-case description="checks if got windowslogs from system" name="read Get-EventLogs.checks if got windowslogs from system" time="4.486" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="checks if got windowslogs from security" name="read Get-EventLogs.checks if got windowslogs from security" time="7.2802" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from system" name="read Get-EventLogs.checks if got windowslogs from system" time="4.9375" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from security" name="read Get-EventLogs.checks if got windowslogs from security" time="8.1744" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="read App and Service Logs" executed="True" result="Success" success="True" time="2.5933" asserts="0" description="read App and Service Logs">
+          <test-suite type="TestFixture" name="read App and Service Logs" executed="True" result="Success" success="True" time="3.0708" asserts="0" description="read App and Service Logs">
             <results>
-              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.161" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.4323" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.4434" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.6274" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="check function GetEventLogsAndExport" executed="True" result="Success" success="True" time="17.1684" asserts="0" description="check function GetEventLogsAndExport">
+          <test-suite type="TestFixture" name="check function GetEventLogsAndExport" executed="True" result="Failure" success="False" time="20.5539" asserts="0" description="check function GetEventLogsAndExport">
             <results>
-              <test-case description="checks function GetEventLogsAndExport" name="check function GetEventLogsAndExport.checks function GetEventLogsAndExport" time="17.1684" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetEventLogsAndExport.checks function GetEventLogsAndExport" time="20.5539" asserts="0" success="False" result="Failure" executed="True">
+                <failure>
+                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\myeventlogs.csv' to exist, but it did not exist.</message>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 43
+43:         $exportedFile | Should -Exist</stack-trace>
+                </failure>
+              </test-case>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="check function GetApplicationAndServiceLogs" executed="True" result="Success" success="True" time="0.4112" asserts="0" description="check function GetApplicationAndServiceLogs">
+          <test-suite type="TestFixture" name="check function GetApplicationAndServiceLogs" executed="True" result="Failure" success="False" time="0.4859" asserts="0" description="check function GetApplicationAndServiceLogs">
             <results>
-              <test-case description="checks function GetEventLogsAndExport" name="check function GetApplicationAndServiceLogs.checks function GetEventLogsAndExport" time="0.4112" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetApplicationAndServiceLogs.checks function GetEventLogsAndExport" time="0.4859" asserts="0" success="False" result="Failure" executed="True">
+                <failure>
+                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\myappandservlogs.csv' to exist, but it did not exist.</message>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 54
+54:         $exportedFile | Should -Exist</stack-trace>
+                </failure>
+              </test-case>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test function ImportCompareExport" executed="True" result="Success" success="True" time="0.2592" asserts="0" description="Test function ImportCompareExport">
+          <test-suite type="TestFixture" name="Test function ImportCompareExport" executed="True" result="Failure" success="False" time="0.4679" asserts="0" description="Test function ImportCompareExport">
             <results>
-              <test-case description="calls the function and loads a test-xml" name="Test function ImportCompareExport.calls the function and loads a test-xml" time="0.2592" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="calls the function and loads a test-xml" name="Test function ImportCompareExport.calls the function and loads a test-xml" time="0.4679" asserts="0" success="False" result="Failure" executed="True">
+                <failure>
+                  <message>Expected a value, but got $null or empty.</message>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 68
+68:         $resultXML.Logs.EventLogsID | Should -Not -BeNullOrEmpty</stack-trace>
+                </failure>
+              </test-case>
             </results>
           </test-suite>
         </results>

@@ -166,22 +166,22 @@ Function Online ($OnlineExportPath, $CAPI2LogSize) {
            is ignored to prevent conflicts between similar settings #>
         $Path = "HKLM:\System\CurrentControlSet\Control\Lsa"
         $Name = "SCENoApplyLegacyAuditPolicy"
-        $auditPoliySubcategoryKey = GetRegistryValue $Path $Name
-        $auditPolicySubcategory = IsForceAuditPolicyEnabeled $auditPoliySubcategoryKey
+        $AuditPoliySubcategoryKey = GetRegistryValue $Path $Name
+        $AuditPolicySubcategory = IsForceAuditPolicyEnabeled $AuditPoliySubcategoryKey
     
-        $sysmon = IsSysmonInstalled
+        $Sysmon = IsSysmonInstalled
     
-        $capi2 = GetCAPI2
-        $capi2Result = IsCAPI2Enabled $capi2 $CAPI2LogSize
+        $Capi2 = GetCAPI2
+        $Capi2Result = IsCAPI2Enabled $Capi2 $CAPI2LogSize
     
-        $resultCollection = MergeHashtables $AuditPolicies $auditPolicySubcategory $sysmon $capi2Result
+        $ResultCollection = MergeHashtables $AuditPolicies $AuditPolicySubcategory $Sysmon $Capi2Result
     
-        WriteXML $resultCollection $OnlineExportPath
+        WriteXML $ResultCollection $OnlineExportPath
     
         GetEventLogsAndExport $OnlineExportPath
         GetApplicationAndServiceLogs $OnlineExportPath
-        $eventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
-        if ($eventLogsDone) {
+        $EventLogsDone = ImportCompareExport $ImportPath $OnlineExportPath
+        if ($EventLogsDone) {
             VisualizeAll $OnlineExportPath
         }
         else {
@@ -200,8 +200,8 @@ Function OfflineAuditPolicies ($ImportPath, $ExportPath) {
 }
 
 Function OfflineEventLogs ($ImportPath, $ExportPath) {
-    $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
-    if ($eventLogsDone) {
+    $EventLogsDone = ImportCompareExport $ImportPath $ExportPath
+    if ($EventLogsDone) {
         VisualizeEventLogs $ExportPath
     }
 }
@@ -211,8 +211,8 @@ Function Offline ($ImportPath, $ExportPath) {
     if ($RsopResult) {
         $AuditPolicies = AnalyseAuditPolicies $RsopResult
         WriteXML $AuditPolicies $ExportPath
-        $eventLogsDone = ImportCompareExport $ImportPath $ExportPath
-        if ($eventLogsDone) {
+        $EventLogsDone = ImportCompareExport $ImportPath $ExportPath
+        if ($EventLogsDone) {
             VisualizeAll $ExportPath
         }
         else {
@@ -222,47 +222,47 @@ Function Offline ($ImportPath, $ExportPath) {
 }
 
 Function GroupPolicy ($OnlineExportPath) {
-    $auditSettingsDomain = GetDomainAuditPolicy $GroupPolicyName
-    if ($auditSettingsDomain) {
-        $auditSettings = AnalyseAuditPolicies $auditSettingsDomain
-        WriteXML $auditSettings $OnlineExportPath
+    $AuditSettingsDomain = GetDomainAuditPolicy $GroupPolicyName
+    if ($AuditSettingsDomain) {
+        $AuditSettings = AnalyseAuditPolicies $AuditSettingsDomain
+        WriteXML $AuditSettings $OnlineExportPath
         VisualizeAuditPolicies $OnlineExportPath
     }
 }
 
 Function AllGroupPolicies ($OnlineExportPath) {
-    $auditSettingsPerPolicy = GetAllDomainAuditPolicies
-    if ($auditSettingsPerPolicy) {
-        foreach ($auditSettingPerPolicy in $auditSettingsPerPolicy.GetEnumerator()) {
-            Write-Host "Processing Group Policy: " $auditSettingPerPolicy.name
-            $policyName = ($policyName -replace (" "))
-            $resultPDF = $OnlineExportPath + "\results.pdf"
-            $new_resultPDF = $OnlineExportPath + "\results_" + $policyName + ".pdf"
-            $resultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
-            $new_resoltOfAuditPolicies = $OnlineExportPath + "\result_audit_policies" + $policyName + ".xml"
+    $AuditSettingsPerPolicy = GetAllDomainAuditPolicies
+    if ($AuditSettingsPerPolicy) {
+        foreach ($AuditSettingPerPolicy in $AuditSettingsPerPolicy.GetEnumerator()) {
+            Write-Host "Processing Group Policy: " $AuditSettingPerPolicy.name
+            $PolicyName = ($PolicyName -replace (" "))
+            $ResultPDF = $OnlineExportPath + "\results.pdf"
+            $NewResultPDF = $OnlineExportPath + "\results_" + $PolicyName + ".pdf"
+            $ResultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
+            $NewResoltOfAuditPolicies = $OnlineExportPath + "\result_audit_policies" + $PolicyName + ".xml"
     
-            $auditSetting = AnalyseAuditPolicies $auditSettingPerPolicy.value
-            WriteXML $auditSetting $OnlineExportPath
+            $AuditSetting = AnalyseAuditPolicies $AuditSettingPerPolicy.value
+            WriteXML $AuditSetting $OnlineExportPath
             VisualizeAuditPolicies $OnlineExportPath
     
-            if ([System.IO.File]::Exists($new_resultPDF)) {
-                Remove-Item -Path $new_resultPDF
+            if ([System.IO.File]::Exists($NewResultPDF)) {
+                Remove-Item -Path $NewResultPDF
             }
-            elseif ([System.IO.File]::Exists($new_resoltOfAuditPolicies)) {
-                Remove-Item -Path $new_resoltOfAuditPolicies
+            elseif ([System.IO.File]::Exists($NewResoltOfAuditPolicies)) {
+                Remove-Item -Path $NewResoltOfAuditPolicies
             }
             else {
-                Rename-Item -Path $resultAuditPolicies -NewName $new_resoltOfAuditPolicies
-                Rename-Item -Path $resultPDF -NewName $new_resultPDF
+                Rename-Item -Path $ResultAuditPolicies -NewName $NewResoltOfAuditPolicies
+                Rename-Item -Path $ResultPDF -NewName $NewResultPDF
             }
         } 
     }
 }
 
-Function CheckExportPath($exportPath) {
-    if ($exportPath) {
-        if (Test-Path -Path $exportPath) {
-            return $exportPath
+Function CheckExportPath($ExportPath) {
+    if ($ExportPath) {
+        if (Test-Path -Path $ExportPath) {
+            return $ExportPath
         }
         else {
             return $null
