@@ -47,11 +47,11 @@ Function GetApplicationAndServiceLogs([String] $ExportPath) {
         }
     }
     Write-Host "Checking LocalSessionManager-Logs"
-        foreach($Id in $IdsForLocalSessionManager){ 
-            if(wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
-                $AppAndServLogs += '"' + $Id + '"'
-            }
+    foreach($Id in $IdsForLocalSessionManager){ 
+        if(wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
+            $AppAndServLogs += '"' + $Id + '"'
         }
+    }
 
     $AppAndServLogs | Out-File -FilePath $ExportPathCSV
 }

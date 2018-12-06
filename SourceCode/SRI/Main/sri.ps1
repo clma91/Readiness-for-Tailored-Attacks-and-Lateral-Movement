@@ -235,26 +235,26 @@ Function AllGroupPolicies ($OnlineExportPath) {
     if ($AuditSettingsPerPolicy) {
         foreach ($AuditSettingPerPolicy in $AuditSettingsPerPolicy.GetEnumerator()) {
             Write-Host "Processing Group Policy: " $AuditSettingPerPolicy.name
-            $PolicyName = ($PolicyName -replace (" "))
-            $ResultPDF = $OnlineExportPath + "\results.pdf"
-            $NewResultPDF = $OnlineExportPath + "\results_" + $PolicyName + ".pdf"
-            $ResultAuditPolicies = $OnlineExportPath + "\result_audit_policies.xml"
-            $NewResoltOfAuditPolicies = $OnlineExportPath + "\result_audit_policies" + $PolicyName + ".xml"
-    
-            $AuditSetting = AnalyseAuditPolicies $AuditSettingPerPolicy.value
-            WriteXML $AuditSetting $OnlineExportPath
+            $PolicyName = ($AuditSettingPerPolicy.name -replace (" "))
+            $ResultPDF = "$OnlineExportPath\results.pdf"
+            $NewResultPDF = "$OnlineExportPath\results_$PolicyName.pdf"
+            $ResultAuditPolicies = "$OnlineExportPath\result_audit_policies.xml"
+            $NewResoltOfAuditPolicies = "$OnlineExportPath\result_audit_policies$PolicyName.xml"
+            
+            $AuditSettings = AnalyseAuditPolicies $AuditSettingPerPolicy.value
+            $IsForceAuditPolicy = IsForceAuditPolicyDomainEnabeled $AuditSettingPerPolicy.key
+            $ResultCollection = MergeHashtables $AuditSettings $IsForceAuditPolicy 
+            WriteXML $ResultCollection $OnlineExportPath
             VisualizeAuditPolicies $OnlineExportPath
-    
+        
             if ([System.IO.File]::Exists($NewResultPDF)) {
                 Remove-Item -Path $NewResultPDF
             }
             elseif ([System.IO.File]::Exists($NewResoltOfAuditPolicies)) {
                 Remove-Item -Path $NewResoltOfAuditPolicies
             }
-            else {
-                Rename-Item -Path $ResultAuditPolicies -NewName $NewResoltOfAuditPolicies
-                Rename-Item -Path $ResultPDF -NewName $NewResultPDF
-            }
+            Rename-Item -Path $ResultAuditPolicies -NewName $NewResoltOfAuditPolicies
+            Rename-Item -Path $ResultPDF -NewName $NewResultPDF
         } 
     }
 }
