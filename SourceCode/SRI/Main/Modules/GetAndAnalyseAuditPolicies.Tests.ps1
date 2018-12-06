@@ -323,7 +323,6 @@ Describe "MergeHashtables" {
     It "checks if MergeHashtables without input returns an hashtable which is NULL and has empty keys and values" {
         $Result = MergeHashtables
 
-        $Result | should -Not -BeNullOrEmpty
         $Result.keys | should -BeNullOrEmpty 
         $Result.values | should -BeNullOrEmpty 
     }
