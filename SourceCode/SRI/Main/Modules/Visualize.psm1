@@ -149,25 +149,31 @@ Function WriteEventLogs([String] $ImportFolder) {
 Function ToolCanBeDetected([Array] $IncorrectAudits) {
     $Detectables = @()
     $NotDetectableCategories = @()
-    $CausingAudit = @()
     [xml] $AuditsByCategory = Get-Content "$PSScriptRoot\..\Config\audit_by_category.xml"
     $ToolCategories = $AuditsByCategory.Category.ChildNodes
     foreach ($ToolCategory in $ToolCategories) {
         [int]$CheckNr = 0
+        $CausingAudit = @()
+        $CausingAuditText = ""
         foreach ($IncorrectAudit in $IncorrectAudits) {
             if ($ToolCategory.ChildNodes.InnerXml -contains $IncorrectAudit) {
                 $CheckNr += 1
-                $CausingAudit += $IncorrectAudit + ", "
+                $CausingAudit += $IncorrectAudit
             }
         }
     
         if ($CheckNr -gt 0) {
-            $NotDetectableCategories += "`n" + "- " + $ToolCategory.LocalName + "(" + $CausingAudit + ")"
-        }
-        else {
+            for ($i = 0; $i -lt $CausingAudit.Count; $i++) {
+                if($i -lt ($CausingAudit.Count - 1)){
+                    $CausingAuditText += $CausingAudit[$i].ToString() + ", "
+                }else {
+                    $CausingAuditText += $CausingAudit[$i].ToString()
+                }
+            }
+            $NotDetectableCategories += "`n" + "- " + $ToolCategory.LocalName + " (" + $CausingAuditText + ")"
+        }else {
             $Detectables += $ToolCategory.LocalName
         }
-        $CausingAudit = ""
     }
     $AmoutOfDetecables = $Detectables.count
     $Text = "With this policies it is possible to detect $AmoutOfDetecables out of 14 attack categories"
