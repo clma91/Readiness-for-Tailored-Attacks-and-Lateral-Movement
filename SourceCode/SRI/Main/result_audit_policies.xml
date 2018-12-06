@@ -7,12 +7,12 @@
 	<AuditHandleManipulation>Success</AuditHandleManipulation>
 	<AuditKerberosAuthenticationService>SuccessAndFailure</AuditKerberosAuthenticationService>
 	<AuditKerberosServiceTicketOperations>SuccessAndFailure</AuditKerberosServiceTicketOperations>
-	<AuditKernelObject>SuccessAndFailure</AuditKernelObject>
+	<AuditKernelObject>NotConfigured</AuditKernelObject>
 	<AuditLogoff>NotConfigured</AuditLogoff>
 	<AuditLogon>SuccessAndFailure</AuditLogon>
 	<AuditMPSSVCRule-LevelPolicyChange>Success</AuditMPSSVCRule-LevelPolicyChange>
 	<AuditNonSensitivePrivilegeUse>SuccessAndFailure</AuditNonSensitivePrivilegeUse>
-	<AuditOtherObjectAccessEvents>SuccessAndFailure</AuditOtherObjectAccessEvents>
+	<AuditOtherObjectAccessEvents>NotConfigured</AuditOtherObjectAccessEvents>
 	<AuditProcessCreation>Success</AuditProcessCreation>
 	<AuditProcessTermination>Success</AuditProcessTermination>
 	<AuditRegistry>SuccessAndFailure</AuditRegistry>

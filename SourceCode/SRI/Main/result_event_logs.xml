@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Logs>
-	<EventLogsID>
+	<WindowsLogs>
 		<EventID6>present</EventID6>
 		<EventID21>missing</EventID21>
 		<EventID24>present</EventID24>
@@ -14,7 +14,7 @@
 		<EventID1102>missing</EventID1102>
 		<EventID4624>present</EventID4624>
 		<EventID4634>missing</EventID4634>
-		<EventID4648>present</EventID4648>
+		<EventID4648>missing</EventID4648>
 		<EventID4656>present</EventID4656>
 		<EventID4658>present</EventID4658>
 		<EventID4660>present</EventID4660>
@@ -42,8 +42,8 @@
 		<EventID7045>present</EventID7045>
 		<EventID8222>missing</EventID8222>
 		<EventID20001>present</EventID20001>
-	</EventLogsID>
-	<AppAndServID>
+	</WindowsLogs>
+	<AppAndServLogs>
 		<EventID6>missing</EventID6>
 		<EventID21>missing</EventID21>
 		<EventID24>missing</EventID24>
@@ -53,5 +53,5 @@
 		<EventID169>missing</EventID169>
 		<EventID200>missing</EventID200>
 		<EventID201>missing</EventID201>
-	</AppAndServID>
+	</AppAndServLogs>
 </Logs>

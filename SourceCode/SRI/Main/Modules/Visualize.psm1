@@ -120,6 +120,17 @@ Function WriteAuditPolicies([String] $ImportFolder) {
     return $IncorrectAudits
 }
 
+Function ReadOutLogs([xml] $EventXml, [String] $Logname) {
+    Add-Title -Document $Pdf -Text $Logname -Centered | Out-Null
+    $Events = $EventXml.Logs.$Logname.ChildNodes
+    $Result = @()
+    foreach ($Element in $Events) {
+        $Result += $Element.LocalName
+        $Result += $Element.InnerXml
+    }
+    Add-Table -Document $Pdf -Dataset $Result -Cols 2 -Centered | Out-Null
+}
+
 Function WriteEventLogs([String] $ImportFolder) {
     $EventPath = "$PSScriptRoot\result_event_logs.xml"
     if ($ImportFolder) {
@@ -127,23 +138,8 @@ Function WriteEventLogs([String] $ImportFolder) {
     }    
     $Pdf.NewPage() | Out-Null
     [xml] $EventXml = Get-Content $EventPath
-    Add-Title -Document $Pdf -Text "WindowsLogs" -Centered | Out-Null
-    $EventsWin = $EventXml.Logs.EventLogsID.ChildNodes
-    $ResultWin = @()
-    foreach ($EventWin in $EventsWin) {
-        $ResultWin += $EventWin.LocalName
-        $ResultWin += $EventWin.InnerXml
-    }
-    Add-Table -Document $Pdf -Dataset $ResultWin -Cols 2 -Centered | Out-Null
-
-    Add-Title -Document $Pdf -Text "AppAndServLogs" -Centered | Out-Null
-    $EventsApp = $EventXml.Logs.AppAndServID.ChildNodes
-    $ResultApp = @()
-    foreach ($EventApp in $EventsApp) {
-        $ResultApp += $EventApp.LocalName
-        $ResultApp += $EventApp.InnerXml
-    }
-    Add-Table -Document $Pdf -Dataset $ResultApp -Cols 2 -Centered | Out-Null
+    ReadOutLogs $EventXml "WindowsLogs"
+    ReadOutLogs $EventXml "AppAndServLogs"
 }
 
 Function ToolCanBeDetected([Array] $IncorrectAudits) {
@@ -166,12 +162,12 @@ Function ToolCanBeDetected([Array] $IncorrectAudits) {
             for ($i = 0; $i -lt $CausingAudit.Count; $i++) {
                 if($i -lt ($CausingAudit.Count - 1)){
                     $CausingAuditText += $CausingAudit[$i].ToString() + ", "
-                }else {
+                } else {
                     $CausingAuditText += $CausingAudit[$i].ToString()
                 }
             }
             $NotDetectableCategories += "`n" + "- " + $ToolCategory.LocalName + " (" + $CausingAuditText + ")"
-        }else {
+        } else {
             $Detectables += $ToolCategory.LocalName
         }
     }

@@ -27,6 +27,17 @@ Function GetTargetAppAndServLogs {
     }
     return $AppAndServLogs
 }
+
+Function GetApplicationAndServiceLog ([Array] $Ids, [String] $LogName) {
+    Write-Host "Checking $LogName-Logs"
+    foreach($Id in $Ids){
+        if(wevtutil qe Microsoft-Windows-$LogName/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
+            $Result += '"' + $Id + '"'
+        }
+    }
+    return $Result
+}
+
 Function GetApplicationAndServiceLogs([String] $ExportPath) {
     $IdsForTaskScheduler = (106, 200, 129, 201, 102)
     $IdsForWindowsRemoteManagement = (6, 169)
@@ -34,24 +45,9 @@ Function GetApplicationAndServiceLogs([String] $ExportPath) {
     $ExportPathCSV = "$ExportPath\appandservlogs.csv"
 
     $AppAndServLogs += '"EventID"' 
-    Write-Host "Checking TaskScheduler-Logs"
-    foreach($Id in $IdsForTaskScheduler){
-        if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
-            $AppAndServLogs += '"' + $Id + '"'
-        }
-    }
-    Write-Host "Checking WinRM-Logs"
-    foreach($Id in $IdsForWindowsRemoteManagement){
-        if(wevtutil qe Microsoft-Windows-WinRM/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
-            $AppAndServLogs += '"' + $Id + '"'
-        }
-    }
-    Write-Host "Checking LocalSessionManager-Logs"
-    foreach($Id in $IdsForLocalSessionManager){ 
-        if(wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System[(EventID="$Id")]]" /uni:false /f:text){
-            $AppAndServLogs += '"' + $Id + '"'
-        }
-    }
+    $AppAndServLogs += GetApplicationAndServiceLog $IdsForTaskScheduler "TaskScheduler"
+    $AppAndServLogs += GetApplicationAndServiceLog $IdsForWindowsRemoteManagement "WinRM"
+    $AppAndServLogs += GetApplicationAndServiceLog $IdsForLocalSessionManager  "TerminalServices-LocalSessionManager"
 
     $AppAndServLogs | Out-File -FilePath $ExportPathCSV
 }
@@ -62,12 +58,29 @@ Function WriteXMLElement([System.XMl.XmlTextWriter] $XmlWriter, [String] $StartE
     $XmlWriter.WriteEndElement()
 }
 
+Function CompareEventsToTargetlist ($FoundEvents, $WindowsLogsToCheck, [String] $LogName) {
+    Write-Host "Comparing found $LogName to Checklist"
+    $XmlWriter.WriteStartElement($LogName)
+    foreach($Id in $WindowsLogsToCheck){
+        if($FoundEvents | Where-Object {$_.EventID -eq $Id}){ 
+            WriteXMLElement $XmlWriter ("EventID" +$Id) "present"
+        } else {
+            WriteXMLElement $XmlWriter ("EventID" +$Id) "missing"
+        }
+    }
+    $XmlWriter.WriteEndElement()
+}
+
 Function ImportCompareExport([String] $ImportPath, [String] $ExportPath){
-    $EventLogIdsToCheck = GetTargetWindowsLogs
-    $AppAndServIdsToCheck = GetTargetAppAndServLogs
     $ResultXML = "$ExportPath\result_event_logs.xml"
     $ImportEventLogs = "$ImportPath\eventlogs.csv"
     $ImportAppAndServLogs = "$ImportPath\appandservlogs.csv"
+    $WindowsLogsToCheck = GetTargetWindowsLogs
+    $AppAndServLogsToCheck = GetTargetAppAndServLogs
+    $Encoding = New-Object System.Text.UTF8Encoding($false)
+    $XmlWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
+    $FoundEventLogs = Import-Csv $ImportEventLogs -Encoding UTF8
+    $FoundAppAndServLogs = Import-Csv $ImportAppAndServLogs -Encoding UTF8 
     
     if (-not [System.IO.File]::Exists($ImportEventLogs)) {
         Write-Host "File $ImportEventLogs does not exist!" -ForegroundColor Red
@@ -78,42 +91,16 @@ Function ImportCompareExport([String] $ImportPath, [String] $ExportPath){
         return $false
     }        
 
-    $Encoding = New-Object System.Text.UTF8Encoding($false)
-    $XmlWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
-    $MyEventLogs = Import-Csv $ImportEventLogs -Encoding UTF8
-
-    Write-Host "Comparing found EventLogs to Checklist"
-    
     $XmlWriter.Formatting = "Indented"
     $XmlWriter.Indentation = 1
     $XmlWriter.IndentChar = "`t"
     $XmlWriter.WriteStartDocument()
     $XmlWriter.WriteStartElement("Logs")
-    $XmlWriter.WriteStartElement("EventLogsID")
 
-    foreach($Id in $EventLogIdsToCheck){
-        if($MyEventLogs | Where-Object {$_.EventID -eq $Id}){ 
-            WriteXMLElement $XmlWriter ("EventID" +$Id) "present"
-        } else {
-            WriteXMLElement $XmlWriter ("EventID" +$Id) "missing"
-        }
-    }
-    $XmlWriter.WriteEndElement()
-    
-    $MyAppAndServLogs = Import-Csv $ImportAppAndServLogs -Encoding UTF8 
-    Write-Host "Comparing found AppAndServLogs"
-    $XmlWriter.WriteStartElement("AppAndServID")
-
-    foreach($Id in $AppAndServIdsToCheck){
-        if($MyAppAndServLogs | Where-Object {$_.EventID -eq $Id}){
-            WriteXMLElement $XmlWriter ("EventID" +$Id) "present"
-        } else{
-            WriteXMLElement $XmlWriter ("EventID" +$Id) "missing"
-        }
-    }
+    CompareEventsToTargetlist $FoundEventLogs $WindowsLogsToCheck "WindowsLogs"
+    CompareEventsToTargetlist $FoundAppAndServLogs $AppAndServLogsToCheck "AppAndServLogs"
 
     Write-Host "Exporting results into XML"
-    $XmlWriter.WriteEndElement()
     $XmlWriter.WriteEndDocument()
     $XmlWriter.Flush()
     $XmlWriter.Close()
