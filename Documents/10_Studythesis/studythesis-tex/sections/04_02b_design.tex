@@ -331,7 +331,7 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
 \clearpage
 
 \subsection{Domain Analysis}
-The following section describes the problem domain which is faced during this project. Despite the decision to not programm an object orientated solution, there are several things to be aware of and to think through carefully. For this reason building a domain model is a simple and  suitable  suitable technique to use for. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
+The following section describes the problem domain which is faced during this project. Despite the decision to not programme an object orientated solution, there are several things to be aware of and to think through carefully. For this reason, building a domain model is a simple and suitable technique to use. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{assets/architecture/DomainModelSRI.png}
@@ -342,7 +342,7 @@ The following section describes the problem domain which is faced during this pr
 The class network depicts the organizations wide network which is used to connect all clients and servers together. In this project the main goal is to locally detect the readiness of the system and not to extend the detection for a system-wide infrastructure. For further development on this project and a system-wide extension, the network is already considered in this domain model.
 
 \subsubsection{Computer}
-A computer illustrates either a client like a Windows 10 machine or a server in particular a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
+A computer illustrates either a client like a Windows 10 machine or a server, in particular, a domain controller running on a Windows Server 2016. In principle, however, every Windows computer is represented. A computer is a core component in our project, because the detection is done on a single client or server. 
 
 \subsubsection{Event}
 An event represents a single event log entry in simplified form.
@@ -362,4 +362,4 @@ The ActualList represents the current state of the system. It reflects the event
 The TargetList represents either the list of event logs or configured audit policies which must be present for a solid detection of attacks.
 
 \paragraph{DeltaList}
-Based on the required lists (audit policies, event logs) and the current state of the computer, the DeltaList shows which settings are missing in the audit policies.
+Based on the required lists (audit policies, event logs) as well as the current state of the computer, the DeltaList shows which settings are missing in the audit policies.
