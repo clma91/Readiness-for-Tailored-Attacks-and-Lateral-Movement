@@ -15,7 +15,7 @@ The most interesting aspect of BloodHound for our project is the way it retrieve
 
 \subsection{Windows Event Logging Forensic Logging Enhancement Services}
 \subsubsection{Description}
-Windows Event Logging Forensic Logging Enhancement Services (WEFFLES) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is build to help setting up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply be imported into Excel and start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
+Windows Event Logging Forensic Logging Enhancement Services (WEFFLES) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is built to help set up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply be imported into Excel and start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
 \subsubsection{Conclusion}
 WEFFELS will not be the product on which this project is based, but could become an important point of reference. The installation guide and other WEFFELS-related documents collected by Jessica Payne provide a lot of information for reading and understanding logs, which will be very helpful for this project. Also an interesting aspect of WEFFLES and the Jessica Payne article is how she visualised the logs, using Microsoft PowerBI.
 
@@ -91,7 +91,7 @@ The test environment showed that this graph can quickly become confusing - espec
     \label{fig:LogonTraceerConfusing}
 \end{figure}
 
-Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in the figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
+Nevertheless, with meaningful filters the search can be restricted and the graph can be used efficiently, as shown in figure \ref{fig:LogonTracerSample} \nameref{fig:LogonTracerSample}
 
 \clearpage
 
@@ -115,7 +115,7 @@ After some time of investigation and further tests, it turned out that under \ls
     -e LTHOSTNAME=localhost jpcertcc/docker-logontracer
 \end{lstlisting}
 \subsubsection{Conclussion}
-The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to various components available in the network, can be visualised simply and graphically, hence conclusions can be drawn about what has happened.
+The LogonTracer is unique in its form and should not be underestimated for the detection of lateral movements. This is because user access to various components available in the network can be visualised simply and graphically, hence conclusions can be drawn about what has happened.
 \\\\
 However, the LogonTracer is not suitable for detection readiness and cannot be used to build on it. Nonetheless, approaches for reading the event log for further work could be used. This tool is also extremely interesting and recommendable for a further detection of lateral movements.
 
@@ -123,12 +123,12 @@ However, the LogonTracer is not suitable for detection readiness and cannot be u
 
 \subsection{Microsoft Monitoring Active Directory for Signs of Compromise}
 \subsubsection{Description}
-This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of an solid event log monitoring for Microsoft servers. The article gives a quite a good overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore, the article describes how the policies can be read with powershell.
+This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of a solid event log monitoring for Microsoft servers. The article gives a quite a good overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore, the article describes how the policies can be read with powershell.
 \\\\
 In this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
 \subsubsection{Conclussion}
-Due to the fact that audit policies are an important setting for solid event logging, this article and Appendix L will be a central part of the toolkit to be built. As a next step and part of this study these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
+Due to the fact that audit policies are an important setting for solid event logging, this article and Appendix L will be a central part of the toolkit to be built. As a next step and part of this study, these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
 
 \subsection{MITRE Adversarial Tactics, Techniques and Common Knowledge (ATT\&CK)}
 \subsubsection{Description}
@@ -148,10 +148,10 @@ Although many attacks are described and how they can be detected and fended off,
 \begin{quotation}
     \textit{System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time.\cite{Sysmon}}
 \end{quotation}
-Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. For that a reference hash value of the executed EXE is required to compare the hash values on its correctness. \cite{Sysmon1}
+Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. thereforee a reference hash value of the executed EXE is required to compare the hash values on its correctness. \cite{Sysmon1}
 
 \subsubsection{Conclusion}
-As mentioned in the description Sysmon is a important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness. In order to do not create duplicated events, the events similar logged by default and Sysmon must be examined by their differences. Very likely Sysmon is the better choice.
+As mentioned in the description, Sysmon is an important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness. In order to not create duplicated events, the events similar logged by default and Sysmon must be examined by their differences. Very likely Sysmon is the better choice.
 
 
 \subsection{Sysmon Tools}
@@ -186,25 +186,25 @@ The Microsoft feature CryptoAPI 2.0 (CAPI2) Diagnostics provides the ability to 
     \item Manage per-user and per-computer certificate stores
     \item Encrypt/decrypt, encode/decode and sign/verify messages
 \end{itemize}
-Hence, CAPI2 enables an organisation to secure its communications and business transactions. Identification of users, devices or organisation as well as signed e-mail, code signing and secure web browsing gets possible with todays standards of hash-functions and encryption due to CAPI2. PKI problems are not always easy to troubleshoot and therefor it is necessary to have a good diagnostic capabilities in such cases. 
+Hence, CAPI2 enables an organisation to secure its communications and business transactions. Identification of users, devices or organisation as well as signed e-mail, code signing and secure web browsing is made possible with today's standards of hash-functions and encryption due to CAPI2. PKI problems are not always easy to troubleshoot and therefore it is necessary to have good diagnostic capabilities in such cases. 
 \begin{quotation}
     \textit{CAPI2 Diagnostics in Windows Vista\footnote{Windows Vista and above} provides logging of detailed information about certificate validation, network retrievals, revocation, and other low-level API results and errors. [...] utilizes the event logging and Event Viewer to provide better logging and troubleshooting capabilities for PKI applications based on the CAPI2 API set. \cite{CAPI2}}
 \end{quotation}
 \subsubsection{Conclusion}
-To detect whether a system is ready for a good detection of lateral movements and APTs CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is required to detect if CAPI2 is enabled on the system. On the other hand, CAPI2 Diagnostics produces a lot of events and therefor the log size should be chosen wisely. For this reason the recommendation of 4 Megabyte (MB) from Microsoft shall be applied. \cite{CAPI2}
+To detect whether a system is ready for a good detection of lateral movements and APTs, CAPI2 is a core component to be logged in every system and CAPI2 Diagnostics must be enabled on a system. Hence, it is necessary to detect if CAPI2 is enabled on the system. On the other hand, CAPI2 Diagnostics produces a lot of events and therefore the log size should be chosen wisely. For this reason the recommendation of 4 Megabyte (MB) from Microsoft shall be applied. \cite{CAPI2}
 
 
 \clearpage
 
 \subsection{JPCERT/CC - Detecting Lateral Movement in APTs} \label{DetectingLateral}
 \subsubsection{Description}
-This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to to detect inconsistencies more effectively, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
+This document \cite{Abe2016} is from a presentation by Shingo Abe, a JPCERT/CC employee. In it he describes how to find system intruders more effectively using Windows Event Logs. The collected data is used to detect inconsistencies more effectively, such as when an administrator logs on to another machine or when an administrator logs on suspiciously often. 
 \subsubsection{Conclusion}
 This presentation contains interesting information which could be built into the project at a later point. The information this document contains is more suitable for monitoring purposes than for checking the readiness of a system.
 
 \subsection{JPCERT/CC - Detecting Lateral Movement through Tracking Event Logs}\label{JPCertStudy}
 \subsubsection{Description}
-This is a document \cite{JPCERTDetectingLateralMovement} JPCERT/CC has published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and what is most interesting for the project, the logs generated while doing so.
+This is a document \cite{JPCERTDetectingLateralMovement} JPCERT/CC published in the year 2017. It describes how, in their experience, attackers proceed with lateral movement. In a very detailed 81-page report they describe the procedure step-by-step, the tools used and, what is most interesting for the project, the logs generated while doing so.
 \subsubsection{Conclusion}
 This report will have the biggest impact on this project, it shows which logs have to be read in any case. In addition, JPCERT/CC describes in this report which configurations are necessary for solid logging. The appendix not only describes the individual event log IDs, but also the audit policy that can be used to achieve them. For this reason, the checklist to be used will mainly be based on this report. With the provided information we see the greatest potential to develop a suitable tool for the accomplishment of the task in the given time. The given information of the configuration settings in JPCERT/CCs study appendix must be correlated with the ''Advanced security auditing Frequently Asked Questions (FAQ)'' \cite{AdvancedSecurityAuditing} in order to define the right auditing settings so that the right events are captured.
 

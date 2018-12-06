@@ -1,0 +1,35 @@
+\documentclass[a4paper, oneside, 11pt]{article}
+
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage[english, nswissgerman]{babel}
+    \usepackage[hidelinks]{hyperref}
+    \usepackage{graphicx}
+    \usepackage{vhistory}
+    \usepackage{float}
+
+    % Seitenränder
+    \usepackage{geometry}
+    \geometry{
+        a4paper,
+        left=20mm,
+        top=30mm,
+        right=20mm,
+        bottom=30mm
+    }
+
+    % Jede Überschrift 1 auf neuer Seite
+    \let\stdsection\section
+    \renewcommand\section{\clearpage\stdsection}
+
+    % Header and footer
+    \usepackage{fancyhdr}
+    \pagestyle{fancy}
+    \fancyhf{}
+    \lhead{\small \TITLE  \\ \REVIEW \vspace{0.1cm}}
+    \rhead{
+        \begin{picture}
+            (0,0) \put(-100,0){\includegraphics[width=0.2\linewidth]{./assets/logo/hsr.png}}
+        \end{picture}}
+    \lfoot{\small \today}
+    \rfoot{\thepage}

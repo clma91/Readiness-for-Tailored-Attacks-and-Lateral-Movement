@@ -6,7 +6,7 @@ In this section the following main question is answered:
 This includes the coverage of use cases, non-functional requirements, technologies used and how the tool will be designed. 
 
 \subsection{Use Cases (UC)}
-A visual representation of the use cases with a use case diagram was deliberately omitted, because there is only one actor involved - the security advisor. The actor is not specifically mentioned in the use cases every time, because it is always the same. During the elaboration phase it was decided in consultation with the client that the project would be limited to a Readiness Analyser only.
+A visual representation of the use cases with a use case diagram was deliberately omitted, because there is only one actor involved - the security advisor. The actor is not specifically mentioned in the use cases every time, because it is always the same. During the elaboration phase, it was decided in consultation with the client that the project would be limited to a Readiness Analyser only.
 
 \subsubsection{UC01 - Read Resultant Set of Policies}\label{UC01}
 \begin{tcolorbox}
@@ -40,7 +40,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC03 - Find Event Logs}\label{UC03}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Event logs are search by ID and marked in an external file as found or missing.
+    Event logs are searched by ID and marked in an external file as found or missing.
     \ \\
     \paragraph{Precondition} \ \\
     The system is running and must have valid event logs. The tool must possess administrator permissions.
@@ -56,7 +56,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC04 - Analyse Found Event Logs}\label{UC04}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The implemented logic analyses, by defined event ids, which events occurred or are missing and creates a list of events that did not occurred or are not logged yet.
+    The implemented logic analyses, by defined event ids, which events occurred or are missing. Then creates a list of events that did not occurr or are not logged yet.
     \ \\
     \paragraph{Precondition} \ \\
     UC03 is fulfilled: the temporary file is available.
@@ -101,7 +101,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC07 - Main Script}\label{UC07}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The actor is able to use the implemented functionalities in an easy way. Therefor the actor requires the script to be used with simple arguments to run the script in its different given modes. More specific the actor should be faced with the possibility to run the script online (check the current system) and offline (check any system with provided exports). In addition, the actor is able to call a help function of the script to get more information about the script itself and how to use it.
+    The actor is able to use the implemented functionalities in an easy way. Therefore the actor requires the script to be used with simple arguments to run the script in its different given modes. More specifically the actor should be faced with the possibility to run the script online (check the current system) and offline (check any system with provided exports). In addition, the actor is able to call a help function of the script to get more information about the script itself and how to use it.
     \ \\
     \paragraph{Precondition} \ \\
     All functions and process flows have to be implemented and defined.
@@ -135,7 +135,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \def\arraystretch{2}
     \begin{tabular}{| p{2.5cm} | p{13.5cm} |} \hline
         \textbf{NFR-No.} & \textbf{Description}  \\ \hline
-        NRF01 & After using the Toolkit the system must remain in the status quo. More specifically the system shall not deliberately alter any existing entry in the event logs and registry. However, the tool may produce new event logs.\\ \hline
+        NRF01 & After using the Toolkit the system must remain in the status quo. More specifically, the system shall not deliberately alter any existing entry in the event logs and registry. However, the tool may produce new event logs.\\ \hline
         NFR02 & The user shall not notice significant performance degradation from the system when using the Toolkit. \\ \hline
         NFR03 & The Toolkit must be portable with no installation procedure before use. \\ \hline
         NFR04 & The minimal target version of the system for the Toolkit to run must be Microsoft Windows 10 Professional or Microsoft Server 2016. \\ \hline
@@ -163,7 +163,7 @@ The test environment is set up, as described in section \ref{sec:testenvironment
 GitHub is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
 
 \paragraph{Continuous Integration}\ \\
-Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the Continuous Integration manual.
+Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately, the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the Continuous Integration manual.
 
 \subsubsection{Rejected Technologies}
 
@@ -189,7 +189,7 @@ This task is responsible to get all Audit Policies, which are relevant for loggi
 In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
 
 \subsubsection{GetEventLog()}
-This task is responsible for getting the event logs from the system. Therefor the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System', 'Application' and 'Security'. This logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
+This task is responsible for getting the event logs from the system. Therefore the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System', 'Application' and 'Security'. These logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
 
 \subsubsection{AnalyseEvent()}
 In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out how ready the system would be if an enemy attack had taken place. The result of this comparison will be stored as a 'XML' file in order to visualise it.

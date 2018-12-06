@@ -24,7 +24,7 @@ Describe 'read App and Service Logs'{
         $events | Should -Not -BeNullOrEmpty
     }
 
-    It 'checks if got eventlogs from security'{
+    It 'checks if got app and serve logs from terminal services'{
         $events = wevtutil qe Microsoft-Windows-TerminalServices-LocalSessionManager/Operational /q:"*[System]" /uni:false /f:text
         $events | Should -Not -BeNullOrEmpty
     }
@@ -32,9 +32,9 @@ Describe 'read App and Service Logs'{
 
 Describe 'check function GetEventLogsAndExport'{
     It 'checks function GetEventLogsAndExport'{
-        $exportFolder = $PSScriptRoot
+        $exportFolder = "$PSScriptRoot\TestFiles"
         GetEventLogsAndExport $exportFolder
-        $exportedFile = $exportFolder + "\myeventlogs.csv"
+        $exportedFile = $exportFolder + "\eventlogs.csv"
         $exportedFile | Should -Exist
         $testLogs = Get-Content $exportedFile
         $testLogs.Count | Should -BeGreaterThan 1
@@ -43,24 +43,31 @@ Describe 'check function GetEventLogsAndExport'{
 
 Describe 'check function GetApplicationAndServiceLogs'{
     It 'checks function GetEventLogsAndExport'{
-        $exportFolder = $PSScriptRoot
+        $exportFolder = "$PSScriptRoot\TestFiles"
         GetApplicationAndServiceLogs $exportFolder
-        $exportedFile = $exportFolder + "\myappandservlogs.csv"
+        $exportedFile = $exportFolder + "\appandservlogs.csv"
         $exportedFile | Should -Exist
         $testLogs = Get-Content $exportedFile
-        $testLogs | Should -BeLike '"EventID*"'
+        $testLogs | Should -BeLike '"EventID"*'
     }
 }
 Describe 'Test function ImportCompareExport'{
     It 'calls the function and loads a test-xml'{
-        $importFolder = $PSScriptRoot
-        $exportFolder = $PSScriptRoot
+        $importFolder = "$PSScriptRoot\TestFiles"
+        $exportFolder = "$PSScriptRoot\TestFiles"
 
         ImportCompareExport $importFolder $exportFolder
 
-        $exportedFile = $exportFolder + "\resultOfEventLogs.xml"
+        $exportedFile = $exportFolder + "\result_event_logs.xml"
         [xml]$resultXML = Get-Content $exportedFile
         $resultXML.Logs.EventLogsID | Should -Not -BeNullOrEmpty
         $resultXML.Logs.AppAndServID | Should -Not -BeNullOrEmpty
+    }
+}
+Describe 'Test output if inputpath is wrong'{
+    It 'calls a wrong inputpath'{
+        $WrongInputPath = "$PSScriptRoot\ThisFolderDoesNotExist"
+        $output = ImportCompareExport $WrongInputPath
+        $output | Should -Be $false
     }
 }

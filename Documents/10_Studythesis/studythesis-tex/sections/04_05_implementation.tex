@@ -1,7 +1,7 @@
 \section{Implementation}
 
 \subsection{Module: GetAndAnalyseAuditPolicies}
-The basic idea was to implement the use case ''\nameref{UC01}'' separately from the use case ''\nameref{UC02}''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following describes how the two use cases were implemented.
+The basic idea was to implement the use case ''\nameref{UC01}'' separately from the use case ''\nameref{UC02}''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script. The following, describes how the two use cases were implemented.
 
 \subsubsection{Result}\label{GetAndAnalyseAuditPoliciesResult}
 Both Use Cases were implemented together in one script. The script follows the following schedule:
@@ -45,7 +45,7 @@ Each result of the individual steps is collected in hashtables and merged togeth
 
 \subsubsection{Approach}
 \paragraph{Read Resultant Set of Policies} \ \\
-Research was done to read the corresponding audit policy configurations from the system. At the beginning, the approach was to read the required configurations using the command \lstinline|auditpol|. \cite{auditpol} This command can be used to read out and manipulate the currently valid information on the audit policies. However, the manipulation of the audit policies is not necessary within the tool and can be ignored. The command provides exactly the information needed to fulfill this use case:
+Research was carried out to read the corresponding audit policy configurations from the system. At the beginning, the approach was to read the required configurations using the command \lstinline|auditpol|. \cite{auditpol} This command can be used to read out and manipulate the currently valid information on the audit policies. However, the manipulation of the audit policies is not necessary within the tool and can be ignored. The command provides exactly the information needed to fulfill this use case:
 \begin{lstlisting}[caption=auditpol, language=PowerShell]
 PS C:\Windows\system32> auditpol /get /category:Logon/Logoff
 System audit policy
@@ -63,18 +63,18 @@ Logon/Logoff
     User / Device Claims                    No Auditing
     Group Membership                        No Auditing
 \end{lstlisting}
-Unfortunately, this output is not very ideal for a suitable further processing and analysis of the current configuration. The return value of the command is an ordinary array filled with corresponding strings and therefore the complete array should have been checked for correct content by string comparisons. Furthermore, the command \lstinline|auditpol| does not offer the possibility of remote configuration with regard to an extension of the tool to a whole fleet of computers. For this reason, the idea of building the tool on the basis of this command was rejected.
+Unfortunately, this output is not very ideal for a suitable further processing and analysis of the current configuration. The return value of the command is an ordinary array filled with corresponding strings and, therefore, the complete array should have been checked for correct content by string comparisons. Furthermore, the command \lstinline|auditpol| does not offer the possibility of remote configuration with regard to an extension of the tool to a whole fleet of computers. For this reason, the idea of building the tool on the basis of this command was rejected.
 \\\\
 Further research has shown that Microsoft provides a RSoP \cite{RSoP} for reading audit policies. This can also be accessed via a PowerShell command. Microsoft offers the command \lstinline|Get-GPResultantSetOfPolicy| \cite{GetGPResultantSetOfPolicy} for this purpose. This command can be used to generate an XML-based report of the currently valid GPOs. Since traversing an XML-based file via PowerShell proves to be very simple, this variant is preferable to the \lstinline|auditpol| command. After a short test, it quickly became clear that the generated XML provides all necessary information for the further analysis. Unfortunately, the \lstinline|Get-GPResultantSetOfPolicy| command is not available by default on all systems. However, this command is used and the missing Module: ''GroupPolicy'', which is used to activate the command, will be prerequisite for the script. \cite{GroupPolicy} \cite{RSAT}
 
 
 \paragraph{Analyse Audit Policies} \ \\
-The current configuration of the system's audit policies is then to be evaluated from the temporarily cached file. The basis for this provides the section ''\ref{Correlation} \nameref{Correlation}'' based on ''\ref{JPCertStudy} \nameref{JPCertStudy}''.
+The current configuration of the system's audit policies is then to be evaluated from the temporarily cached file. The basis for this provides section ''\ref{Correlation} \nameref{Correlation}'' based on ''\ref{JPCertStudy} \nameref{JPCertStudy}''.
 
 \clearpage 
 
 \subsubsection{Implementation}
-This section describes the implementation of \lstinline|GetAndCheckAuditPolicies| in detail. For this purpose, the following is referred to in the section \ref{GetAndAnalyseAuditPoliciesResult} \nameref{GetAndAnalyseAuditPoliciesResult} described schedule.
+This section describes the implementation of \lstinline|GetAndCheckAuditPolicies| in detail. For this purpose, the following is referred to in section \ref{GetAndAnalyseAuditPoliciesResult} \nameref{GetAndAnalyseAuditPoliciesResult} described schedule.
 \\\\
 The first step is to read the RSoP from the local system with the command \lstinline|Get-GPResultantSetOfPolicy|. The XML that is retrieved is then temporarily cached in the execution path of the script and read in again for further processing.
 \begin{lstlisting}[caption=Get-GPResultantSetOfPolicy, language=PowerShell]
@@ -95,7 +95,7 @@ if ([System.IO.File]::Exists($pathRSOPXML)) {
 \begin{multicols}{2}
     \ \\\\\\ \
     The generated XML (RSoP) is an extraction of the GPOs and contains only the configurations set from them.
-    Afterwards the analisis begins and the entries are searched in the XML file, in which the required configurations for the ''Advanced Audit Policies'' are stored (see figure \ref{fig:AdvancedAuditPolicies}).
+    Afterwards the analysis begins and the entries are searched in the XML file, in which the required configurations for the ''Advanced Audit Policies'' are stored (see figure \ref{fig:AdvancedAuditPolicies}).
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.7\linewidth]{assets/GetAndCheckAuditPolicies/advancedauditpolicies.png}
@@ -151,7 +151,7 @@ foreach ($auditSetting in $auditSettings.GetEnumerator()) {
     }    
 }
 \end{lstlisting} \ \\
-When checking the audit policies is done the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
+After checking the audit policies, the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
 
 \begin{lstlisting}[caption=GetRegistryValue,language=PowerShell]
 Function GetRegistryValue($path, $name) {
@@ -186,7 +186,7 @@ Function IsForceAuditPolicyEnabeled ($auditPolicySubcategoryKey) {
     }
 }
 \end{lstlisting}\ \\
-The next step is to check if Sysmon as a service is installed (also not contained in the RSoP) and if so is it running or not. Since a service can be renamed to hide it from the bad guys, the \lstinline|Get-Service| command cannot make a 100\% statement about whether the service is actually installed. For this reason the description of the service is queried, which does not change with renaming. \cite{Sysmon1}
+The next step is to check if Sysmon as a service is installed (also not contained in the RSoP) and, if so, is it running or not. Since a service can be renamed to hide it from the bad guys, the \lstinline|Get-Service| command cannot make a 100\% statement about whether the service is actually installed. For this reason the description of the service is queried, which does not change with renaming. \cite{Sysmon1}
 \begin{lstlisting}[caption=Function IsSysmonInstalled, language=PowerShell]
 Function IsSysmonInstalled($service) {
     Write-Host "Check Sysmon"
@@ -212,7 +212,7 @@ Function IsSysmonInstalled($service) {
 
 \clearpage
 
-As a last step the script is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. The decision for 4MB is mentioned in the section ''\ref{CAPI2} \nameref{CAPI2}''. Unfortunately, this information is also not available via the RSoP. Therefore the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} In order to enable testing here as well, a Get function for the event log entry has been created.
+As a last step, the script is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. The decision for 4MB is mentioned in the section ''\ref{CAPI2} \nameref{CAPI2}''. Unfortunately, this information is also not available via the RSoP. Therefore the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} In order to enable testing here as well, a Get function for the event log entry has been created.
 
 \begin{lstlisting}[caption=Function GetCAPI2, language=PowerShell]
 Function GetCAPI2 {
@@ -247,10 +247,10 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
     return $result
 }  
 \end{lstlisting}
-At the end of the script all temporary files are removed.
+All temporary files are removed at the end of this script.
 \clearpage
 
-To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy and the other for all group policies. To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies rely in a Active Directory Network. 
+To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy and the other for all group policies. To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies remain in a Active Directory Network. 
 
 \begin{lstlisting}[caption=Function GetDomainAuditPolicies, language=PowerShell]
 Function GetDomainAuditPolicies ($policyName) {
@@ -293,7 +293,7 @@ Function GetDomainAuditPolicies ($policyName) {
 This section describes the implementation of the ''\nameref{UC03}'' as well as ''\nameref{UC04}''. Both use cases were fulfilled in the PowerShell script ''GetAndCompareLogs''. Here is a description how the use cases were implemented.
 
 \subsubsection{Result} \label{ResultSetGetAndCompareLogs}
-The script ''GetAndCompareLogs'', where both use cases were implement, runs as follows:
+The script ''GetAndCompareLogs'', where both use cases were implemented, runs as follows:
 \begin{itemize}
     \item Reading and caching the Event Logs ''System'' \& ''Security''
     \item Filter cached Logs by EventID, group EventIDs that occur more than once. Found EventIDs are exported as ''CSV''
@@ -339,7 +339,7 @@ The now no longer needed CSV files are deleted. The XML with the result set is n
 
 \subsubsection{Approach}
 \paragraph{Get Event Logs}\ \\
-After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command\lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script run successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+After research was done on how to read out the Event Logs ''System'' and ''Security'' the desicon was made to use to PowerShell command\lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event Logs'' report. \cite{JPCERTDetectingLateralMovement}. The script ran successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 Logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario, in this case the worst case scenario is that none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event Logs, reducing the runtime to O(m). The cached Logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
 \ \\
 To read out the ''Application and Service'' Logs we can not use Get-EventLog. The first approach used the \lstinline|Get-WinEvent| \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
 The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all Logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of Logs is smaller. On the testing environment with a machine with 4 Gigabyte (GB) Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
@@ -371,7 +371,7 @@ The second part of the function filters the EventIDs from the chaced logs. Subse
     $eventLogs| Select EventID -Unique |Export-CSV $exportEventLogsIntoCSV -NoTypeInfo -Encoding UTF8
     }
 \end{lstlisting}
-After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, the function is divided into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similar it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
+After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, the function is divided into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similarly it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 1, language=PowerShell]
     $appAndServLogs = New-Object System.Collections.ArrayList
     $idsForTaskScheduler = ("106", "200", "129", "201", ...
@@ -417,14 +417,14 @@ The next point on the list is importing the found ''EventLogs'' and ''Service An
     }
     # Close XML
 \end{lstlisting}
-The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. At the end all temporary files are deleted.
+The same happens with the ''App and Service'' Logs in the \lstinline|GetApplicationAndServiceLogs| function. All temporary files are removed at the end of this script.
 \clearpage
 \subsection{Module: Visualize}
-In this script the ''\nameref{UC05}'' is implemented, here the description how it was done.
+In this script the ''\nameref{UC05}'' is implemented here the description how it was done.
 \subsubsection{Result} \label{resultVisualize}
 The script ''\nameref{UC05}'' runs as follows:
 \begin{itemize}
-    \item Create Protable Document Format (PDF) at given folder and ''open'' it
+    \item Create Portable Document Format (PDF) at given folder and ''open'' it
     \item Import audit policies and compare them to a given checklist, result is written and visualized in a table
     \item Check which attack tool categories can be detected with the current audit guidelines and which cannot
     \item Import the found EventLogs and check if the important EventIDs, according to JPCERT/CC, are found
@@ -457,10 +457,10 @@ The following attack categories cannot be detected with certainty: \\
     \end{tabular}
 \end{table}
 \subsubsection{Approach}
-At first, the developers toyed with the idea to use ''PowerBI'' \cite{PowerBI}, like Jessica Payne uses it in ''WEFFELS''. But after a short tryout they decided that the tool was too overpowered for their purpose. Also did they not like that the user would have to install a third-party tool to analyse his data. The Dynamic Link Library (DLL) ''iTextSharp'', originally a C\# library, allows to generate a PDF directly from the code, which can also be used in PowerShell. This variant is not very versatile and it is difficult to create an appealing design, but it is enough for now. 
+At first, the developers considered using ''PowerBI'' \cite{PowerBI}, like Jessica Payne uses it in ''WEFFELS''. But after a short trial they decided that the tool was too overpowered for their purpose. Also, they did not like that the user would have to install a third-party tool to analyse his data. The Dynamic Link Library (DLL) ''iTextSharp'', originally a C\# library, allows to generate a PDF directly from the code, which can also be used in PowerShell. This variant is not very versatile and it is difficult to create an appealing design, but it is enough for now. 
 
 \subsubsection{Implementation}
-This section describes the implementation of \lstinline|Display missing or wrong system configuration| in detail. For this purpose, the following is referred to in the section ''\ref{resultVisualize} \nameref{resultVisualize}'' described schedule. \\\\
+This section describes the implementation of \lstinline|Display missing or wrong system configuration| in detail. For this purpose, the following is referred to in section ''\ref{resultVisualize} \nameref{resultVisualize}'' described schedule. \\\\
 The iTextSharp.dll and the functions from \lstinline|PowerShell-PDF| \cite{PowerShell-PDF} were imported. The first step is to create a PDF-document and ''open'' it. For this purpose the function \lstinline|OpenPDF| was created:
 \begin{lstlisting}[caption=Function OpenPDF, language=PowerShell]
 function OpenPDF{
@@ -523,7 +523,7 @@ function CreateAddCell($content) {
         # Add Cell to Table
 }
 \end{lstlisting}
-Now that the ''Import audit policies and compare them to a given checklist,result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$incorrectAudits.
+Now that the ''Import audit policies and compare them to a given checklist, result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose, the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$incorrectAudits.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
     function ToolsCanBeDetected($incorrectAudits){
         [xml] $auditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
@@ -547,7 +547,7 @@ Now that the ''Import audit policies and compare them to a given checklist,resul
         # Output of the not detectable categories and the causing audits    
     }
 \end{lstlisting}
-The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because this two tables are created the same way, only one case is shown. Therefore the function \lstinline|WriteEventLogs| was created.
+The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because these two tables are created the same way, only one case is shown. Therefore, the function \lstinline|WriteEventLogs| was created.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
     function WriteEventLogs { 
         [xml] $eventxml = Get-Content # importPath
@@ -561,7 +561,7 @@ The next step is to display the found EventLogs and if they are missing or prese
         #Add result to table
     }
 \end{lstlisting}
-As a final task, all these function have to be called in the right order, and the opened PDF has to be closed. For this case the simple function \lstinline|VisualizeAll| was created:
+As a final task, all these function have to be called in the right order, and the opened PDF has to be closed. For this case, the simple function \lstinline|VisualizeAll| was created:
 \begin{lstlisting}[caption=Function VisualizeAll, language=PowerShell]
     function WriteEventLogs { 
         $pdf = OpenPDF $exportFolder
@@ -575,9 +575,9 @@ As a final task, all these function have to be called in the right order, and th
 \clearpage
 
 \subsection{Main Script: SRI}
-The aim of the main script is to supply the user with various procedures to evaluate the readiness of audit policies and/or event logs. However, the user is not meant to use single functions provided by the modules because most function provide just a metaset of data in order to make a statement of the readiness. For this reason, the main script is able to be called with various parameter for the carious procedures. Moreover, the user gets a help functionality (via PowerShells common \lstinline|Get-Help|) to provide an overview of parameter combinations.
+The aim of the main script is to supply the user with various procedures to evaluate the readiness of audit policies and/or event logs. However, the user is not meant to use single functions provided by the modules because most function provide just a metaset of data in order to make a statement of the readiness. For this reason, the main script is able to be called with various parameter for the diffrent procedures. Moreover, the user gets a help functionality (via PowerShells common \lstinline|Get-Help|) to provide an overview of parameter combinations.
 \subsubsection{Result}
-The various procedures/modes provided by the main script , with eventual additional parameter, are
+The various procedures/modes provided by the main script, with eventual additional parameter, are:
 \begin{itemize}
     \item \textbf{\textit{Online, Offline, AllGroupPolicies and GroupPolicy}}
 \end{itemize}
@@ -664,7 +664,7 @@ PS C:\>./sri.ps1 [-AllGroupPolicies]
 Users should not have to call the individual functions from the PowerShell modules. For this reason, the idea was to provide a main script which defines several modes to call with appropriate parameter. Each mode has a predefined procedure of function calls which will create a result PDF. In addition, the script should be delivered with a integrated help functionality to supply a on-demand overview of all possible script modes and its parameter. 
 
 \subsubsection{Implementation}
-To get a better understanding how each mode proceeds, this section describes the source code in form of activity diagrams. The activity diagrams are an overview and do contain the core of each mode.
+To get a better understanding how each mode proceeds, this section describes the source code in form of activity diagrams. The activity diagrams are an overview and contain the core of each mode.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/modes/online.png}
