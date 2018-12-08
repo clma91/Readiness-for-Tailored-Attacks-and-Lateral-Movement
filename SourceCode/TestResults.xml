@@ -1,153 +1,167 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="20" errors="0" failures="9" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-12-05" time="14:30:10">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="64" errors="0" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-12-07" time="12:19:22">
   <environment user="Claudio" machine-name="CLMA1040" cwd="D:\_Studium\zSemester5\SA\GitRepo\SourceCode" user-domain="CLMA1040" platform="Microsoft Windows 10 Pro|C:\Windows|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="40.9654" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="53.5367" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1" executed="True" result="Failure" success="False" time="3.2751" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1" executed="True" result="Success" success="True" time="3.0658" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="GetCAPI2" executed="True" result="Failure" success="False" time="0.2696" asserts="0" description="GetCAPI2">
+          <test-suite type="TestFixture" name="GetCAPI2" executed="True" result="Success" success="True" time="0.0974" asserts="0" description="GetCAPI2">
             <results>
-              <test-case description="should return a XML" name="GetCAPI2.should return a XML" time="0.2696" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>Expected the value to have type [xml] or any of its subtypes, but got '&lt;?xml version="1.0" encoding="UTF-8"?&gt;' with type [string].</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 15
-15:         $CAPI2 | Should BeOfType System.Xml.XmlDocument</stack-trace>
-                </failure>
-              </test-case>
+              <test-case description="should return a XML" name="GetCAPI2.should return a XML" time="0.0974" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="IsCAPI2Enabled" executed="True" result="Success" success="True" time="0.3862" asserts="0" description="IsCAPI2Enabled">
+          <test-suite type="TestFixture" name="IsCAPI2Enabled" executed="True" result="Success" success="True" time="0.2732" asserts="0" description="IsCAPI2Enabled">
             <results>
-              <test-suite type="TestFixture" name="xml with disabled CAPI2" executed="True" result="Success" success="True" time="0.2067" asserts="0" description="xml with disabled CAPI2">
+              <test-suite type="TestFixture" name="xml with disabled CAPI2" executed="True" result="Success" success="True" time="0.086" asserts="0" description="xml with disabled CAPI2">
                 <results>
-                  <test-case description="checks if function returns Disable" name="IsCAPI2Enabled.xml with disabled CAPI2.checks if function returns Disable" time="0.2067" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns Disable" name="IsCAPI2Enabled.xml with disabled CAPI2.checks if function returns Disable" time="0.086" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="xml with enabled CAPI2 but bad log size of 1048576" executed="True" result="Success" success="True" time="0.0943" asserts="0" description="xml with enabled CAPI2 but bad log size of 1048576">
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but bad log size of 1048576" executed="True" result="Success" success="True" time="0.0868" asserts="0" description="xml with enabled CAPI2 but bad log size of 1048576">
                 <results>
-                  <test-case description="checks if function returns EnabledBadLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns EnabledBadLogSize" time="0.0729" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if function returns LogSize of 1048576" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns LogSize of 1048576" time="0.0214" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns EnabledBadLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns EnabledBadLogSize" time="0.0692" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 1048576" name="IsCAPI2Enabled.xml with enabled CAPI2 but bad log size of 1048576.checks if function returns LogSize of 1048576" time="0.0175" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="xml with enabled CAPI2 but good log size of 4980736" executed="True" result="Success" success="True" time="0.0853" asserts="0" description="xml with enabled CAPI2 but good log size of 4980736">
+              <test-suite type="TestFixture" name="xml with enabled CAPI2 but good log size of 4980736" executed="True" result="Success" success="True" time="0.1004" asserts="0" description="xml with enabled CAPI2 but good log size of 4980736">
                 <results>
-                  <test-case description="checks if function returns EnabledGoodLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns EnabledGoodLogSize" time="0.0632" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if function returns LogSize of 4980736" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns LogSize of 4980736" time="0.0221" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns EnabledGoodLogSize" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns EnabledGoodLogSize" time="0.0844" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if function returns LogSize of 4980736" name="IsCAPI2Enabled.xml with enabled CAPI2 but good log size of 4980736.checks if function returns LogSize of 4980736" time="0.016" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="IsForceAuditPoliySubcategoryEnabeled" executed="True" result="Failure" success="False" time="0.3631" asserts="0" description="IsForceAuditPoliySubcategoryEnabeled">
+          <test-suite type="TestFixture" name="IsForceAuditPoliySubcategoryEnabeled" executed="True" result="Success" success="True" time="0.2018" asserts="0" description="IsForceAuditPoliySubcategoryEnabeled">
             <results>
-              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 1" executed="True" result="Failure" success="False" time="0.2045" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 1">
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 1" executed="True" result="Success" success="True" time="0.1314" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 1">
                 <results>
-                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 1.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.2045" asserts="0" success="False" result="Failure" executed="True">
-                    <failure>
-                      <message>The term 'IsForceAuditPoliySubcategoryEnabeled' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
-                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 64
-64:             $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy1
-</stack-trace>
-                    </failure>
-                  </test-case>
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 1.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.1314" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 0" executed="True" result="Failure" success="False" time="0.1585" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 0">
+              <test-suite type="TestFixture" name="registry value SCENoApplyLegacyAuditPolicy = 0" executed="True" result="Success" success="True" time="0.0705" asserts="0" description="registry value SCENoApplyLegacyAuditPolicy = 0">
                 <results>
-                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 0.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.1585" asserts="0" success="False" result="Failure" executed="True">
-                    <failure>
-                      <message>The term 'IsForceAuditPoliySubcategoryEnabeled' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.</message>
-                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 72
-72:             $result = IsForceAuditPoliySubcategoryEnabeled $SCENoApplyLegacyAuditPolicy0
-</stack-trace>
-                    </failure>
-                  </test-case>
+                  <test-case description="checks if function returns ForceAuditPolicySubcategory Enabled" name="IsForceAuditPoliySubcategoryEnabeled.registry value SCENoApplyLegacyAuditPolicy = 0.checks if function returns ForceAuditPolicySubcategory Enabled" time="0.0705" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="IsSysmonInstalled" executed="True" result="Failure" success="False" time="2.2562" asserts="0" description="IsSysmonInstalled">
+          <test-suite type="TestFixture" name="IsForceAuditPolicyEnabeled" executed="True" result="Success" success="True" time="0.1377" asserts="0" description="IsForceAuditPolicyEnabeled">
             <results>
-              <test-suite type="TestFixture" name="Sysmon64" executed="True" result="Failure" success="False" time="0.9663" asserts="0" description="Sysmon64">
+              <test-case description="checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Enabled" name="IsForceAuditPolicyEnabeled.checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Enabled" time="0.0946" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Disabled" name="IsForceAuditPolicyEnabeled.checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory Disabled" time="0.0254" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory NotDefined" name="IsForceAuditPolicyEnabeled.checks if ISForeAuditFolicyEnabled returns hashtable with ForceAuditPolicySubcategory NotDefined" time="0.0176" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="IsSysmonInstalled" executed="True" result="Success" success="True" time="1.0401" asserts="0" description="IsSysmonInstalled">
+            <results>
+              <test-case description="checks if Sysmon is installed and running" name="IsSysmonInstalled.checks if Sysmon is installed and running" time="1.0401" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="AnalyseAuditPolicies" executed="True" result="Success" success="True" time="1.1159" asserts="0" description="AnalyseAuditPolicies">
+            <results>
+              <test-suite type="TestFixture" name="checks if all data is in returned hashtable if empty XML is provided" executed="True" result="Success" success="True" time="0.6491" asserts="0" description="checks if all data is in returned hashtable if empty XML is provided">
                 <results>
-                  <test-case description="checks if Sysmon64 is installed and running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed and running" time="0.5576" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if Sysmon64 is installed but not running" name="IsSysmonInstalled.Sysmon64.checks if Sysmon64 is installed but not running" time="0.4087" asserts="0" success="False" result="Failure" executed="True">
-                    <failure>
-                      <message>Expected 'InstalledNotRunning' to be found in collection InstalledAndRunning, but it was not found.</message>
-                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 99
-99:             $result.values | should -Contain "InstalledNotRunning"</stack-trace>
-                    </failure>
-                  </test-case>
+                  <test-case description="checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse NotConfigured" time="0.1866" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditSensitivePrivilegeUse NotConfigured" time="0.0185" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditLogoff NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditLogoff NotConfigured" time="0.0349" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditUserAccountManagement NotConfigured" time="0.0331" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditDetailedFileShare NotConfigured" time="0.0373" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSAM NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditSAM NotConfigured" time="0.0403" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKernelObject NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditKernelObject NotConfigured" time="0.0156" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditKerberosAuthenticationService NotConfigured" time="0.0258" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditHandleManipulation NotConfigured" time="0.0318" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditRegistry NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditRegistry NotConfigured" time="0.019" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditProcessTermination NotConfigured" time="0.0276" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFileSystem NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditFileSystem NotConfigured" time="0.0202" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange NotConfigured" time="0.0139" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditSpecialLogon NotConfigured" time="0.0259" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFileShare NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditFileShare NotConfigured" time="0.0153" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditProcessCreation NotConfigured" time="0.019" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditLogon NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditLogon NotConfigured" time="0.0214" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditSecurityGroupManagement NotConfigured" time="0.0195" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations NotConfigured" time="0.032" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if empty XML is provided.checks if empty xml returns hashtable with AuditFilteringPlatformConnection NotConfigured" time="0.0114" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="Sysmon" executed="True" result="Failure" success="False" time="1.2899" asserts="0" description="Sysmon">
+              <test-suite type="TestFixture" name="checks if all data is in returned hashtable if RSoP-XML is provided" executed="True" result="Success" success="True" time="0.4668" asserts="0" description="checks if all data is in returned hashtable if RSoP-XML is provided">
                 <results>
-                  <test-case description="checks if Sysmon is installed and running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed and running" time="0.4391" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="checks if Sysmon is installed but not running" name="IsSysmonInstalled.Sysmon.checks if Sysmon is installed but not running" time="0.3986" asserts="0" success="False" result="Failure" executed="True">
-                    <failure>
-                      <message>Expected 'InstalledNotRunning' to be found in collection InstalledAndRunning, but it was not found.</message>
-                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 115
-115:             $result.values | should -Contain "InstalledNotRunning"</stack-trace>
-                    </failure>
-                  </test-case>
-                  <test-case description="checks if Sysmon is not installed" name="IsSysmonInstalled.Sysmon.checks if Sysmon is not installed" time="0.4522" asserts="0" success="False" result="Failure" executed="True">
-                    <failure>
-                      <message>Expected 'NotInstalled' to be found in collection InstalledAndRunning, but it was not found.</message>
-                      <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndAnalyseAuditPolicies.Tests.ps1: line 122
-122:             $result.values | should -Contain "NotInstalled"</stack-trace>
-                    </failure>
-                  </test-case>
+                  <test-case description="checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditNonSensitivePrivilegeUse Success" time="0.0722" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSensitivePrivilegeUse SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditSensitivePrivilegeUse SuccessAndFailure" time="0.0116" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditLogoff NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditLogoff NotConfigured" time="0.0111" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditUserAccountManagement Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditUserAccountManagement Success" time="0.0302" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditDetailedFileShare NoAuditing" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditDetailedFileShare NoAuditing" time="0.0334" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSAM SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditSAM SuccessAndFailure" time="0.0172" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKernelObject NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditKernelObject NotConfigured" time="0.0258" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKerberosAuthenticationService SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditKerberosAuthenticationService SuccessAndFailure" time="0.0295" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditHandleManipulation Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditHandleManipulation Success" time="0.0118" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditRegistry NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditRegistry NotConfigured" time="0.0241" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditProcessTermination Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditProcessTermination Success" time="0.0188" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFileSystem SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditFileSystem SuccessAndFailure" time="0.0185" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditMPSSVCRule-LevelPolicyChange Success" time="0.0166" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSpecialLogon Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditSpecialLogon Success" time="0.0231" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFileShare SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditFileShare SuccessAndFailure" time="0.0115" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditProcessCreation Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditProcessCreation Success" time="0.0202" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditLogon NotConfigured" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditLogon NotConfigured" time="0.0272" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditSecurityGroupManagement SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditSecurityGroupManagement SuccessAndFailure" time="0.0152" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations SuccessAndFailure" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditKerberosServiceTicketOperations SuccessAndFailure" time="0.0222" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="checks if empty xml returns hashtable with AuditFilteringPlatformConnection Success" name="AnalyseAuditPolicies.checks if all data is in returned hashtable if RSoP-XML is provided.checks if empty xml returns hashtable with AuditFilteringPlatformConnection Success" time="0.0267" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MergeHashtables" executed="True" result="Success" success="True" time="0.109" asserts="0" description="MergeHashtables">
+            <results>
+              <test-case description="checks if the hashtables are merged correctly" name="MergeHashtables.checks if the hashtables are merged correctly" time="0.0804" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if MergeHashtables without input returns an hashtable which is NULL and has empty keys and values" name="MergeHashtables.checks if MergeHashtables without input returns an hashtable which is NULL and has empty keys and values" time="0.0286" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="WriteXML" executed="True" result="Success" success="True" time="0.0909" asserts="0" description="WriteXML">
+            <results>
+              <test-case description="checks WriteXML without input writes no XML-file" name="WriteXML.checks WriteXML without input writes no XML-file" time="0.0627" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if result_audit_policies.xml is written" name="WriteXML.checks if result_audit_policies.xml is written" time="0.0281" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1" executed="True" result="Failure" success="False" time="37.6903" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1">
+      <test-suite type="TestFixture" name="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1" executed="True" result="Failure" success="False" time="50.4709" asserts="0" description="D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="read Get-EventLogs" executed="True" result="Success" success="True" time="13.1119" asserts="0" description="read Get-EventLogs">
+          <test-suite type="TestFixture" name="read Get-EventLogs" executed="True" result="Success" success="True" time="15.7647" asserts="0" description="read Get-EventLogs">
             <results>
-              <test-case description="checks if got windowslogs from system" name="read Get-EventLogs.checks if got windowslogs from system" time="4.9375" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="checks if got windowslogs from security" name="read Get-EventLogs.checks if got windowslogs from security" time="8.1744" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from system" name="read Get-EventLogs.checks if got windowslogs from system" time="5.8406" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got windowslogs from security" name="read Get-EventLogs.checks if got windowslogs from security" time="9.9241" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="read App and Service Logs" executed="True" result="Success" success="True" time="3.0708" asserts="0" description="read App and Service Logs">
+          <test-suite type="TestFixture" name="read App and Service Logs" executed="True" result="Success" success="True" time="3.2052" asserts="0" description="read App and Service Logs">
             <results>
-              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.4434" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.6274" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got eventlogs from security" name="read App and Service Logs.checks if got eventlogs from security" time="1.6035" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="checks if got app and serve logs from terminal services" name="read App and Service Logs.checks if got app and serve logs from terminal services" time="1.6018" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="check function GetEventLogsAndExport" executed="True" result="Failure" success="False" time="20.5539" asserts="0" description="check function GetEventLogsAndExport">
+          <test-suite type="TestFixture" name="check function GetEventLogsAndExport" executed="True" result="Success" success="True" time="29.0752" asserts="0" description="check function GetEventLogsAndExport">
             <results>
-              <test-case description="checks function GetEventLogsAndExport" name="check function GetEventLogsAndExport.checks function GetEventLogsAndExport" time="20.5539" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\myeventlogs.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 43
-43:         $exportedFile | Should -Exist</stack-trace>
-                </failure>
-              </test-case>
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetEventLogsAndExport.checks function GetEventLogsAndExport" time="29.0752" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="check function GetApplicationAndServiceLogs" executed="True" result="Failure" success="False" time="0.4859" asserts="0" description="check function GetApplicationAndServiceLogs">
+          <test-suite type="TestFixture" name="check function GetApplicationAndServiceLogs" executed="True" result="Success" success="True" time="1.2103" asserts="0" description="check function GetApplicationAndServiceLogs">
             <results>
-              <test-case description="checks function GetEventLogsAndExport" name="check function GetApplicationAndServiceLogs.checks function GetEventLogsAndExport" time="0.4859" asserts="0" success="False" result="Failure" executed="True">
-                <failure>
-                  <message>Expected path 'D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\myappandservlogs.csv' to exist, but it did not exist.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 54
-54:         $exportedFile | Should -Exist</stack-trace>
-                </failure>
-              </test-case>
+              <test-case description="checks function GetEventLogsAndExport" name="check function GetApplicationAndServiceLogs.checks function GetEventLogsAndExport" time="1.2103" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Test function ImportCompareExport" executed="True" result="Failure" success="False" time="0.4679" asserts="0" description="Test function ImportCompareExport">
+          <test-suite type="TestFixture" name="Test function ImportCompareExport" executed="True" result="Failure" success="False" time="1.076" asserts="0" description="Test function ImportCompareExport">
             <results>
-              <test-case description="calls the function and loads a test-xml" name="Test function ImportCompareExport.calls the function and loads a test-xml" time="0.4679" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="calls the function and loads a test-xml" name="Test function ImportCompareExport.calls the function and loads a test-xml" time="1.076" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
                   <message>Expected a value, but got $null or empty.</message>
-                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 68
-68:         $resultXML.Logs.EventLogsID | Should -Not -BeNullOrEmpty</stack-trace>
+                  <stack-trace>at &lt;ScriptBlock&gt;, D:\_Studium\zSemester5\SA\GitRepo\SourceCode\SRI\Main\Modules\GetAndCompareLogs.Tests.ps1: line 63
+63:         $resultXML.Logs.EventLogsID | Should -Not -BeNullOrEmpty</stack-trace>
                 </failure>
               </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Test output if inputpath is wrong" executed="True" result="Success" success="True" time="0.1395" asserts="0" description="Test output if inputpath is wrong">
+            <results>
+              <test-case description="calls a wrong inputpath" name="Test output if inputpath is wrong.calls a wrong inputpath" time="0.1395" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>

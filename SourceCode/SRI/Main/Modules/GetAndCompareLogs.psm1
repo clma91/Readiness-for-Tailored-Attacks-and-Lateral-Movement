@@ -77,10 +77,6 @@ Function ImportCompareExport([String] $ImportPath, [String] $ExportPath){
     $ImportAppAndServLogs = "$ImportPath\appandservlogs.csv"
     $WindowsLogsToCheck = GetTargetWindowsLogs
     $AppAndServLogsToCheck = GetTargetAppAndServLogs
-    $Encoding = New-Object System.Text.UTF8Encoding($false)
-    $XmlWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
-    $FoundEventLogs = Import-Csv $ImportEventLogs -Encoding UTF8
-    $FoundAppAndServLogs = Import-Csv $ImportAppAndServLogs -Encoding UTF8 
     
     if (-not [System.IO.File]::Exists($ImportEventLogs)) {
         Write-Host "File $ImportEventLogs does not exist!" -ForegroundColor Red
@@ -90,6 +86,10 @@ Function ImportCompareExport([String] $ImportPath, [String] $ExportPath){
         Write-Host "File $ImportAppAndServLogs does not exist!" -ForegroundColor Red
         return $false
     }        
+    $FoundEventLogs = Import-Csv $ImportEventLogs -Encoding UTF8
+    $FoundAppAndServLogs = Import-Csv $ImportAppAndServLogs -Encoding UTF8 
+    $Encoding = New-Object System.Text.UTF8Encoding($false)
+    $XmlWriter = New-Object System.XMl.XmlTextWriter($ResultXML, $Encoding)
 
     $XmlWriter.Formatting = "Indented"
     $XmlWriter.Indentation = 1
