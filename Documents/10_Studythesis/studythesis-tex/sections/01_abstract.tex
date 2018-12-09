@@ -1,3 +1,14 @@
-\thispagestyle{plain}
+
 \kapitel{Abstract}
 \addcontentsline{toc}{part}{Abstract}
+\thispagestyle{plain}
+\renewcommand\section{\stdsection}
+\sectionroman{Introduction}
+The amount of cyber-attacks where malicious code is used, which not only settles on the infected system, but also infects other systems in the network, has massively increased recently. The outcome is often the complete infiltration of the organization due the use of lateral movements and advanced persistent threats (APT). In the analysis of such an event, information and time are key factors to success. Consequently, readiness for such an event is a decisive factor.
+
+\sectionroman{Procedure}
+The project was limited to Windows machines running on the operating system Windows 10 Pro or Windows Server 16. In the elaboration phase, research was done into how the goal of determining readiness could be implemented. The decision was made to implement the tool on the basis of the Paper "Detecting Lateral Movement through Tracking Event Logs" of the "Japan Computer Emergency Response Team Coordination Center". Existing tools / products were searched for, on which can be built. Unfortunately, no corresponding products were found and so decided that such a tool should be redesigned. As technology served PowerShell because it is close to the Microsoft operating system and that it has a detailed documentation at its disposal.
+
+\sectionroman{Result}
+During the construction phase the ''System Readiness Inspector - SRI'', a PowerShell script, was developed. This phase was completed using the Scrum method. The SRI has four different modes: Online, Offline, GroupPolicy, AllGroupPolicies. The online mode is limited to the current system and thus determines readiness. The offline mode is used to be able to make a statement about any system by means of exports. The GroupPolicy mode is limited to a specific Group Policy, which is checked for its audit settings. In the AllGroupPolicies mode, all group policies of the current domain are examined. 
+\thispagestyle{plain}
