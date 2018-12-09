@@ -76,18 +76,6 @@ Function IsSysmonInstalled {
     }
 }
 
-Function GetAuditPoliciesTargetList {
-    [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
-    $AuditSettings = @()
-
-    foreach ($Element in $targetList.AuditPolicies.ChildNodes) {
-        if ($Element.Localname.StartsWith("Audit")) {
-            $AuditSettings += ($Element.Localname -replace (" "))
-        }
-    }
-    return $AuditSettings
-}
-
 Function GetAuditPolicies([String] $ImportPath) {
     $IsCurrentPath = $true
     $PathRSoPXML = "$PSScriptRoot\..\rsop.xml"
@@ -127,8 +115,10 @@ Function GetAuditPolicies([String] $ImportPath) {
 
 Function IsForceAuditPolicyDomainEnabeled ([String] $PolicyName) {
     Write-Host "Checking `'Audit: Force audit policy subcategory settings to override audit policy category settings`'"
+
     $Domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
     $PolicyId = Get-GPO -Name $PolicyName | Select-Object -ExpandProperty id
+    
     $SecEditPath =  "\\$Domain\SYSVOL\$Domain\Policies\{$PolicyId}\MACHINE\Microsoft\Windows NT\SecEdit\GptTmpl.inf"
     $ForceAuditPolicyEnabled = "MACHINE\System\CurrentControlSet\Control\Lsa\SCENoApplyLegacyAuditPolicy=4,1"
     $ForceAuditPolicyDisabled = "MACHINE\System\CurrentControlSet\Control\Lsa\SCENoApplyLegacyAuditPolicy=4,0"
@@ -176,6 +166,7 @@ Function GetDomainAuditPolicy ([String] $PolicyName) {
         Write-Host "Get audit settings from group policy: `'$PolicyName`'"
         $AuditSettings = @{}
         $Policy = Import-Csv $PolicyCSV -Encoding UTF8
+
         foreach ($Element in $Policy) {
             $AuditSettings.Add(($Element.Subcategory -replace (" ")), $Element."Setting Value")
         }  
@@ -204,18 +195,6 @@ Function GetAllDomainAuditPolicies {
     }
     
     return $AuditSettingsPerPolicy
-}
-
-Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
-    <# Check if all required Advanced Audit Policies accoriding to JPCERT/CCs study 
-    "Detecting Lateral Movement through Tracking Event Logs" are configured #>
-    $Result = @{}
-    foreach ($TargetAuditSetting in $TargetAuditSettings) {
-        if ($AuditSettings.keys -notcontains $TargetAuditSetting) {
-            $Result.Add(($TargetAuditSetting -replace (" ")), "NotConfigured")
-        }
-    }
-    return $Result
 }
 
 Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
@@ -266,6 +245,30 @@ Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAudit
     return $Result
 }
 
+Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
+    <# Check if all required Advanced Audit Policies accoriding to JPCERT/CCs study 
+    "Detecting Lateral Movement through Tracking Event Logs" are configured #>
+    $Result = @{}
+    foreach ($TargetAuditSetting in $TargetAuditSettings) {
+        if ($AuditSettings.keys -notcontains $TargetAuditSetting) {
+            $Result.Add(($TargetAuditSetting -replace (" ")), "NotConfigured")
+        }
+    }
+    return $Result
+}
+
+Function GetAuditPoliciesTargetList {
+    [xml]$targetList = Get-Content ("$PSScriptRoot\..\Config\targetlist_auditpolicies.xml")
+    $AuditSettings = @()
+
+    foreach ($Element in $targetList.AuditPolicies.ChildNodes) {
+        if ($Element.Localname.StartsWith("Audit")) {
+            $AuditSettings += ($Element.Localname -replace (" "))
+        }
+    }
+    return $AuditSettings
+}
+
 Function AnalyseAuditPolicies ($AuditSettings) {
     Write-Host "Analysing Audit Policies"
     $TargetAuditSettings = GetAuditPoliciesTargetList
@@ -274,6 +277,7 @@ Function AnalyseAuditPolicies ($AuditSettings) {
     if ($AuditSettings.GetType() -eq [System.Xml.XmlDocument]) {
         $AuditSettingsRSoP = $AuditSettings.Rsop.ComputerResults.ExtensionData.Extension.AuditSetting
         $AuditSettings = @{}
+
         foreach ($AuditSettingRSoP in $AuditSettingsRSoP) {
             if ($AuditSettingRSoP) {
                 $AuditSettings.Add(($AuditSettingRSoP.SubcategoryName -replace (" ")), $AuditSettingRSoP.SettingValue)
@@ -319,7 +323,7 @@ Function WriteXML([Hashtable] $ResultCollection, [String] $ExportPath) {
         $XMLWriter.WriteStartDocument()
         $XMLWriter.WriteStartElement("AuditPolicies")
 
-        $OrderedResultCollection = $ResultCollection.GetEnumerator() | sort -Property name 
+        $OrderedResultCollection = $ResultCollection.GetEnumerator() | Sort-Object -Property name 
             
         foreach ($Item in $OrderedResultCollection) {
             WriteXMLElement $XMLWriter $Item.name $Item.Value
