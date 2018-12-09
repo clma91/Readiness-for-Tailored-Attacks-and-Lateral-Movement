@@ -197,18 +197,6 @@ Function GetAllDomainAuditPolicies {
     return $AuditSettingsPerPolicy
 }
 
-Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
-    <# Check if all required Advanced Audit Policies accoriding to JPCERT/CCs study 
-    "Detecting Lateral Movement through Tracking Event Logs" are configured #>
-    $Result = @{}
-    foreach ($TargetAuditSetting in $TargetAuditSettings) {
-        if ($AuditSettings.keys -notcontains $TargetAuditSetting) {
-            $Result.Add(($TargetAuditSetting -replace (" ")), "NotConfigured")
-        }
-    }
-    return $Result
-}
-
 Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
     $Result = @{}
     enum AuditSettingValues {
@@ -253,6 +241,18 @@ Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAudit
             }
             $Result.Add(($AuditSubcategoryName -replace (" ")), $AuditSettingValueString)
         }    
+    }
+    return $Result
+}
+
+Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
+    <# Check if all required Advanced Audit Policies accoriding to JPCERT/CCs study 
+    "Detecting Lateral Movement through Tracking Event Logs" are configured #>
+    $Result = @{}
+    foreach ($TargetAuditSetting in $TargetAuditSettings) {
+        if ($AuditSettings.keys -notcontains $TargetAuditSetting) {
+            $Result.Add(($TargetAuditSetting -replace (" ")), "NotConfigured")
+        }
     }
     return $Result
 }

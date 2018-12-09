@@ -221,40 +221,48 @@ Function Offline ($ImportPath, $ExportPath) {
     }
 }
 
-Function GroupPolicy ($OnlineExportPath) {
+Function GroupPolicy ([String] $OnlineExportPath, [String] $PolicyName) {
     $AuditSettingsDomain = GetDomainAuditPolicy $GroupPolicyName
     if ($AuditSettingsDomain) {
         $AuditSettings = AnalyseAuditPolicies $AuditSettingsDomain
-        WriteXML $AuditSettings $OnlineExportPath
+        $IsForceAuditPolicy = IsForceAuditPolicyDomainEnabeled $AuditSettingPerPolicy.key
+        $ResultCollection = MergeHashtables $AuditSettings $IsForceAuditPolicy 
+
+        WriteXML $ResultCollection $OnlineExportPath
         VisualizeAuditPolicies $OnlineExportPath
     }
+}
+
+Function RenameFiles ([String] $OnlineExportPath) {
+    $PolicyName = ($AuditSettingPerPolicy.name -replace (" "))
+    $ResultPDF = "$OnlineExportPath\results.pdf"
+    $NewResultPDF = "$OnlineExportPath\results_$PolicyName.pdf"
+    $ResultAuditPolicies = "$OnlineExportPath\result_audit_policies.xml"
+    $NewResoltOfAuditPolicies = "$OnlineExportPath\result_audit_policies$PolicyName.xml"
+
+    if ([System.IO.File]::Exists($NewResultPDF)) {
+        Remove-Item -Path $NewResultPDF
+    }
+    elseif ([System.IO.File]::Exists($NewResoltOfAuditPolicies)) {
+        Remove-Item -Path $NewResoltOfAuditPolicies
+    }
+    Move-Item -Path $ResultPDF -Destination $NewResultPDF -force
+    Move-Item -Path $ResultAuditPolicies -Destination $NewResoltOfAuditPolicies -force
 }
 
 Function AllGroupPolicies ($OnlineExportPath) {
     $AuditSettingsPerPolicy = GetAllDomainAuditPolicies
     if ($AuditSettingsPerPolicy) {
         foreach ($AuditSettingPerPolicy in $AuditSettingsPerPolicy.GetEnumerator()) {
-            Write-Host "Processing Group Policy: " $AuditSettingPerPolicy.name
-            $PolicyName = ($AuditSettingPerPolicy.name -replace (" "))
-            $ResultPDF = "$OnlineExportPath\results.pdf"
-            $NewResultPDF = "$OnlineExportPath\results_$PolicyName.pdf"
-            $ResultAuditPolicies = "$OnlineExportPath\result_audit_policies.xml"
-            $NewResoltOfAuditPolicies = "$OnlineExportPath\result_audit_policies$PolicyName.xml"
-            
+            Write-Host "Processing Group Policy: " $AuditSettingPerPolicy.name -ForegroundColor Yellow
+
             $AuditSettings = AnalyseAuditPolicies $AuditSettingPerPolicy.value
             $IsForceAuditPolicy = IsForceAuditPolicyDomainEnabeled $AuditSettingPerPolicy.key
             $ResultCollection = MergeHashtables $AuditSettings $IsForceAuditPolicy 
+
             WriteXML $ResultCollection $OnlineExportPath
             VisualizeAuditPolicies $OnlineExportPath
-        
-            if ([System.IO.File]::Exists($NewResultPDF)) {
-                Remove-Item -Path $NewResultPDF
-            }
-            elseif ([System.IO.File]::Exists($NewResoltOfAuditPolicies)) {
-                Remove-Item -Path $NewResoltOfAuditPolicies
-            }
-            Rename-Item -Path $ResultAuditPolicies -NewName $NewResoltOfAuditPolicies
-            Rename-Item -Path $ResultPDF -NewName $NewResultPDF
+            RenameFiles $OnlineExportPath $AuditSettingPerPolicy.name
         } 
     }
 }
