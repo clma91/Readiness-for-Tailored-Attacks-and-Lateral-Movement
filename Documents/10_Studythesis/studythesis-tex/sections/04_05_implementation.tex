@@ -117,59 +117,59 @@ Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSe
 
 \clearpage
 After checking for missing configurations, all values of the set settings are gathered for further processing.
-\begin{lstlisting}[caption=GetAndCheckAuditPolicies: Get configured audit settings from RSoP, language=PowerShell]
-foreach ($auditSetting in $auditSettings.GetEnumerator()) {
-    if ($targetAuditSettings -notcontains $auditsetting.name) {
+\begin{lstlisting}[caption=GetAuditSettingValues: Get configured audit settings from RSoP, language=PowerShell]
+foreach ($AuditSetting in $AuditSettings.GetEnumerator()) {
+    if ($TargetAuditSettings -notcontains $AuditSetting.Name) {
         continue
     }
-    if ($auditSetting.value -and $auditSetting.name) {
+    if ($AuditSetting.Value -and $AuditSetting.Name) {
         try {
-            $auditSettingValue = $auditSetting.value
+            $AuditSettingValue = $AuditSetting.Value
         }
         catch {
-            $auditSettingValue = 0
+            $AuditSettingValue = 0
         }
-        $auditSubcategoryName = $auditSetting.name 
-        switch ($auditSettingValue) {
+        $AuditSubcategoryName = $AuditSetting.Name 
+        switch ($AuditSettingValue) {
             NoAuditing {  
-                $auditSettingValueString = "NoAuditing"
+                $AuditSettingValueString = "NoAuditing"
                 continue
             }
             Success {
-                $auditSettingValueString = "Success"
+                $AuditSettingValueString = "Success"
                 continue
             } 
             Failure {
-                $auditSettingValueString = "Failure"
+                $AuditSettingValueString = "Failure"
                 continue
             }
             SuccessAndFailure {
-                $auditSettingValueString = "SuccessAndFailure"
+                $AuditSettingValueString = "SuccessAndFailure"
                 continue
             }
             Default { continue }
         }
-        $result.Add(($auditSubcategoryName -replace (" ")), $auditSettingValueString)
+        $Result.Add(($AuditSubcategoryName -replace (" ")), $AuditSettingValueString)
     }    
 }
 \end{lstlisting} \ \\
 After gathering of the values, the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
 
 \begin{lstlisting}[caption=GetRegistryValue,language=PowerShell]
-Function GetRegistryValue($path, $name) {
-    return Get-ItemProperty -Path $path -Name $name -ErrorAction Stop
+Function GetRegistryValue([String] $Path, [String] $Name) {
+    return Get-ItemProperty -Path $Path -Name $Name -ErrorAction Stop
 }
 \end{lstlisting} \ \\
 The registry entry is captured in a separate function to provide the possibility for tests. This function is called with the following parameter \cite{ForceAudit} to get the searched registry entry:
 
 \begin{lstlisting}[language=PowerShell]
-$path = "HKLM:\System\CurrentControlSet\Control\Lsa"
-$name = "SCENoApplyLegacyAuditPolicy"
+$Path = "HKLM:\System\CurrentControlSet\Control\Lsa"
+$Name = "SCENoApplyLegacyAuditPolicy"
 \end{lstlisting}
 
 
 \begin{lstlisting}[caption=Function IsForceAuditPolicyEnabeled, language=PowerShell]
-Function IsForceAuditPolicyEnabeled ($auditPolicySubcategoryKey) {
+Function IsForceAuditPolicyEnabeled ([Object] $AuditPolicySubcategoryKey) {
     $result = @{}
 
     if ($auditPolicySubcategoryKey) {
@@ -190,24 +190,23 @@ Function IsForceAuditPolicyEnabeled ($auditPolicySubcategoryKey) {
 \end{lstlisting}\ \\
 The next step is to check if Sysmon as a service is installed (also not contained in the RSoP) and, if so, is it running or not. Since a service can be renamed to hide it from the bad guys, the \lstinline|Get-Service| command cannot make a 100\% statement about whether the service is actually installed. For this reason the description of the service is queried, which does not change while renaming. \cite{Sysmon1}
 \begin{lstlisting}[caption=Function IsSysmonInstalled, language=PowerShell]
-Function IsSysmonInstalled($service) {
-    Write-Host "Check Sysmon"
-    $service = Get-WmiObject win32_service -Filter "Description = 'System Monitor service'"
-    $result = @{}
+Function IsSysmonInstalled {
+    $Service = Get-WmiObject win32_service -Filter "Description = 'System Monitor service'"
+    $Result = @{}
 
-    if ($service) {
-        if ($service.State -ne "Running") {
-            $result.Add("Sysmon", "InstalledNotRunning")
-            return $result
+    if ($Service) {
+        if ($Service.State -ne "Running") {
+            $Result.Add("Sysmon", "InstalledNotRunning")
+            return $Result
         }
         else {
-            $result.Add("Sysmon", "InstalledAndRunning")
-            return $result
+            $Result.Add("Sysmon", "InstalledAndRunning")
+            return $Result
         }
     }
     else {
-        $result.Add("Sysmon", "NotInstalled")
-        return $result
+        $Result.Add("Sysmon", "NotInstalled")
+        return $Result
     }
 }
 \end{lstlisting}
@@ -252,7 +251,7 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
 All temporary files are removed at the end of this script.
 \clearpage
 
-To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy (\lstinline|GetDomainAuditPolicy|) and the other for all group policies (\lstinline|GetAllDomainAuditPolicies|). To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies remain in a Active Directory Network. The audit settings of each group policy, remaining in SYSVOL, are stored as a CSV. This CSV is imported and each setting is gathered for further analysis. Like within the online mode, after doing so the hashtable is returned and filled with the missing audit settings. 
+To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy (\lstinline|GetDomainAuditPolicy|) and the other for all group policies (\lstinline|GetAllDomainAuditPolicies|). To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies remain in an active directory network. The audit settings of each group policy, remaining in SYSVOL, are stored as a CSV. This CSV is imported and each setting is gathered for further analysis. Like within the online mode, after doing so the hashtable is returned and filled with the missing audit settings. 
 
 \begin{lstlisting}[caption=Function GetDomainAuditPolicy, language=PowerShell]
 Function GetDomainAuditPolicy ([String] $PolicyName) {
@@ -303,7 +302,9 @@ In addition to capture all audit settings of the group policies, the setting ''A
 
 \begin{lstlisting}[caption=Function IsForceAuditPolicyDomainEnabeled, language=PowerShell]
 Function IsForceAuditPolicyDomainEnabeled ([String] $PolicyName) {
-    $Domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" | Select-Object -ExpandProperty Domain
+    $Domain = Get-WmiObject Win32_ComputerSystem -ComputerName "localhost" 
+                  | Select-Object -ExpandProperty Domain
+
     $PolicyId = Get-GPO -Name $PolicyName | Select-Object -ExpandProperty id
     
     $SecEditPath =  "\\$Domain\SYSVOL\$Domain\[...]\Windows NT\SecEdit\GptTmpl.inf"
@@ -313,6 +314,7 @@ Function IsForceAuditPolicyDomainEnabeled ([String] $PolicyName) {
 
     if (Test-Path $SecEditPath) {
         $RegistryKeyValue = Get-Content $SecEditPath
+
         if ($RegistryKeyValue -contains $ForceAuditPolicyEnabled) {
             $AuditSettings.Add("ForceAuditPolicySubcategory", "Enabled")
         } elseif ($RegistryKeyValue -contains $ForceAuditPolicyDisabled) {
@@ -617,7 +619,7 @@ The aim of the main script is to supply the user with various procedures to eval
 \subsubsection{Result}
 The various procedures/modes provided by the main script, with eventual additional parameter, are:
 \begin{itemize}
-    \item \textbf{\textit{Online, Offline, AllGroupPolicies and GroupPolicy}}
+    \item \textbf{\textit{-Online, -Offline, -GroupPolicy and -AllGroupPolicies}}
 \end{itemize}
 \begin{lstlisting}[caption=]
 PS C:\>./sri.ps1 [-Online] [-OnlineExportPath <String>] [-CAPI2LogSize <Int32>]
@@ -706,7 +708,7 @@ To get a better understanding how each mode proceeds, this section describes the
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/modes/online.png}
-    \caption{Mode: Online}
+    \caption{Online Mode}
 \end{figure}
 \begin{enumerate}
     \item Get the audit policies from RSoP
@@ -725,7 +727,7 @@ To get a better understanding how each mode proceeds, this section describes the
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/modes/offline.png}
-    \caption{Mode: Offline}
+    \caption{Offline Mode}
 \end{figure}
 \begin{enumerate}
     \item The offline mode without parameter will check the audit policies and event logs with the supplied export files\footnote{All export files required must remain at the \textbf{-ImportPath}}
@@ -755,11 +757,32 @@ To get a better understanding how each mode proceeds, this section describes the
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{assets/modes/grouppolicy.png}
-    \caption{Mode: GroupPolicy}
+    \caption{GroupPolicy Mode}
 \end{figure}
 \begin{enumerate}
     \item Get the audit policies from defined group policy which is stored in SYSVOL
     \item Analyse the audit policies
+    \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
+    \item Merge the returned hashtables from step 2 and 3 to one hashtable
     \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
     \item Create the result PDF and store it in the current path
+\end{enumerate}
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/modes/allgrouppolicies.png}
+    \caption{AllGroupPolicies Mode}
+\end{figure}
+\begin{enumerate}
+    \item Get all audit policies from all group policies, which are stored in SYSVOL, and loop for each through the following procedure:
+    \begin{enumerate}
+        \item Analyse the audit policies
+        \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
+        \item Merge the returned hashtables from step 2 and 3 to one hashtable
+        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+        \item Create the result PDF and store it in the current path
+        \item Rename the created PDF- and XML-Files to its group policy name (e.g. \lstinline|results_TestPolicy.pdf| and \lstinline|result_audit_policies_TestPolicy.xml|)
+    \end{enumerate}
 \end{enumerate}
