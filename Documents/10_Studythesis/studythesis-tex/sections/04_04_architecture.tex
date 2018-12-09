@@ -186,7 +186,7 @@ This section describes the process of the toolkit and explain the individual ste
 This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
 
 \subsubsection{AnalyseAuditPolicy()}
-In this task the gathered information from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed against the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). the result of this analysis will be stored in a XML-based format in a temporary file.
+In this task the RSoP from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed and all values of the defined audit settings are gathered and written as a result of this analysis, stored in a XML-based format in a temporary file.
 
 \subsubsection{GetEventLog()}
 This task is responsible for getting the event logs from the system. Therefore the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System' and 'Security'. Withe the command \lstinline|wevutil| the 'Application and Service'-Logs are read out. These logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
@@ -194,6 +194,6 @@ This task is responsible for getting the event logs from the system. Therefore t
 \subsubsection{AnalyseEvents()}
 In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out if these events already occurred. The result of this comparison will be stored as a 'XML' file in order to visualise it.
 
-\subsection{VisualizeResults}
-The resulting XML-files from AnalyseEvents() and AnalyseAuditPolicy() are gathered and compared with a checklist. Incorrect or missing configuration is highlighted in red, correct configurations in green. The event logs are listed as missing or present.
+\subsection{VisualiseResults()}
+The resulting XML-files from AnalyseEvents() and AnalyseAuditPolicy() are gathered and compared with a checklist, which is based on the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). Incorrect or missing configuration is highlighted in red, correct configurations in green. The event logs are listed as missing or present.
 
