@@ -1,5 +1,5 @@
 \section{Implementation}
-This sections shows the implementation of the logic. Divided according to the script and its activities, the results of the script are shown first. The second part describes the approach which was taken, which ideas were not implemented and why not. In the third part, the implementation part, the used code is described and explained.
+This sections shows the implementation of the logic. Divided according to the script and its activities, the results of the script are shown first. The second part describes the approach which was taken, which ideas were not implemented and why not. In the third part, the implementation part, the used code is described and explained. The code shown may differ from the original code for reasons of legibility or comprehensibility, but reflects the implementation as intended.
 \subsection{Module: GetAndAnalyseAuditPolicies}
 The basic idea was to implement the use case ''\nameref{UC01}'' separately from the use case ''\nameref{UC02}''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script module. The following, describes how the two use cases were implemented.
 
@@ -386,35 +386,35 @@ The first step is to read out the ''System'' and ''Security'' Logs. To achieve t
     \item[Note] The code has been adapted for better readability and easier understanding
     \end{description}
 \begin{lstlisting}[caption=Function GetEventLogsAndExport Part 1, language=PowerShell]
-    $logNames = @("System", "Security")
-    $eventLogs = New-Object System.Collections.ArrayList
+    $LogNames = @("System", "Security")
+    $EventLogs = New-Object System.Collections.ArrayList
 
     Function GetEventLogsAndExport{
-        foreach($log in $logNames){
-        $eventLogs += Get-EventLog -LogName $log
+        foreach($Log in $LogNames){
+        $EventLogs += Get-EventLog -LogName $Log
         }
     ...
 \end{lstlisting}
 The second part of the function filters the EventIDs from the chaced logs. Subsequently, multiple EventIDs are grouped together.
 \begin{lstlisting}[caption=Function GetEventLogsAndExport Part 2, language=PowerShell]
-    $currentFolder = (Resolve-Path .\).Path
-    $exportEventLogsIntoCSV=$currentFolder + "\myeventlogs.csv"
+    $CurrentFolder = (Resolve-Path .\).Path
+    $ExportEventLogsIntoCSV=$CurrentFolder + "\eventlogs.csv"
 
-    $eventLogs| Select EventID -Unique |Export-CSV $exportEventLogsIntoCSV -NoTypeInfo -Encoding UTF8
+    $EventLogs| Select EventID -Unique |Export-CSV $ExportEventLogsIntoCSV -NoTypeInfo -Encoding UTF8
     }
 \end{lstlisting}
 After the export the function \lstinline|GetApplicationAndServiceLogs| is called. As before, the function is divided into two parts, first how to get the data. The same procedure is used three times, for the ''TaskScheduler'', ''WindowsRemoteManagement'' and ''LocalSessionManager''. Due to the fact that the code is very similarly it is only shown once. To search for the EventIDs  \lstinline|wevtutil| is used.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 1, language=PowerShell]
-    $appAndServLogs = New-Object System.Collections.ArrayList
-    $idsForTaskScheduler = ("106", "200", "129", "201", ...
+    $AppAndServLogs = New-Object System.Collections.ArrayList
+    $IdsForTaskScheduler = ("106", "200", "129", "201", ...
 
-    $appAndServLogs += "EventID"
+    $AppAndServLogs += "EventID"
 
     Function GetApplicationAndServiceLogs{
     
-    foreach($id in $idsForTaskScheduler){
-    if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$id" )]]" /uni:false /f:text){
-        $appAndServLogs += $id
+    foreach($Id in $IdsForTaskScheduler){
+    if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$Id" )]]" /uni:false /f:text){
+        $AppAndServLogs += $Id
          }
     }
     ...
@@ -422,24 +422,24 @@ After the export the function \lstinline|GetApplicationAndServiceLogs| is called
 \clearpage
 After all three Logs were checked and all found EventIDs were added, the information is exported into a ''CSV''-file.
 \begin{lstlisting}[caption=Function GetApplicationAndServiceLogs Part 2, language=PowerShell]
-    $exportApplicationAndServiceLogsIntoCSV = $currentFolder + "\myapplicationandservicelogs.csv"
+    $ExportApplicationAndServiceLogsIntoCSV = $CurrentFolder + "\applicationandservicelogs.csv"
 
-    $appAndServLogs | Out-File -FilePath $exportApplicationAndServiceLogsIntoCSV
+    $AppAndServLogs | Out-File -FilePath $ExportApplicationAndServiceLogsIntoCSV
     }
 \end{lstlisting}
 The next point on the list is importing the found ''EventLogs'' and ''Service And Application'' Logs. Due to the similarity we only show one code.
 \begin{lstlisting}[caption=Function ImportCompareExport, language=PowerShell]
     
-    $eventLogIdsToCheck = (6, 21, 24, 102, 104, 106, 129, ...
+    $EventLogIdsToCheck = (6, 21, 24, 102, 104, 106, 129, ...
 
-    # Create XML "resultOfEventLogs.xml"
+    # Create XML "result_event_logs.xml"
 
-    $importEventLogs = $exportEventLogsIntoCSV
-    $myEventLogs = Import-Csv $importEventLogs -Encoding UTF8
+    $ImportEventLogs = $ExportEventLogsIntoCSV
+    $MyEventLogs = Import-Csv $ImportEventLogs -Encoding UTF8
 
     Function ImportCompareExport{
-        foreach($id in $eventLogIdsToCheck){
-           if($myEventLogs | where {$_.EventID -eq $id}){
+        foreach($Id in $EventLogIdsToCheck){
+           if($MyEventLogs | where {$_.EventID -eq $Id}){
             # Write to XML with value "present"
                 }
                 else{
@@ -496,46 +496,46 @@ This section describes the implementation of \lstinline|Display missing or wrong
 The iTextSharp.dll and the functions from \lstinline|PowerShell-PDF| \cite{PowerShell-PDF} were imported. The first step is to create a PDF-document and ''open'' it. For this purpose the function \lstinline|OpenPDF| was created:
 \begin{lstlisting}[caption=Function OpenPDF, language=PowerShell]
 function OpenPDF{
-    $pdf = New-Object iTextSharp.text.Document 
-    New-PDF -Document $pdf -File #export path
-    $pdf.Open()
+    $Pdf = New-Object iTextSharp.text.Document 
+    New-PDF -Document $Pdf -File #export path
+    $Pdf.Open()
    }
 \end{lstlisting}
 The function \lstinline|WriteAuditPolicies| then compares the found audit policies and display the ones who are incorrectly. It will call two other functions, \lstinline|CreateAddCellWithColor| and \lstinline|CreateAddCell|.
 \begin{lstlisting}[caption=Functions WriteAuditPolicies \& CreateAddCellWithColor \& CreateAddCell, language=PowerShell]
 function WriteAuditPolicies{
-    $auditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
-    $incorrectAudits = @() # will be returned for later use
-    [xml] auditXml = Get-Content $auditPath
-    $myAudits = $auditXml.AuditPolicies.ChildNodes
-    foreach ($audit in $myAudits) {
-        $localName = $audit.LocalName
-        CreateAddCell $localName # Display auditname into cell
+    $AuditChecklist = @{AuditLogon = @("Success", "Medium"; ...)}
+    $IncorrectAudits = @() # will be returned for later use
+    [xml] $AuditXml = Get-Content $auditPath
+    $MyAudits = $AuditXml.AuditPolicies.ChildNodes
+    foreach ($Audit in $MyAudits) {
+        $LocalName = $Audit.LocalName
+        CreateAddCell $LocalName # Display auditname into cell
 
-        $checkaudit = $auditChecklist[$localName]
-        $checkauditvalue = $checkaudit[0] # Correct setting
-        $checkauditprio = $checkaudit[1] # Priority of audit
+        $CheckAudit = $AuditChecklist[$LocalName]
+        $CheckAuditValue = $CheckAudit[0] # Correct setting
+        $CheckAuditPrio = $CheckAudit[1] # Priority of audit
 
-        if ($audit.InnerXml -eq $checkauditvalue) { # Checks if audit values are equal
-            CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 0 255 0 
+        if ($Audit.InnerXml -eq $CheckAuditValue) { # Checks if audit values are equal
+            CreateAddCell $CheckAuditValue # Displays correct audit value
+            CreateAddCellWithColor $Audit.InnerXml 0 255 0 
             # Displays actual audit value into cell, color green  
         }
-        elseif ($audit.InnerXml.startswith("Succ") #checks if audit is ''overpowered''
-        -and $checkauditvalue -eq "Success") {
-            CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 0 106 0 
+        elseif ($Audit.InnerXml.startswith("Succ") #checks if audit is ''overpowered''
+        -and $CheckAuditValue -eq "Success") {
+            CreateAddCell $CheckAuditValue # Displays correct audit value
+            CreateAddCellWithColor $Audit.InnerXml 0 106 0 
             # Displays actual audit value into cell, color darkgreen
         }
         else { #audit is wrong
-            CreateAddCell $checkauditvalue # Displays correct audit value
-            CreateAddCellWithColor $audit.InnerXml 255 0 0 
+            CreateAddCell $CheckAuditValue # Displays correct audit value
+            CreateAddCellWithColor $Audit.InnerXml 255 0 0 
             #Displays actual audit value into cell, color red
-            $incorrectAudits += $audit.LocalName
+            $IncorrectAudits += $Audit.LocalName
         }
-        CreateAddCell $checkauditprio # Displays audit priority into cell
+        CreateAddCell $CheckAuditPrio # Displays audit priority into cell
     }
-    return $incorrectAudits
+    return $IncorrectAudits
 }
 
 
@@ -543,37 +543,37 @@ function WriteAuditPolicies{
 
 
 
-function CreateAddCellWithColor($content, $R, $G, $B) {
+function CreateAddCellWithColor($Content, $R, $G, $B) {
     # Create iTextSharp.text.Paragraph and add content
     # Create  iTextSharp.text.pdf.PdfPCell with paragraph and set backgroundcolor $R $G $B
     # Add Cell to Table
     }
 
-function CreateAddCell($content) {
+function CreateAddCell($Content) {
         # Create iTextSharp.text.Paragraph and add content
         # Create  iTextSharp.text.pdf.PdfPCell with paragraph
         # Add Cell to Table
 }
 \end{lstlisting}
-Now that the ''Import audit policies and compare them to a given checklist, result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose, the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$incorrectAudits.
+Now that the ''Import audit policies and compare them to a given checklist, result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose, the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$IncorrectAudits.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
-    function ToolsCanBeDetected($incorrectAudits){
-        [xml] $auditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
-        $notDetectableCategories = @()
-        $causingAudit = @()
+    function ToolsCanBeDetected($IncorrectAudits){
+        [xml] $AuditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
+        $NotDetectableCategories = @()
+        $CausingAudit = @()
 
-        $Categories = $auditsByCategorie.Category.ChildNodes
+        $Categories = $AuditsByCategorie.Category.ChildNodes
         foreach ($Category in $Categories) {
-            [int]$checknr = 0
-            foreach ($incorrectAudit in $incorrectAudits) {
-                if ($Category.ChildNodes.InnerXml -contains $incorrectAudit) {
-                    $checknr += 1
-                    $causingAudit += $incorrectAudit
+            [int]$Checknr = 0
+            foreach ($IncorrectAudit in $IncorrectAudits) {
+                if ($Category.ChildNodes.InnerXml -contains $IncorrectAudit) {
+                    $Checknr += 1
+                    $CausingAudit += $IncorrectAudit
                 }
             }
         
-            if ($checknr -gt 0) {
-                $notDetectableCategories += $Category.LocalName + "(" + $causingAudit + ")"
+            if ($Checknr -gt 0) {
+                $NotDetectableCategories += $Category.LocalName + "(" + $CausingAudit + ")"
             }
 
         # Output of the not detectable categories and the causing audits    
@@ -582,13 +582,13 @@ Now that the ''Import audit policies and compare them to a given checklist, resu
 The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because these two tables are created the same way, only one case is shown. Hence, the function \lstinline|WriteEventLogs| was created.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
     function WriteEventLogs { 
-        [xml] $eventxml = Get-Content # importPath
+        [xml] $Eventxml = Get-Content # importPath
         # Add Title
-        $eventsWindows = $eventxml.Logs.EventLogsID.ChildNodes
-        $result = @()
-        foreach ($event in $eventsWindows) {
-            $result += $event.LocalName
-            $result += $event.InnerXml
+        $EventsWindows = $Eventxml.Logs.EventLogsID.ChildNodes
+        $Result = @()
+        foreach ($Event in $EventsWindows) {
+            $Result += $Event.LocalName
+            $Result += $Event.InnerXml
         }
         #Add result to table
     }
@@ -596,11 +596,11 @@ The next step is to display the found EventLogs and if they are missing or prese
 As a final task, all these function have to be called in the right order, and the opened PDF has to be closed. For this case, the simple function \lstinline|VisualizeAll| was created:
 \begin{lstlisting}[caption=Function VisualizeAll, language=PowerShell]
     function WriteEventLogs { 
-        $pdf = OpenPDF $exportFolder
-        $incorrectAudits = WriteAuditPolicies $exportFolder
-        ToolCanBeDetected $incorrectAudits
-        WriteEventLogs $exportFolder
-        $pdf.Close()
+        $Pdf = OpenPDF $ExportFolder
+        $IncorrectAudits = WriteAuditPolicies $ExportFolder
+        ToolCanBeDetected $IncorrectAudits
+        WriteEventLogs $ExportFolder
+        $Pdf.Close()
     }
 \end{lstlisting}
 
