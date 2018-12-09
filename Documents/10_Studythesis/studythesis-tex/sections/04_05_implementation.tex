@@ -213,7 +213,7 @@ Function IsSysmonInstalled {
 
 \clearpage
 
-As a last step, the online mode is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. The decision for 4MB is mentioned in the section ''\ref{CAPI2} \nameref{CAPI2}''. Unfortunately, this information is also not available via the RSoP. Therefore the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} In order to enable testing here as well, a Get function for the event log entry has been created.
+As a last step, the online mode is checking whether CAPI2 is enabled and has the right minimum log size of 4MB. The decision for 4MB is mentioned in the section ''\ref{CAPI2} \nameref{CAPI2}''. Unfortunately, this information is also not available via the RSoP. Therefore, the command \lstinline|wevtutil| is used to query CAPI2 in the event log. The reason for this is that CAPI2 can only be enabled via the Event Viewer. \cite{CAPI2} In order to enable testing here as well, a Get function for the event log entry has been created.
 
 \begin{lstlisting}[caption=Function GetCAPI2, language=PowerShell]
 Function GetCAPI2 {
@@ -587,7 +587,7 @@ Now that the ''Import audit policies and compare them to a given checklist, resu
         # Output of the not detectable categories and the causing audits    
     }
 \end{lstlisting}
-The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because these two tables are created the same way, only one case is shown. Therefore, the function \lstinline|WriteEventLogs| was created.
+The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service Logs, are created. Because these two tables are created the same way, only one case is shown. Hence, the function \lstinline|WriteEventLogs| was created.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
     function WriteEventLogs { 
         [xml] $eventxml = Get-Content # importPath
