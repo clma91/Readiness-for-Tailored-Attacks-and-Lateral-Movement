@@ -1,4 +1,5 @@
 \section{Design}
+This section describes the design of the SRI, how the tool is built, and what to look out for.
 \subsection{Decision for a new Tool}
 At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
 
@@ -286,7 +287,7 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         Deleting Eventlog & wevutil \\ \hline
         \multirow{2}{*}{Acquisition of Account Information} & csde \\ & ldifde\\ & dsquery \\ \hline
     \end{tabular}
-    \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}}
+    \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}} \label{AttackCategories}
 \end{table}
 \clearpage
 \subsection{Audit Priority}
@@ -325,12 +326,12 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         CAPI2 & Low & Not essential \\ \hline
         CAPI2LogSize & Low & Not essential \\ \hline
     \end{tabular}
-    \caption{Audit Policy Priority \cite{SecAuditFAQ}}
+    \caption{Audit Policy Priority \cite{SecAuditFAQ}} \label{AuditPolicyPriority}
 \end{table}
 
 \clearpage
 
-\subsection{Domain Analysis}
+\subsection{Domain Analysis} \label{DomainAnalysis}
 The following section describes the problem domain which is faced during this project. Despite the decision to not programme an object orientated solution, there are several things to be aware of and to think through carefully. For this reason, building a domain model is a simple and suitable technique to use. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
 \begin{figure}[H]
     \centering
@@ -363,3 +364,6 @@ The TargetList represents either the list of event logs or configured audit poli
 
 \paragraph{DeltaList}
 Based on the required lists (audit policies, event logs) as well as the current state of the computer, the DeltaList shows which settings are missing in the audit policies.
+
+\subsection{Conclusion}
+The design of the ''System Readiness Inspector'' will be based on the shown tables. The \ref{AttackCategories} \nameref{AttackCategories} and \ref{AuditPolicyPriority} \nameref{AuditPolicyPriority} tables have high priority, they are essential for the evaluation and visualization of the SRI. As seen in \ref{DomainAnalysis} \nameref{DomainAnalysis} the SRI reads out a list of EventLogs and one of the Audit Policies settings. These lists will be compared against a predefined ''correct-list''. Wrong settings will be highlighted.
