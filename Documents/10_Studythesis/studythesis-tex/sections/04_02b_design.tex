@@ -247,7 +247,6 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
     \end{tabular}
     \caption{Advanced Audit Policy Setting Policy Change}
 \end{table}
-
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{8cm} | p{8cm} |} \hline
@@ -263,9 +262,8 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
 
 \subsection{Attack Categories}\label{AttackCategories}
 JPCERT/CC has divided the attack tool examined in their report into several attack categories. When developing the tool, the developers relied on this list:
-\begin{table}[H]
-    \centering
-    \begin{tabular}{| p{7.5cm} | p{8.5cm} |}\hline
+\def\arraystretch{1.5}
+\begin{longtable}{| p{7.5cm} | p{8.5cm} |}\hline
         \textbf{Attack category} & \textbf{Tools}  \\ \hline
         \multirow{9}{*}{Command Execution} & PsExec \\ & WMIC \\ & PowerShell Remote Command Execution \\  & wmiexec.vbs \\ & BeginX \\  & WinRM \\ & WinRS \\  & AT Command \\ & BITS \\ \hline
         \multirow{12}{*}{Password Hash Acquisation} & PWDump7
@@ -278,23 +276,19 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         \multirow{2}{*}{\shortstack[l]{Capturing the DomainAdministrator\\ and AccountCredentials}} & ntdsutil \\ & vssadmin \\ \hline
         Adding or Deleting a Local User/Group & net user \\ \hline
         \multirow{3}{*}{File Sharing} & netuse \\ & net share\\ & icacls\\ \hline
-    \end{tabular}
-\end{table}
-\begin{table}[H]
-        \begin{tabular}{| p{7.5cm} | p{8.5cm} |}\hline
+
         \multirow{4}{*}{\shortstack[l]{Capturing Active DirectoryDatabase\\(Creation of Domain Administrator or \\ Addition of a User to Administrator Group)}} & \\ & ntdsutil \\ & vssadmin \\ & \\ \hline
         \multirow{2}{*}{Deleting Evidence} & sdelete \\ & timestomp\\ \hline
         Deleting Eventlog & wevutil \\ \hline
         \multirow{2}{*}{Acquisition of Account Information} & csde \\ & ldifde\\ & dsquery \\ \hline
-    \end{tabular}
     \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}} 
-\end{table}
+\end{longtable}
 \clearpage
-\subsection{Audit Priority}\label{AuditPolicyPriority}
-\begin{table}[H]
-    \centering
-    \begin{tabular}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
-        \textbf{Audit} & \textbf{Prio} & \textbf{Explanation} \\ \hline
+\subsection{Audit Policy Priority}\label{AuditPolicyPriority}
+This section defines the priority of each audit policy and provides a statement for each priority definition. 
+\def\arraystretch{1.5}
+\begin{longtable}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
+        \textbf{Audit Policy} & \textbf{Prio} & \textbf{Explanation} \\ \hline
         Audit File System & High & Is needed to be able to detect many attack categories, events are logged when users attempt to access file system objects \\ \hline
         Audit Kernel Object & High & Is needed to be able to detect many attack categories, events are logged when a process has exited \\ \hline
         Audit Process Creation & High & Is needed to be able to detect many attack categories, events are logged when a process is created (starts)\\ \hline
@@ -313,11 +307,6 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         Audit Filtering Platform Connection & Low & Events are logged when connections are allowed or blocked by the Windows Filtering Platform \\ \hline
         Audit Handle Manipulation & Low & Creates the event '' 4658: The handle to an object was closed'' in various subcategories and shows duplication and close actions\\ \hline
         Audit Kerberos Authentication Service & Low & Logs events for Kerberos authentication ticket-granting ticket requests \\ \hline
-    \end{tabular}
-\end{table}
-\begin{table}[H]
-    \centering
-    \begin{tabular}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
         Audit Kerberos Service Ticket Operations & Low &Logs security audit events for Kerberos service ticket requests \\ \hline
         Audit Logoff & Low & Events are logged when a user is logging off a device\\ \hline
         Audit Non Sensitive Privilege Use & Low & Logs events that show usage of non-sensitive privileges, for example ''Add workstations to domain'' \\ \hline
@@ -325,9 +314,8 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         Audit SAM & Low & Logs events when user attempts to access Security Account Manager objects \\ \hline
         CAPI2 & Low & Not essential \\ \hline
         CAPI2LogSize & Low & Not essential \\ \hline
-    \end{tabular}
     \caption{Audit Policy Priority \cite{SecAuditFAQ}} 
-\end{table}
+\end{longtable}
 
 \clearpage
 
