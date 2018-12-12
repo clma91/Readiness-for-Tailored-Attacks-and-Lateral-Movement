@@ -261,7 +261,7 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
 
 \clearpage
 
-\subsection{Attack Categories}
+\subsection{Attack Categories}\label{AttackCategories}
 JPCERT/CC has divided the attack tool examined in their report into several attack categories. When developing the tool, the developers relied on this list:
 \begin{table}[H]
     \centering
@@ -287,10 +287,10 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         Deleting Eventlog & wevutil \\ \hline
         \multirow{2}{*}{Acquisition of Account Information} & csde \\ & ldifde\\ & dsquery \\ \hline
     \end{tabular}
-    \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}} \label{AttackCategories}
+    \caption{Attack Categories \cite{JPCERTDetectingLateralMovement}} 
 \end{table}
 \clearpage
-\subsection{Audit Priority}
+\subsection{Audit Priority}\label{AuditPolicyPriority}
 \begin{table}[H]
     \centering
     \begin{tabular}{| p{5cm} | p{1.5cm} | p{9.5cm} |} \hline 
@@ -326,7 +326,7 @@ JPCERT/CC has divided the attack tool examined in their report into several atta
         CAPI2 & Low & Not essential \\ \hline
         CAPI2LogSize & Low & Not essential \\ \hline
     \end{tabular}
-    \caption{Audit Policy Priority \cite{SecAuditFAQ}} \label{AuditPolicyPriority}
+    \caption{Audit Policy Priority \cite{SecAuditFAQ}} 
 \end{table}
 
 \clearpage
@@ -365,5 +365,5 @@ The TargetList represents either the list of event logs or configured audit poli
 \paragraph{DeltaList}
 Based on the required lists (audit policies, event logs) as well as the current state of the computer, the DeltaList shows which settings are missing in the audit policies.
 
-\subsection{Conclusion}
-The design of the ''System Readiness Inspector'' will be based on the shown tables. The \ref{AttackCategories} \nameref{AttackCategories} and \ref{AuditPolicyPriority} \nameref{AuditPolicyPriority} tables have high priority, they are essential for the evaluation and visualization of the SRI. As seen in \ref{DomainAnalysis} \nameref{DomainAnalysis} the SRI reads out a list of EventLogs and one of the Audit Policies settings. These lists will be compared against a predefined ''correct-list''. Wrong settings will be highlighted.
+\subsection{Conclusion from the design}
+The design of the ''System Readiness Inspector'' will be based on the shown tables in this section. The tables of the sections ''\ref{AttackCategories} \nameref{AttackCategories}'' and ''\ref{AuditPolicyPriority} \nameref{AuditPolicyPriority}'' have high priority, they are essential for the evaluation and visualization of the SRI. As seen in ''\ref{DomainAnalysis} \nameref{DomainAnalysis}'' the SRI reads a list of event logs and one of the audit policy settings. These lists will be compared against a predefined ''target-list'' which is based on the study ''\nameref{JPCertStudy}''. Wrong or missing settings will be highlighted.

@@ -26,7 +26,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC02 - Analyse Audit Policies}\label{UC02}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The list which was created in UC01 is compared to a ''perfect settings''-list. Missing or wrong settings are going to be exported into a separate file.
+    The values of the audit policies, which were saved as a temporary file in UC01, are gathered and written into a separate file.
     \ \\
     \paragraph{Precondition} \ \\
     UC01 is fulfilled: the temporary file is available.
@@ -34,13 +34,13 @@ A visual representation of the use cases with a use case diagram was deliberatel
     \paragraph{Main Success Scenario} 
     \begin{enumerate}
         \item The temporary files can be read
-        \item Creates a list of incorrect settings
+        \item Creates a list current audit policy values
     \end{enumerate}   
 \end{tcolorbox}
 \subsubsection{UC03 - Find Event Logs}\label{UC03}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Event logs are searched by ID and marked in an external file as found or missing.
+    The defined event logs read and then saved into a temporary file. This file contains a list of occurred events which are filtered so that each event ID occurred uniquely.
     \ \\
     \paragraph{Precondition} \ \\
     The system is running and must have valid event logs. The tool must possess administrator permissions.
@@ -56,7 +56,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC04 - Analyse Found Event Logs}\label{UC04}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The implemented logic analyses, by defined event ids, which events occurred or are missing. Then creates a list of events that did not occurr or are not logged yet.
+    The implemented logic analyses, by defined event ids, which events occurred or are missing. Then creates a list of specified events and lists the state of the event as missing or present.
     \ \\
     \paragraph{Precondition} \ \\
     UC03 is fulfilled: the temporary file is available.
@@ -72,7 +72,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC05 - Display missing or wrong system configuration}\label{UC05}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    Based on the list created in UC02 and UC04 the user gets an overview of missing configurations (the result) which would improve the readiness of the system for a good attack detection.
+    The list created in UC02 is compared to the ''target-list'' of defined audit settings. Based on this list and the one created in UC04 the user gets an overview of missing configurations (the result) which would improve the readiness of the system for a good attack detection.
     \ \\
     \paragraph{Precondition} \ \\
     The lists from UC02 and UC04 are available.
@@ -86,7 +86,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsubsection{UC06 - Save Result to specific path}\label{UC06}
 \begin{tcolorbox}
     \paragraph{Description} \ \\
-    The actor has the possibility to save the overview from UC05 to a file in a specific path defined by the actor himself. This file contains the result from UC05 in a descriptive way.
+    The actor has the possibility to save the overview from UC05 to a file in a specific path defined by the actor himself. This file contains the result from UC05 in a descriptive way. The metadata is stored at the same path.
     \ \\
     \paragraph{Precondition} \ \\
     UC05 is fulfilled: the result, respectively the overview is available
@@ -149,7 +149,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \subsection{Technologies}
 \subsubsection{Chosen Technologies}
 \paragraph{PowerShell \& Visual Studio Code} \ \\
-The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft Operating System and that it has a large and detailed documentation at its disposal. \ \\
+The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft operating system and that it has a large and detailed documentation at its disposal. Furthermore, PowerShell fulfills the non functional requirement of a portable script without any installation perfectly.\ \\
 \ \\
 The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell Integrated Scripting Environment (PowerShell ISE) because it only requires working in one Integrated Development Environment (IDE) for implementation and documentation.
 
@@ -178,18 +178,18 @@ This section describes the process of the toolkit and explain the individual ste
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
+    \includegraphics[width=1\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
     \caption{Sequence Diagram SystemReadinessInspector - SRI}
 \end{figure}
 
 \subsubsection{GetAuditPolicy()}
-This task is responsible to get all Audit Policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the Audit Policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
+This task is responsible to get all audit policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the audit policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
 
 \subsubsection{AnalyseAuditPolicy()}
 In this task the RSoP from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed and all values of the defined audit settings are gathered and written as a result of this analysis, stored in a XML-based format in a temporary file.
 
 \subsubsection{GetEventLog()}
-This task is responsible for getting the event logs from the system. Therefore the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System' and 'Security'. Withe the command \lstinline|wevutil| the 'Application and Service'-Logs are read out. These logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
+This task is responsible for getting the event logs from the system. Therefore, the command \lstinline|Get-EventLogs| \cite{Get-EventLogs} retrieves all logs from 'System' and 'Security'. With the command \lstinline|wevutil| the 'Application and Service'-Logs are read out. These logs are, to be analysed later, saved as a 'CSV' file to the current path were the PowerShell is running.
 
 \subsubsection{AnalyseEvents()}
 In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out if these events already occurred. The result of this comparison will be stored as a 'XML' file in order to visualise it.
