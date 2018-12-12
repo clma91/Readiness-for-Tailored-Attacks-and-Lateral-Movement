@@ -1,8 +1,21 @@
 \section{Introduction and Overview}
+\subsection{Purpose and Scope}
 As described in the abstract, the key for a successful analysis in case of an advanced persistence threat (APT) or lateral movement in a network, is to have a solid event logging of all systems participating in the network.
 \\\\
 Shusei Tomonaga at the Japan Computer Emergency Response Team Coordination Center (JPCERT/CC) has shown with the study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} how important it is to configure solid event logging to analyse attacks. JPCERT/CC found in their study that APT and lateral movements could be detected with the correct settings in the audit policy and with the help of Sysmon 37 of 44 attacks.
 \\\\
-Hence, it was decided to implement the project on the basis of this study. This study offers an extensive set of analysed tools from bad guys and what effects these tools have on the event log. Thus, the readiness of a system can be concluded from this study. 
-\\\\
-This technical report contains the research part in which tools were searched for on which can be built on. Then, based on the research, the design decision and the resulting architecture follows. The implementation will then be discussed in detail and, finally, a conclusion and outlook will be drawn on the basis of this work.
+Hence, it was decided to implement the project on the basis of this study. This study offers an extensive set of analysed tools from bad guys and what effects these tools have on the event log. Thus, the readiness of a system can be concluded from this study.
+
+\subsection{Audience}
+This document is intended for software developers, security advisors and engineers who want to gain an insight into the relationship between ATPs / lateral movements and event logging. Furthermore, this document gives an insight about the System Readiness Inspector (SRI) tool, which the result of this thesis was.
+
+\subsection{Document Structure}
+This technical report is structured in several sections:
+\begin{itemize}
+    \item \textbf{Test Environment:} Describes the test environment used to test tools during the research and test the developed tool during the implementation.
+    \item \textbf{Analysis:} This section contains the research part, in which tools were searched for on which can be built on
+    \item \textbf{Design:} Describes the decisions for the tool which are derived from the analysis and addresses the problem domain.
+    \item \textbf{System Architecture:} Based on the design this section will answer the question how the problem domain will be fulfilled. Therefore, the use cases developed and the technology decisions are discussed.
+    \item \textbf{Implementation:} Describes the schedules of the different implemented modes as well as the core logics in detail.
+    \item \textbf{Conclusion and Outlook:} Is a retrospective of the thesis and makes statements about findings. In addition, an outlook on further development and expansion in this area will be drawn on the basis of this work.
+\end{itemize}

@@ -147,11 +147,16 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \clearpage
 
 \subsection{Technologies}
-\subsubsection{Chosen Technologies}
+\subsubsection{Chosen Technologies \& Frameworks}
 \paragraph{PowerShell \& Visual Studio Code} \ \\
 The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft operating system and that it has a large and detailed documentation at its disposal. Furthermore, PowerShell fulfills the non functional requirement of a portable script without any installation perfectly.\ \\
 \ \\
 The scripts are written in Visual Studio Code with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell Integrated Scripting Environment (PowerShell ISE) because it only requires working in one Integrated Development Environment (IDE) for implementation and documentation.
+
+\paragraph{Pester \& PSCodeHealth} \ \\
+Pester is used as a test framework to provide tests for the developed functions. The assumption is made that the test coverage will not be at 100\% because several functions depend on system internal functions and outputs. Hence, the possibilities to provide tests for all functions would be illusory. 
+\\\\
+PSCodeHealth serves as a metric measurement framework and allows to make statements about the code quality and maintainability. PSCodeHealth uses a variety of metrics like the code length, complexity, smells, issues and violations of best practices as well as test coverage. 
 
 \paragraph{\LaTeX \& Visual Studio Code}\ \\
 The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand, we made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
@@ -162,16 +167,19 @@ The test environment is set up, as described in section \ref{sec:testenvironment
 \paragraph{GitHub}\ \\
 GitHub is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
 
+\paragraph{Redmine}\ \\
+Redmine will be used as the project management tool. It will help to manage all use cases and tasks so that the overview of the work to be done will not be lost. Furthermore, a detailed time recording can be made.
+
+\clearpage
+
 \paragraph{Continuous Integration}\ \\
-Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately, the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the Continuous Integration manual.
+Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately, the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the developers manual.
 
 \subsubsection{Rejected Technologies}
 
 \paragraph{Python}\ \\
 The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft operating system. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
 
-
-\clearpage
 
 \subsection{Sequence Diagram}
 This section describes the process of the toolkit and explain the individual steps in detail. As mentioned in the Use Cases, the actor of this toolkit will be a security advisor, who will execute the toolkit.
@@ -181,6 +189,8 @@ This section describes the process of the toolkit and explain the individual ste
     \includegraphics[width=1\linewidth]{assets/design-tool/SequenceDiagramSRI.png}
     \caption{Sequence Diagram SystemReadinessInspector - SRI}
 \end{figure}
+
+\clearpage
 
 \subsubsection{GetAuditPolicy()}
 This task is responsible to get all audit policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the audit policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
