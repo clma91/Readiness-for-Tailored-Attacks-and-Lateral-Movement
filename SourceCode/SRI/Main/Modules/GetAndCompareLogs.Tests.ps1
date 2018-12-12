@@ -60,8 +60,8 @@ Describe 'Test function ImportCompareExport'{
 
         $exportedFile = $exportFolder + "\result_event_logs.xml"
         [xml]$resultXML = Get-Content $exportedFile
-        $resultXML.Logs.EventLogsID | Should -Not -BeNullOrEmpty
-        $resultXML.Logs.AppAndServID | Should -Not -BeNullOrEmpty
+        $resultXML.Logs.WindowsLogs | Should -Not -BeNullOrEmpty
+        $resultXML.Logs.AppAndServLogs | Should -Not -BeNullOrEmpty
     }
 }
 Describe 'Test output if inputpath is wrong'{
