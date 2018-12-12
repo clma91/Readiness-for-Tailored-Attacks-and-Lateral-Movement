@@ -13,7 +13,7 @@ BloodHound was tested in the test environment which is described later in this c
 \subsubsection{Conclusion}
 The most interesting aspect of BloodHound for our project is the way it retrieves its data. Due to the decision that the application, in a first step, only reads the data of the local computer and not the whole domain, BloodHound will only be important in a later part of the project. Their so called ingestor will be used to retrieve the data of a whole network instead of only a local computer.
 
-\subsection{Windows Event Logging Forensic Logging Enhancement Services}
+\subsection{Windows Event Logging Forensic Logging Enhancement Services}\label{WEFFLES}
 \subsubsection{Description}
 Windows Event Logging Forensic Logging Enhancement Services (WEFFLES) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is built to help set up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply be imported into Excel and start filtering the logs to gain the needed. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
 \subsubsection{Conclusion}
@@ -143,7 +143,7 @@ Although many attacks are described and how they can be detected and fended off,
 
 \clearpage
 
-\subsection{Sysmon}
+\subsection{Sysmon}\label{Sysmon}
 \subsubsection{Description}
 \begin{quotation}
     \textit{System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time.\cite{Sysmon}}

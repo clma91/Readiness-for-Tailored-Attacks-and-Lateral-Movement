@@ -1,1 +1,38 @@
 \section{Conclusion and Outlook}
+This sections deals with the overall conclusion about the achieved work and delivered product as well as the used technologies and frameworks. Moreover, it will provide an outlook for further development and expansion in this area on the basis of this work.
+
+\subsection{Conclusion Achieved Work}
+All requirements set at the beginning of the thesis, use cases and non functional requirements, were completely fulfilled. The developed tool is unique in its form and allows the user to make a statement about the readiness to detect APTs and lateral movements. The functionality is limited to the correctness of the set audit policies and gives an overview of the existing and missing event logs based on the study ''\nameref{JPCertStudy}''.
+
+\subsection{Conclusion Technologies and Frameworks}
+The chosen technology PowerShell offered a simple implementation of the problem. However, an object-oriented approach and the realization of a classic software project is not ideal with PowerShell. It is noticeable that the language was originally a scripting language.
+\\\\
+The test framework used, Pester, also does not offer the desired level of functionality. Although there is the possibility to mock functions, it is not implemented in such a way that system internal functions can be mocked with it. Due to the fact that the SRI tool has strong dependencies on system internal functions, it was difficult to write suitable tests for the implemented functions. For this reason,many system tests were performed manually to test the correct flow of the tool.
+\\\\
+With the PSCodeHealth framework, the code developed could be checked for best practices and code smells. This was extremely helpful as there was little experience with PowerShell at the beginning of the thesis. 
+\\\\
+Furthermore, it was very easy and practical to have a test environment with the Microsoft Azure Cloud that could be used efficiently. It also allowed to change the test environment flexibly and without much effort.
+
+\clearpage
+
+\subsection{Outlook}
+Even if all requirements were fulfilled, further wishes and requirements for a tool to recognize the readiness of a system arose during this thesis. 
+
+\paragraph{Fleet Check}
+The review of a fleet was covered only minimally, limited to exactly one domain. Therefore the extension to a complete fleet, which is divided into forests, domains and organisation units, would be quite desirable in this area. 
+
+\paragraph{Presentation}
+The representation as PDF is absolutely practicable, could however still take place in other forms. For example, it would be possible to provide a GUI for the user instead of a PDF. The GUI could represent the complete fleet as a kind of tree, whereby one can navigate interactively through the tree and thus evaluate the readiness of individual parts. 
+
+\paragraph{Technology}
+However, the chosen PowerShell technology, as described in the upper part, is not very suitable to realize such a representation. In order to stay close to the operating system, the .NET technology C\# would be suitable. This raises the question whether it would be possible to port the existing code easily and quickly to C\#. 
+
+\paragraph{GPO Templates}
+An evaluation of the system is a good start, but it would be a great benefit if a template for the group policies could be created at the same time. This would ensure that IT administrators with little knowledge of active directory environments would only have to import a template. Ideally, such a template would be based on the existing group policy. Thus, no differences would have to be derived from the current group policy and the recommendation from the SRI, but the current group policy could simply be overwritten.
+
+
+\paragraph{Sysmon on the Fleet}
+As mentioned in the analysis (see ''\ref{Sysmon} \nameref{Sysmon}''), Sysmon offers a clear advantage over Microsoft's integrated event logging. It would therefore be interesting to develop a process that would allow a simple rollout of Sysmon to an entire fleet.
+
+\paragraph{Central event logging}
+Central event logging is of great advantage in a larger environment, as shown by the analysis of WEFFLES (see ''\ref{WEFFLES} \nameref{WEFFLES}''). By logging events centrally, there is no ''unnecessary'' accumulation of data on the individual clients and the dependency on the individual clients is eliminated in the case of a security threat. It would also be interesting to be able to make statements about the performance and storage requirements of central logging in this context.
