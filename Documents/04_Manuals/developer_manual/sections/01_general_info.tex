@@ -1,0 +1,24 @@
+
+\kapitel{General Information} \label{GeneralInfo}
+\thispagestyle{plain}
+\renewcommand\section{\stdsection}
+\setcounter{section}{1}
+\subsection{System Overview}
+The ''System Readiness Inspector'' is a PowerShell tool that helps you to check the readiness of a system to detect advanced persistent threats and lateral movement.After the SRI ran successfully it generates a PDF-Document showing wrong or missung configurations. The SRI was developed during a student research project by the two bachelor of science in computer science students, Claudio Mattes and Lukas Kellenberger.
+\\\\
+The SRI has four different modes: Online, Offline, GroupPolicy, AllGroupPolicies. The online mode is limited to the current system and thus determines readiness. The offline mode is used to be able to make a statement about any system by means of exports. The GroupPolicy mode is limited to a specific Group Policy, which is checked for its audit settings. In the AllGroupPolicies mode, all group policies of the current domain are examined.
+
+\subsection{Organization of the Manual}
+The developer manual contains the following parts: 
+\begin{itemize}
+    \item \textbf{General Information:} \ \\
+    The General Information section explains the tool and the purpose for which it is intended.
+    \item \textbf{System Requirements:} \ \\
+    The System Requirements sections describes the requirements for a developer environment to getting started with coding. 
+    \item \textbf{Continuous Integration:} \ \\
+    This sections provides hints for a accurate continuous integration environment built with Microsoft Azure DevOps.
+    \item \textbf{Test Framework:} \ \\
+    Within this section some key findings with the test framework Pester are provided.
+\end{itemize}
+
+

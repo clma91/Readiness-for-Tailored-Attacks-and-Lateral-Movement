@@ -1,0 +1,38 @@
+
+\kapitel{Test Framework}
+\thispagestyle{plain}
+\renewcommand\section{\stdsection}
+\setcounter{section}{4}
+\subsection{Pester}
+Pester is a framework to provide a test environment for PowerShell projects. More specific, the framework supports tests for any written function in PowerShell. To provide tests on the continuous integration server, it is recommended to clone the Pester repository from GitHub and save it into your root path of your source code. During the project we used to have the following directory structure: \\
+\begin{lstlisting}
+Source Code Path:.
+    |-- RunPester.ps1
+    |-- TestResults.xml
+    |
+    |---Pester
+    |
+    |---SRI
+        |-- sri.ps1
+        |
+        |---Config
+        |       audit_by_category.xml
+        |       event_log_list.xml
+        |       targetlist_auditpolicies.xml
+        |
+        |---Modules
+            |   GetAndAnalyseAuditPolicies.psm1
+            |   GetAndAnalyseAuditPolicies.Tests.ps1
+            |   GetAndCompareLogs.psm1
+            |   GetAndCompareLogs.Tests.ps1
+            |   itextsharp.dll
+            |   Visualize.psm1
+            |
+            |---TestFiles
+\end{lstlisting}\ \\
+In addition to place the Pester repository in the root path, you have to provide a \lstinline|RunPester.ps1|-File to invoke the tests on the continuous integration server. The \lstinline|RunPester.ps1| should contain the following code snippet:
+\begin{lstlisting}
+Import-Module "$PSScriptRoot\Pester\Pester.psm1"  
+Invoke-Pester -Script "$PSScriptRoot\SRI\Modules" -OutputFormat NUnitXml -OutputFile "$PSScriptRoot\TestResults.xml" -PassThru -ExcludeTag Incomplete
+\end{lstlisting} \ \\
+This code snippet defines the starting point for Pester. Moreover, with the parameter combination \lstinline|-OutputFormat NUnitXml -OutputFile <PATH> -PassThru -ExcludeTag Incomplete| Pester generates a \lstinline|TestResults.xml| which is supported by ''Microsoft Azure DevOps''. This file is then use by the continuous integration server to represent the test results in a nice view for each build.
