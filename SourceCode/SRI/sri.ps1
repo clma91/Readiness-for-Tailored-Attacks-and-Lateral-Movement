@@ -67,6 +67,8 @@
     - Runs the System Readiness Inspector locally
     - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
     - The System Readiness Inspector needs one XML-File and two CSV-files, named like this: rsop.xml, windowslogs.csv, appandservlogs.csv
+        - windowslogs.csv, Either with the PowerShell command Get-EventLogs or export from EventViewer, Windows logs ''System'' & ''Security'', check example_windowslogs.csv
+        - appandservlogs.csv, Either with wevutil  or export from EventViwer, Application and Service logs ''TaskScheduler'', ''WindowsRemoteManagement''and''LocalSessionManager'', check example_appandservlogs.csv
     - Results will be written to the given Path (in this example D:/test)
 
 .EXAMPLE
@@ -75,8 +77,8 @@
     - Runs the System Readiness Inspector locally
     - The Sytem Readiness Insprector does no collect data from you system, the needed data must be saved at the importpath
     - The System Readiness Inspector needs two CSV-files named like this: windowslogs.csv, appandservlogs.csv
-       - windowslogs.csv, Either with the PowerShell command Get-EventLogs or export from EventViewer
-       - appandservlogs.csv, Either with wevutil  
+       - windowslogs.csv, Either with the PowerShell command Get-EventLogs or export from EventViewer, Windows logs ''System'' & ''Security'', check example_windowslogs.csv
+       - appandservlogs.csv, Either with wevutil  or export from EventViwer, Application and Service logs ''TaskScheduler'', ''WindowsRemoteManagement''and''LocalSessionManager'', check example_appandservlogs.csv
     - Results will be written to the given Path (in this example D:/test)
 .EXAMPLE
     .\sri.ps1 -Offline -AuditPolicies -ImportPath C:/temp/test -ExportPath D:/test
