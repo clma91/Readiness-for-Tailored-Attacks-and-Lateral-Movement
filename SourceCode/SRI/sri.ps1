@@ -221,11 +221,11 @@ Function Offline ($ImportPath, $ExportPath) {
     }
 }
 
-Function GroupPolicy ([String] $OnlineExportPath, [String] $PolicyName) {
+Function GroupPolicy ([String] $OnlineExportPath, [String] $GroupPolicyName) {
     $AuditSettingsDomain = GetDomainAuditPolicy $GroupPolicyName
     if ($AuditSettingsDomain) {
         $AuditSettings = AnalyseAuditPolicies $AuditSettingsDomain
-        $IsForceAuditPolicy = IsForceAuditPolicyDomainEnabeled $AuditSettingPerPolicy.key
+        $IsForceAuditPolicy = IsForceAuditPolicyDomainEnabeled $GroupPolicyName
         $ResultCollection = MergeHashtables $AuditSettings $IsForceAuditPolicy 
 
         WriteXML $ResultCollection $OnlineExportPath
@@ -306,7 +306,7 @@ switch ($PsCmdLet.ParameterSetName) {
         $ImportPath = $OnlineExportPath
 
         if ($OnlineExportPath) {
-            GroupPolicy $OnlineExportPath
+            GroupPolicy $OnlineExportPath $GroupPolicyName
         }
         else {
             Write-Host "Defined ExportPath $OnlineExportPath does not exist or your user has no access rights" -ForegroundColor Red
