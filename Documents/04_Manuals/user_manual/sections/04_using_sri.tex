@@ -45,7 +45,12 @@ PS C:\>./sri.ps1 [-GroupPolicy] [-GroupPolicyName] <String>
 
 PS C:\>./sri.ps1 [-AllGroupPolicies]
 \end{lstlisting}
-\clearpage \ \\
+
+\vspace{0.5cm}
+\textsc{\textbf{Note:}}\textit{ Mandatory parameter are \underline{underlined}.}
+\vspace{0.5cm}
+
+\clearpage
 The parameters ''-OnlineExportPath'', ''-ImportPath'' and ''-ExportPath'' are Strings, for example:\ \\
 \begin{lstlisting}[caption=]
     "C:\Example\Path"
@@ -59,9 +64,8 @@ The parameters ''-GroupPolicyName'' is a String, for example:\ \\
     "Default Domain Policy"
 \end{lstlisting}
 
-\vspace{0.5cm}
-\textsc{\textbf{Note:}}\textit{ Mandatory parameter are \underline{underlined}.}
-\vspace{0.5cm}
+\subsubsection{Online Mode}
+
 \begin{tcolorbox}
     \paragraph{\underline{-Online}} \ \\\\
     The current system which is calling the script will be checked on its readiness.
@@ -91,6 +95,8 @@ These are all possible parameter combinations for the -Online mode: \ \\
     .\sri.ps1 -Online -OnlineExportPath "C:\temp\test\targetpath" -CAPI2LogSize 4194304
 \end{lstlisting}
 
+\subsubsection{Offline Mode}
+
 \begin{tcolorbox}
     \paragraph{\underline{-Offline}} \ \\\\ Some system will be checked on its readiness - by default audit policies and event log are analysed. Export files of this system are required.
     \vspace{0.3cm}
@@ -114,7 +120,10 @@ These are all possible parameter combinations for the -Online mode: \ \\
             \textbf{-CAPI2LogSize} & Definition of the CAPI2 log size suitable for the environment. By default this value is set to 4MB as recommended from Microsoft  \\ \hline
         \end{tabular}
     \end{table}
-\end{tcolorbox}\ \\
+\end{tcolorbox}
+
+\clearpage
+
 These are all possible parameter combinations for the -Offline mode: \ \\
 \begin{lstlisting}[caption=]
     .\sri.ps1 -Offline -ImportPath "C:\temp\test"
@@ -136,7 +145,12 @@ These are all possible parameter combinations for the -Offline mode: \ \\
     .\sri.ps1 -Offline -AuditPolicies -ImportPath "C:\temp\test" -ExportPath "C:\temp\test\targetpath"
     
     .\sri.ps1 -Offline -AuditPolicies -ImportPath "C:\temp\test" -ExportPath "C:\temp\test\targetpath" -CAPI2LogSize 4194304
-\end{lstlisting}\ \\
+\end{lstlisting}
+
+\clearpage
+
+\subsubsection{GroupPolicy Mode}
+
 \begin{tcolorbox}
     \paragraph{\underline{-GroupPolicy}} \ \\\\ Audit policies from a specific group policy are analysed.
     \vspace{0.3cm}
@@ -155,7 +169,9 @@ These are all possible parameter combinations for the -Offline mode: \ \\
 These is an example for the -GroupPolicy mode: \ \\
 \begin{lstlisting}[caption=]
     .\sri.ps1 -GroupPolicy -GroupPolicyName "Default Domain Policy"
-\end{lstlisting}
+\end{lstlisting}\ \\
+
+\subsubsection{AllGroupPolicies Mode}
 
 \begin{tcolorbox}
     \paragraph{\underline{-AllGroupPolicies}} \ \\\\
