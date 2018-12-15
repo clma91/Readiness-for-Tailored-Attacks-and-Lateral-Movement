@@ -1,0 +1,144 @@
+\documentclass[a4paper, oneside, 11pt]{report}
+    \usepackage[table]{xcolor}
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage[nswissgerman, english]{babel}
+    \usepackage[hyphens]{url}
+    \usepackage{graphicx}
+    \usepackage{subfig}
+    \usepackage{vhistory}
+    \usepackage{float}
+    \usepackage{pdfpages}
+    \usepackage{tcolorbox}
+    \usepackage{xcolor}
+    \usepackage{nameref}
+    \usepackage{makecell} % for line breaks in tables
+    \usepackage{longtable}
+    \usepackage{titlesec}
+
+    
+    % Style des URL
+    \urlstyle{sf}
+    % URL-Umbrüche
+    \appto\UrlBreaks{\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j
+\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w
+\do\x\do\y\do\z\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9\do\=}
+
+    % Seitenränder
+    \usepackage{geometry}
+    \geometry{
+        a4paper,
+        left=20mm,
+        top=30mm,
+        right=20mm,
+        bottom=30mm
+    }
+
+    % Jede Überschrift 1 auf neuer Seite
+    \let\stdsection\section
+    \renewcommand\section{\clearpage\stdsection}
+
+    % Header and footer
+    \usepackage{fancyhdr}
+    \pagestyle{fancy}
+    \fancyhf{}
+    \lhead{\small \TITLE \\ \vspace{0.5mm} \normalsize \nouppercase\rightmark \vspace{0.0cm}}
+    \rhead{
+        \begin{picture}
+            (0,0) \put(-100,0){\includegraphics[width=0.2\linewidth]{./assets/logo/hsr.png}}
+        \end{picture}}
+    \cfoot{\thepage}
+
+    % Multicolomns und Multirows
+    \usepackage{multicol}
+    \usepackage{multirow}
+    \setlength{\multicolsep}{2.0pt plus 2.0pt minus 1.5pt}% 50% of original values (above/below multicols)
+
+    % Chapter ohne Nummerierung, Eintrag in Inhaltsverzeichnis
+    \newcommand{\kapitel}[1]{
+        \stepcounter{chapter}\chapter*{#1}
+        \addcontentsline{toc}{chapter}{#1}
+        \markboth{\arabic{chapter} #1}{\arabic{chapter} #1}
+        
+    }
+
+    % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis
+    \newcommand{\sectionroman}[1]{
+        \stepcounter{section}\section*{#1}
+        \addcontentsline{toc}{section}{#1}
+        \markboth{\arabic{section} #1}{\arabic{section} #1}
+    }
+
+    % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis
+    \newcommand{\subsectionroman}[1]{
+        \stepcounter{subsection}\subsection*{#1}
+        \addcontentsline{toc}{subsection}{#1}
+        \markboth{\arabic{subsection} #1}{\arabic{subsection} #1}
+    }
+
+    % Anpassung der Inhaltsverzeichnis-Tiefe, beginnend bei section
+    \renewcommand{\partname}{}
+    \renewcommand{\thesection}{\arabic{section}}
+    \setcounter{secnumdepth}{3}
+    \setcounter{tocdepth}{3}
+
+    % Code Listings
+    \usepackage{listings}
+    \usepackage{color}
+    \usepackage{beramono}
+
+
+    \definecolor{bluekeywords}{rgb}{0,0,1}
+    \definecolor{greencomments}{rgb}{0,0.5,0}
+    \definecolor{redstrings}{rgb}{0.64,0.08,0.08}
+    \definecolor{xmlcomments}{rgb}{0.5,0.5,0.5}
+    \definecolor{types}{rgb}{0.17,0.57,0.68}
+
+    \lstdefinestyle{visual-studio-style}{
+        language=[Sharp]C,
+        columns=flexible,
+        showstringspaces=false,
+        basicstyle=\footnotesize\ttfamily, 
+        commentstyle=\color{greencomments},
+        morekeywords={partial, var, value, get, set},
+        keywordstyle=\bfseries\color{bluekeywords},
+        stringstyle=\color{redstrings},
+        breaklines=true,
+        breakatwhitespace=true,
+        tabsize=4,
+        numbers=left,
+        numberstyle=\tiny\color{black},
+        frame=lines,
+        showspaces=false,
+        showtabs=false,
+        escapeinside={£}{£},
+    }
+
+    \definecolor{Maroon}{rgb}{0.5,0,0}
+    \definecolor{darkgreen}{rgb}{0,0.5,0}
+    
+    \lstdefinelanguage{xml}
+    {
+        morekeywords={id, layout_width, layout_height, name, layout},
+        alsoletter=-,
+        morestring=[b]",
+        stringstyle=\color[rgb]{0,0,1},
+        morecomment=[s]{<?}{?>},
+        morecomment=[s]{<!--}{-->},
+        morecomment=[s]{<!}{>},
+        commentstyle=\color{darkgreen},
+        moredelim=[s][\color{black}]{![}{]]},
+        moredelim=*[s][\color{Maroon}]{<}{>},
+        keywordstyle=\color{red}
+    }
+
+    \definecolor{violetkeywords}{RGB}{190,119,227}
+    \lstdefinelanguage{Powershell}
+    {
+        morecomment=[l]{\#},
+        % morekeywords={foreach, if, elseif, in, continue, return, switch, try, catch},
+        % keywordstyle=\bfseries\color{violetkeywords}
+    }
+    
+    \lstset{style=visual-studio-style}
+    \usepackage[hidelinks]{hyperref}
