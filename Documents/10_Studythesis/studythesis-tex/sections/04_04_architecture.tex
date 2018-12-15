@@ -204,6 +204,6 @@ This task is responsible for getting the event logs from the system. Therefore, 
 \subsubsection{AnalyseEvents()}
 In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out if these events already occurred. The result of this comparison will be stored as a 'XML' file in order to visualise it.
 
-\subsection{VisualiseResults()}
+\subsubsection{VisualiseResults()}
 The resulting XML-files from AnalyseEvents() and AnalyseAuditPolicy() are gathered and compared with a checklist, which is based on the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). Incorrect or missing configuration is highlighted in red, correct configurations in green. The event logs are listed as missing or present.
 

@@ -61,7 +61,7 @@ The following tables lists the event logs which are mandatory and must be logged
     \begin{tabular}{| p{1.5cm} | p{14.5cm} |} \hline
         \multicolumn{2} {|c|} {\tiny\bfseries Applications \& Service > Microsoft > Windows > Sysmon > Operational} \\ \hline
         \textbf{EventID} & \textbf{Description}  \\ \hline
-        1\footnotemark[3] & Process create \\ \hline
+        1\footnotemark[3] & Process created \\ \hline
         2\footnotemark[3] & A process changed a file creation time \\ \hline
         5\footnotemark[3] & Process terminated \\ \hline
         8\footnotemark[3] & CreateRemoteThread \\ \hline
@@ -261,7 +261,7 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
 \clearpage
 
 \subsection{Attack Categories}\label{AttackCategories}
-JPCERT/CC has divided the attack tool examined in their report into several attack categories. When developing the tool, the developers relied on this list:
+JPCERT/CC has divided the attack tool examined in their report \nameref{JPCertStudy} into several attack categories. When developing the tool, the developers relied on this list:
 \def\arraystretch{1.5}
 \begin{longtable}{| p{7.5cm} | p{8.5cm} |}\hline
         \textbf{Attack category} & \textbf{Tools}  \\ \hline
