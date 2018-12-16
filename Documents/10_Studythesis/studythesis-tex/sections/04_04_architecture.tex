@@ -151,7 +151,7 @@ A visual representation of the use cases with a use case diagram was deliberatel
 \paragraph{PowerShell \& Visual Studio Code} \ \\
 The decision as to which technology to use, was made in favour of PowerShell. The reason why PowerShell was used, was that it is close to the Microsoft operating system and that it has a large and detailed documentation at its disposal. Furthermore, PowerShell fulfills the non functional requirement of a portable script without any installation perfectly.\ \\
 \ \\
-The scripts are written in Microsoft Visual Studio Code \cite{VSCode} with the extension packet ''PowerShell''. Visual Studio code is preferred to PowerShell Integrated Scripting Environment (PowerShell ISE) because it only requires working in one Integrated Development Environment (IDE) for implementation and documentation.
+The scripts are written in Microsoft Visual Studio Code \cite{VSCode} with the extension packet PowerShell. Visual Studio code is preferred to PowerShell Integrated Scripting Environment (PowerShell ISE) because it only requires working in one Integrated Development Environment (IDE) for implementation and documentation.
 
 \paragraph{Pester \& PSCodeHealth} \ \\
 Pester \cite{Pester} is used as a test framework to provide tests for the developed functions. The assumption is made that the test coverage will not be at 100\% because several functions depend on system internal functions and outputs. Hence, the possibilities to provide tests for all functions would be illusory. 
@@ -159,10 +159,10 @@ Pester \cite{Pester} is used as a test framework to provide tests for the develo
 PSCodeHealth \cite{PSCodeHealth} serves as a metric measurement framework and allows to make statements about the code quality and maintainability. PSCodeHealth uses a variety of metrics like the code length, complexity, smells, issues and violations of best practices as well as test coverage. 
 
 \paragraph{\LaTeX \& Visual Studio Code}\ \\
-The documentation is written with LaTeX in Visual Studio Code wit the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand, we made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
+The documentation is written with LaTeX in Visual Studio Code with the LaTeX Workshop extension. The main reason for LaTex was that the developers are already familiar with it. Furthermore, LaTeX offers a very simple way for referencing sources. On the other hand, we made the experience that with LaTeX the formatting is more reliable than for example when Microsoft Word is used.
 
 \paragraph{Azure Cloud}\ \\
-The test environment is set up, as described in section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'', in the ''Microsoft Azure Cloud'' \cite{Azure}. One server and two clients form a virtual network, this enables developers to access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
+The test environment is set up, as described in section ''\ref{sec:testenvironment} \nameref{sec:testenvironment}'', in the ''Microsoft Azure Cloud'' \cite{Azure}. One server and two clients form a virtual network, this enables developers to access it from anywhere to any given time. A disadvantage is the changing public IP-addresses to access the VMs. In the end, the advantages outweigh the disadvantages.
 
 \paragraph{GitHub}\ \\
 GitHub \cite{GitHub} is used as a version control tool for source code and documentation. GitHub has been elected because of its good reputation and the experience the developers already gained with.
@@ -193,7 +193,7 @@ This section describes the process of the toolkit and explain the individual ste
 \clearpage
 
 \subsubsection{GetAuditPolicy()}
-This task is responsible to get all audit policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the audit policies and the current state of its configuration  the Resultant Set of Policies (RSoP) must be read. \cite{RSoP} RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
+This task is responsible to get all audit policies, which are relevant for logging the right events according to JPCERT/CCs study. To gather all information about the audit policies and the current state of its configuration  the Resultant Set of Policies (RSoP) \cite{RSoP} must be read. RSoP is a Microsoft snap-in to create a detailed report about the applied policy settings. 
 
 \subsubsection{AnalyseAuditPolicy()}
 In this task the RSoP from the task GetAuditPolicy(), which is represented as a XML-File, is going to be analysed and all values of the defined audit settings are gathered and written as a result of this analysis, stored in a XML-based format in a temporary file.

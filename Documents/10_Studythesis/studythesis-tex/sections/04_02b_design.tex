@@ -1,7 +1,7 @@
 \section{Design}
 This section describes the design of the SRI, how the tool is built, and what to look out for.
 \subsection{Decision for a new Tool}
-At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the Advanced Audit Settings of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
+At the beginning it was not clear how the tool should be built exactly and what the functionality and scope should be based on. After a detailed analysis of different tools, reports and studies, it was possible to better estimate how an efficient detection of the readiness of a system can be implemented. It would have been desirable to be able to build on an existing tool, but as shown in a five-week analysis, there is no such tool. For this reason it was decided to develop a tool based on JPCERT/CCs study. The configurations in the ''Advanced Audit Settings'' of the GPOs are to be checked accordingly and in a second step the event logs are to be searched for the EventIDs.
 
 \subsection{Mandatory Event Logs}\label{MandatoryLogs}
 The following tables lists the event logs which are mandatory and must be logged based on the study ''\nameref{JPCertStudy}'':
@@ -320,7 +320,7 @@ This section defines the priority of each audit policy and provides a statement 
 \clearpage
 
 \subsection{Domain Analysis} \label{DomainAnalysis}
-The following section describes the problem domain which is faced during this project. Despite the decision to not programme an object orientated solution, there are several things to be aware of and to think through carefully. For this reason, building a domain model is a simple and suitable technique to use. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
+The following section describes the problem domain which is faced during this project. Despite the decision to not programme a classic object orientated solution, there are several things to be aware of and to think through carefully. For this reason, building a domain model is a simple and suitable technique to use. The following figure \ref{fig:domainmodel} shows the domain model and will be explained in some details afterwards. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{assets/architecture/DomainModelSRI.png}
@@ -337,11 +337,12 @@ A computer illustrates either a client like a Windows 10 machine or a server, in
 An event represents a single event log entry in simplified form.
 
 \subsubsection{AuditPolicy}\label{DomainModelAuditPolicy}
-AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found via \lstinline|gpedit.msc| under ''Computer Configuration > Windows Settings''. However, only the settings under ''Security Settings > Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings > Local Policies > Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
+A single audit policy setting represents one or more event IDs logged by this configuration.
+\\\\
+AuditPolicy displays the individual settings of the audit policies of the group policy, which can be found via \lstinline|gpedit.msc| under ''Computer Configuration $\rightarrow$ Windows Settings''. However, only the settings under ''Security Settings $\rightarrow$ Advanced Audit Policy Configuration'' are considered and not the settings under ''Security Settings $\rightarrow$ Local Policies $\rightarrow$ Audit Policy''. The reason for this is that Microsoft recommends that only one of the two policies is used:
 \begin{quotation}
     \textit{[...] do not use both the basic audit policy settings under Local Policies\textbackslash Audit Policy and the advanced settings under Security Settings\textbackslash Advanced Audit Policy Configuration. Using both basic and advanced audit policy settings can cause unexpected results in audit reporting.} \cite{AdvancedSecurityAuditing}
 \end{quotation}
-A single audit policy setting represents one or more event IDs logged by this configuration.
 
 \subsubsection{Reference}
 \paragraph{ActualList}

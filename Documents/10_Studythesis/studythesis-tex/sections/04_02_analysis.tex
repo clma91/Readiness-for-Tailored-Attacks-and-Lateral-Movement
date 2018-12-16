@@ -106,7 +106,7 @@ The problem was that the parameter \lstinline|[IP_Address]| was not described we
     PORTS
     0.0.0.0:7474->7474/tcp, 0.0.0.0:7687->7687/tcp, 7473/tcp, 0.0.0.0:8080->8080/tcp
 \end{lstlisting}
-After some time of investigation and further tests, it turned out that under \lstinline|PORTS| the ports respectively ip addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and it can eventually be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
+After some time of investigation and further tests, it turned out that under \lstinline|PORTS| the ports respectively IP addresses of the container can be bound to the host. But these are not relevant for the LogonTracer, because it provides a web application under the defined parameter \lstinline|[IP_Address]| and it can eventually be reached via \lstinline|localhost:8080|. If this parameter was set to \lstinline|127.0.0.1|, the database containing the imported .evtx file could not be accessed. Thus the graph was never displayed. The parameter \lstinline|[IP_Address]| set to \lstinline|localhost| solved this problem.
 
 \begin{lstlisting}[language=HTML,caption=LogonTracer: recommended docker run command]
     $ docker run --detach \
@@ -122,7 +122,7 @@ However, the LogonTracer is not suitable for detection readiness and cannot be u
 
 \subsection{Microsoft Monitoring Active Directory for Signs of Compromise}
 \subsubsection{Description}
-This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of a solid event log monitoring for Microsoft servers. The article gives a quite a good overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into the details of the audit policies in detail. Furthermore, the article describes how the policies can be read with powershell.
+This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \cite{MSADSignsOfCompromise} is about configuration of a solid event log monitoring for Microsoft servers. The article gives a quite a good overview about the audit policy in Microsoft systems and what each policy stands for. The article gives information about the most important audit policies and how noisy (if a lot of data is produced by them) they are. This study does not go into audit policy in detail. Furthermore, the article describes how the policies can be read with powershell.
 \\\\
 In this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
@@ -150,7 +150,7 @@ Although many attacks are described and how they can be detected and fended off,
 Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. Therefore a reference hash value of the executed EXE is required to compare the hash values on its correctness. \cite{Sysmon1}
 
 \subsubsection{Conclusion}
-As mentioned in the description, Sysmon is an important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness. In order to not create duplicated events, the events similar logged by default and Sysmon must be examined by their differences. Very likely Sysmon is the better choice.
+Due to the fact that Sysmon will log not only the name of an executable but also the corresponding hash value, Sysmon is an important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness.
 
 
 \subsection{Sysmon Tools}
@@ -164,7 +164,7 @@ This tool can also be a great help for detecting attacks and, with the Sysmon Sh
 
 \subsection{sysmon-modular}
 \subsubsection{Description}
-With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service System Monitor (Sysmon), an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organisation. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
+With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows system service Sysmon, an xml-file which is loaded by Sysmon, is provided. Noisy process creations, which are made by legitimate programs, are suppressed as far as possible by Sysmon. The tool offers the possibility and it is expressly recommended by the developer to adapt the configuration to the respective organisation. Furthermore, sysmon-modular implements various attacks in MITRE ATT\&CK for detection with Sysmon. It offers the possibility to detect the attacks shown in the figure \ref{fig:sysmonmodular} with Sysmon.
 
 \begin{figure}[H]
     \centering

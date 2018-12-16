@@ -7,8 +7,7 @@ The basic idea was to implement the use case ''\nameref{UC01}'' separately from 
 The script follows the following schedule in the probably most often used \lstinline|-Online| Mode:
 \begin{itemize}
     \item Reading and caching of the RSoP which includes the audit settings
-    \item Compare the audit settings from the RSoP with the target list so that all defined audit policies are in place
-    \item Get all value of the defined audit policies for further analysis
+    \item Get all values of the defined audit policies for further analysis
     \item Check if ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled in registry to prevent conflicts between security settings
     \item Check if Sysmon is installed and running as a service
     \item Check whether CAPI2 is enabled and its log size is appropriate (> 4MB)
@@ -66,7 +65,7 @@ The current configuration of the system's audit policies is then to be evaluated
 \clearpage 
 
 \subsubsection{Implementation}
-This section describes the implementation of \lstinline|GetAndCheckAuditPolicies| in detail. For this purpose, the following is referred to in section \ref{GetAndAnalyseAuditPoliciesResult} \nameref{GetAndAnalyseAuditPoliciesResult} described schedule. This section is focusing on the \lstinline|-Online| mode but will also cover the other functions which are implemented for a domain based system check.
+This section describes the implementation of the module \lstinline|GetAndAnalyseAuditPolicies.psm1| in detail. For this purpose, the following is referred to in section ''\ref{GetAndAnalyseAuditPoliciesResult} \nameref{GetAndAnalyseAuditPoliciesResult}'' described schedule. This section is focusing on the \lstinline|-Online| mode but will also cover the other functions which are implemented for a domain based system check.
 \\\\
 To read the RSoP from the local/current system the command \lstinline|Get-GPResultantSetOfPolicy| is used. The XML that is retrieved is then temporarily cached in the execution path of the script and read in again for further processing. The temporarily cached XML will then be removed.
 \begin{lstlisting}[caption=Get-GPResultantSetOfPolicy, language=PowerShell]
@@ -86,7 +85,7 @@ if ([System.IO.File]::Exists($PathRSoPXML)) {
 \vspace{0.5cm}
 \begin{multicols}{2}
     \ \\\\\\ \
-    The generated XML (RSoP) is an extraction of the GPOs and contains only the configurations set from them.
+    The generated XML (RSoP) is an extraction of the GPO's and contains only the configurations set from them.
     Afterwards the analysis begins and the entries are searched in the XML file, in which the required configurations for the ''Advanced Audit Policies'' are stored (see figure \ref{fig:AdvancedAuditPolicies}).
     \begin{figure}[H]
         \centering
@@ -94,7 +93,7 @@ if ([System.IO.File]::Exists($PathRSoPXML)) {
         \caption{GPO - Advanced Audit Policies}\label{fig:AdvancedAuditPolicies}
     \end{figure}
 \end{multicols}
-The function \lstinline|CompareToTargetList| searches for missing audit settings. It iterates over the queried \lstinline|AuditSettings| and searches for missing configurations. Any missing setting will be written in a hashtable \lstinline|result| for further processing.
+The function \lstinline|CompareToTargetList| searches for missing audit settings. It iterates over the queried \lstinline|AuditSettings| and searches for missing configurations. Any missing setting will be written in a hashtable \lstinline|result| with the value \lstinline|NotConfigured| for further processing.
 \begin{lstlisting}[caption=CompareToTargetList: Search missing configurations, language=PowerShell]
 Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSettings) {
     $Result = @{}    
@@ -108,7 +107,7 @@ Function CompareToTargetList ([Hashtable] $AuditSettings, [Array] $TargetAuditSe
 \end{lstlisting}
 
 \clearpage \ \\
-After checking for missing configurations, all values of the set settings are gathered for further processing.
+After checking for missing configurations, all values of the audit settings are gathered for further processing.
 \begin{lstlisting}[caption=GetAuditSettingValues: Get configured audit settings from RSoP, language=PowerShell]
 foreach ($AuditSetting in $AuditSettings.GetEnumerator()) {
     if ($TargetAuditSettings -notcontains $AuditSetting.Name) {
@@ -146,7 +145,6 @@ foreach ($AuditSetting in $AuditSettings.GetEnumerator()) {
 }
 \end{lstlisting} \ \\
 After gathering of the values, the next step is to verify if the setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled as considered in section ''\ref{DomainModelAuditPolicy} \nameref{DomainModelAuditPolicy}''. This had to be solved via the registry, because this information is not available in the RSoP.
-
 \begin{lstlisting}[caption=GetRegistryValue,language=PowerShell]
 Function GetRegistryValue([String] $Path, [String] $Name) {
     return Get-ItemProperty -Path $Path -Name $Name -ErrorAction Stop
@@ -368,7 +366,7 @@ The now no longer needed CSV files are deleted. The XML with the result set is n
 
 \subsubsection{Approach}
 \paragraph{Get Event Logs}\ \\
-After research was done on how to read out the Event logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event logs'' report. \cite{JPCERTDetectingLateralMovement}. The script ran successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario,  none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in O(n*m). The developers decided to cache the Event logs, reducing the runtime to O(m). The cached logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+After research was done on how to read out the Event logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event logs'' report. \cite{JPCERTDetectingLateralMovement}. The script ran successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario,  none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in \textit{O(n $\cdot$ m)}. The developers decided to cache the Event logs, reducing the runtime to \textit{O(m)}. The cached logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
 \ \\
 To read out the ''Application and Service'' logs we can not use Get-EventLog. The first approach used the \lstinline|Get-WinEvent| \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
 The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of logs is smaller. On the testing environment with a machine with 4 Gigabyte (GB) Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
@@ -386,7 +384,7 @@ The first step is to read out the ''System'' and ''Security'' logs. To achieve t
 
     Function GetEventLogsAndExport{
         foreach($Log in $LogNames){
-        $EventLogs += Get-EventLog -LogName $Log
+            $EventLogs += Get-EventLog -LogName $Log
         }
     ...
 \end{lstlisting}
@@ -408,9 +406,11 @@ After the export the function \lstinline|GetApplicationAndServiceLogs| is called
     Function GetApplicationAndServiceLogs{
     
     foreach($Id in $IdsForTaskScheduler){
-    if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$Id" )]]" /uni:false /f:text){
-        $AppAndServLogs += $Id
-         }
+        if(wevtutil qe Microsoft-Windows-TaskScheduler/Operational /q:"*[System[(EventID="$Id" )]]" /uni:false /f:text){
+
+            $AppAndServLogs += $Id
+
+        }
     }
     ...
 \end{lstlisting}
@@ -494,7 +494,7 @@ function OpenPDF{
     $Pdf = New-Object iTextSharp.text.Document 
     New-PDF -Document $Pdf -File #export path
     $Pdf.Open()
-   }
+}
 \end{lstlisting}
 The function \lstinline|WriteAuditPolicies| then compares the found audit policies and display the ones who are incorrectly. It will call two other functions, \lstinline|CreateAddCellWithColor| and \lstinline|CreateAddCell|.
 \begin{lstlisting}[caption=Functions WriteAuditPolicies \& CreateAddCellWithColor \& CreateAddCell, language=PowerShell]
@@ -548,50 +548,50 @@ function CreateAddCell($Content) {
 \end{lstlisting}
 Now that the ''Import audit policies and compare them to a given checklist, result is written and visualized in a table'' is done, it is possible to check which attack tool categories can be detected with the current audit settings. For that purpose, the function \lstinline|ToolsCanBeDetected| was created. This function relies on the return of the \$IncorrectAudits.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
-    function ToolsCanBeDetected($IncorrectAudits){
-        [xml] $AuditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
-        $NotDetectableCategories = @()
-        $CausingAudit = @()
+function ToolsCanBeDetected($IncorrectAudits){
+    [xml] $AuditsByCategorie = Get-Content "$PSScriptRoot\AuditByCategorie.xml"
+    $NotDetectableCategories = @()
+    $CausingAudit = @()
 
-        $Categories = $AuditsByCategorie.Category.ChildNodes
-        foreach ($Category in $Categories) {
-            [int]$Checknr = 0
-            foreach ($IncorrectAudit in $IncorrectAudits) {
-                if ($Category.ChildNodes.InnerXml -contains $IncorrectAudit) {
-                    $Checknr += 1
-                    $CausingAudit += $IncorrectAudit
-                }
+    $Categories = $AuditsByCategorie.Category.ChildNodes
+    foreach ($Category in $Categories) {
+        [int]$Checknr = 0
+        foreach ($IncorrectAudit in $IncorrectAudits) {
+            if ($Category.ChildNodes.InnerXml -contains $IncorrectAudit) {
+                $Checknr += 1
+                $CausingAudit += $IncorrectAudit
             }
-            if ($Checknr -gt 0) {
-                $NotDetectableCategories += $Category.LocalName + "(" + $CausingAudit + ")"
-            }
-        # Output of the not detectable categories and the causing audits    
-    }
+        }
+        if ($Checknr -gt 0) {
+            $NotDetectableCategories += $Category.LocalName + "(" + $CausingAudit + ")"
+        }
+    # Output of the not detectable categories and the causing audits    
+}
 \end{lstlisting}
 The next step is to display the found EventLogs and if they are missing or present. Therefore two tables, one for the WindowsLogs and one for the Application And Service logs, are created. Because these two tables are created the same way, only one case is shown. Hence, the function \lstinline|WriteEventLogs| was created.
 \begin{lstlisting}[caption=Function ToolsCanBeDetected, language=PowerShell]
-    function WriteEventLogs { 
-        [xml] $Eventxml = Get-Content # importPath
-        # Add Title
-        $EventsWindows = $Eventxml.Logs.EventLogsID.ChildNodes
-        $Result = @()
-        foreach ($Event in $EventsWindows) {
-            $Result += $Event.LocalName
-            $Result += $Event.InnerXml
-        }
-        #Add result to table
+function WriteEventLogs { 
+    [xml] $Eventxml = Get-Content # importPath
+    # Add Title
+    $EventsWindows = $Eventxml.Logs.EventLogsID.ChildNodes
+    $Result = @()
+    foreach ($Event in $EventsWindows) {
+        $Result += $Event.LocalName
+        $Result += $Event.InnerXml
     }
+    #Add result to table
+}
 \end{lstlisting}
 \clearpage \ \\
 As a final task, all these function have to be called in the right order, and the opened PDF has to be closed. For this case, the simple function \lstinline|VisualizeAll| was created:
 \begin{lstlisting}[caption=Function VisualizeAll, language=PowerShell]
-    function VisualizeAll { 
-        $Pdf = OpenPDF $ExportFolder
-        $IncorrectAudits = WriteAuditPolicies $ExportFolder
-        ToolCanBeDetected $IncorrectAudits
-        WriteEventLogs $ExportFolder
-        $Pdf.Close()
-    }
+function VisualizeAll { 
+    $Pdf = OpenPDF $ExportFolder
+    $IncorrectAudits = WriteAuditPolicies $ExportFolder
+    ToolCanBeDetected $IncorrectAudits
+    WriteEventLogs $ExportFolder
+    $Pdf.Close()
+}
 \end{lstlisting}
 
 \clearpage
@@ -603,7 +603,7 @@ The various procedures/modes provided by the main script, with eventual addition
 \begin{itemize}
     \item \textbf{\textit{-Online, -Offline, -GroupPolicy and -AllGroupPolicies}}
 \end{itemize}
-\begin{lstlisting}[caption=]
+\begin{lstlisting}[caption=SRI Main Script Parameter Combinations]
 PS C:\>./sri.ps1 [-Online] [-OnlineExportPath <String>] [-CAPI2LogSize <Int32>]
 
 PS C:\>./sri.ps1 [-Offline] [[-AuditPolicies]] [[-EventLogs]] [-ImportPath] <String> 
