@@ -42,7 +42,7 @@
     \usepackage{fancyhdr}
     \pagestyle{fancy}
     \fancyhf{}
-    \lhead{\small Developer Manual \\ \vspace{0.5mm} \normalsize \nouppercase\rightmark \vspace{0.0cm}}
+    \lhead{\small User Manual \\ \vspace{0.5mm} \normalsize \nouppercase\rightmark \vspace{0.0cm}}
     \rhead{
         \begin{picture}
             (0,0) \put(-100,0){\includegraphics[width=0.2\linewidth]{./assets/logo/hsr.png}}
@@ -59,6 +59,7 @@
         \stepcounter{chapter}\chapter*{#1}
         \addcontentsline{toc}{chapter}{#1}
         \markboth{\arabic{chapter} #1}{\arabic{chapter} #1}
+        
     }
 
     % Section ohne Nummerierung, Eintrag in Inhaltsverzeichnis

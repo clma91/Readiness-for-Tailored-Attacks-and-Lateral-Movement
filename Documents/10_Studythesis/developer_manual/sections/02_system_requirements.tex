@@ -1,0 +1,36 @@
+
+\kapitel{System Requirements}
+\thispagestyle{plain}
+\renewcommand\section{\stdsection}
+\setcounter{section}{2}
+This section is about how to get started with coding for the ''System Readiness Inspector'' (SRI). The focus in this section is about the used software and extensions to provide an environment to develop. But basically, there is no restriction how to handle your environment to get started.
+
+\subsection{Operating System}
+To develop the SRI the operating system ''Microsoft Windows 10 Professional - Version 1803'' was used.
+
+\subsection{Windows PowerShell 5.0}
+The used language in this project is Windows PowerShell. Be sure that you have installed the ''Windows Management Framework 5.1''. Check your version with the following command:
+
+\begin{lstlisting}
+$PSVersionTable.PSVersion
+\end{lstlisting}
+\ \\
+\textbf{Windows Management Framework 5.1:} 
+\\
+\url{https://www.microsoft.com/en-us/download/details.aspx?id=54616}
+\\
+
+
+\subsection{Integrated Development Environment (IDE)}
+During this study thesis ''Microsoft Visual Studio Code - Version 1.29.1'' served as the IDE to develop in Windows PowerShell. Microsofts integrated IDE for Windows PowerShell ''Integrated Script Environment (ISE)'' was refused to use because the Microsoft Visual Studio Code IDE provides a very large set on extensions useful for any kind of developing. In addition, the integrated ''Source Control'' tab makes it extremely easy to maintain strict version control. 
+\\\\
+\textbf{Microsoft Visual Studio Code:} 
+\\
+\url{https://code.visualstudio.com/}
+
+\subsection{Microsoft Visual Studio Code Extensions}
+To develop efficiently in Windows PowerShell with ''Microsoft Visual Studio Code'' the following extensions are used during the development:
+\begin{itemize}
+    \item PowerShell (extension identifier: \lstinline|ms-vscode.powershell|)
+    \item Code Spell Checker (extension identifier: \lstinline|streetsidesoftware.code-spell-checker|)
+\end{itemize}
