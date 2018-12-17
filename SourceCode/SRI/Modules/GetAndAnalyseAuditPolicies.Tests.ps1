@@ -328,6 +328,32 @@ Describe "MergeHashtables" {
     }
 }
 
+Describe "GetAuditSettingValues" {
+    $TargetAuditSettings = @("AuditNonSensitivePrivilegeUse", "AuditOtherObjectAccessEvents", "AuditUserAccountManagement")
+    $AuditSettings = @{
+        "AuditNonSensitivePrivilegeUse" = 3 
+        "AuditOtherObjectAccessEvents" = 1 
+        "AuditUserAccountManagement" = 1
+    }
+    $ResultCollection = @{
+        "AuditNonSensitivePrivilegeUse" = "SuccessAndFailure"
+        "AuditOtherObjectAccessEvents" = "Success"
+        "AuditUserAccountManagement" = "Success"
+    }
+
+    It "checks if returned result collection is correct" {
+        $Result = GetAuditSettingValues $AuditSettings $TargetAuditSettings
+        $ResultCollection.Values.Count | Should -Be $Result.Values.Count
+    }
+
+    $AuditSettings = @{}
+
+    It "chcks if returned result collection is NULL" {
+        $Result = GetAuditSettingValues $AuditSettings $TargetAuditSettings
+        $Result | Should -BeNullOrEmpty
+    }
+}
+
 Describe "WriteXML" {
     $ResultCollection = @{
         AuditNonSensitivePrivilegeUse = "SuccessAndFailure"
@@ -345,7 +371,16 @@ Describe "WriteXML" {
         WriteXML $ResultCollection $CurrentPath
         $XMLPath = "$CurrentPath\result_audit_policies.xml"
         
-        Test-Path -LiteralPath $XMLPath | Should -Be $true  
+        Test-Path -LiteralPath $XMLPath | Should -Be $true     
         Remove-Item $XMLPath 
+    }
+}
+
+Describe "GetAuditPoliciesTargetList" {
+    $ResultCollection = @("AuditNonSensitivePrivilegeUse", "AuditOtherObjectAccessEvents", "AuditUserAccountManagement", "AuditProcessTermination", "AuditSAM", "AuditKerberosAuthenticationService", "AuditHandleManipulation", "AuditRegistry", "AuditKerberosServiceTicketOperations", "AuditFileSystem", "AuditLogon", "AuditSpecialLogon", "AuditMPSSVCRule-LevelPolicyChange", "AuditLogoff", "AuditDetailedFileShare", "AuditSensitivePrivilegeUse", "AuditKernelObject", "AuditSecurityGroupManagement", "AuditFileShare", "AuditFilteringPlatformConnection", "AuditProcessCreation")
+
+    It "checks if returned result collection is correct" {
+        $Result = GetAuditPoliciesTargetList
+        $Result | Should -Be $ResultCollection
     }
 }

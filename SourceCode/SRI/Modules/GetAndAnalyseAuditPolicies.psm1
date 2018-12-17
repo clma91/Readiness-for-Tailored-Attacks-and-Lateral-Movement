@@ -242,6 +242,7 @@ Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAudit
             $Result.Add(($AuditSubcategoryName -replace (" ")), $AuditSettingValueString)
         }    
     }
+    Write-Host $Result.Count
     return $Result
 }
 
@@ -337,4 +338,4 @@ Function WriteXML([Hashtable] $ResultCollection, [String] $ExportPath) {
     }
 }
 
-Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, IsForceAuditPolicyDomainEnabeled, GetAuditPolicies, GetDomainAuditPolicy, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML
+Export-ModuleMember -Function GetCAPI2, IsCAPI2Enabled, GetRegistryValue, IsForceAuditPolicyEnabeled, IsSysmonInstalled, IsForceAuditPolicyDomainEnabeled, GetAuditPolicies, GetDomainAuditPolicy, GetAllDomainAuditPolicies, AnalyseAuditPolicies, MergeHashtables, WriteXML, GetAuditPoliciesTargetList, GetAuditSettingValues, CompareToTargetList
