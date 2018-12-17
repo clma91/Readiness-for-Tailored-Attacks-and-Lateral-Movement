@@ -15,7 +15,7 @@ The most interesting aspect of BloodHound for our project is the way it retrieve
 
 \subsection{Windows Event Logging Forensic Logging Enhancement Services}\label{WEFFLES}
 \subsubsection{Description}
-Windows Event Logging Forensic Logging Enhancement Services (WEFFLES) is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI, coded and published by Microsoft-Security-Employee Jessica Payne. It is built to help set up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply be imported into Excel and start filtering the logs to gain the needed information. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
+Windows Event Logging Forensic Logging Enhancement Services (WEFFLES) \cite{WEFFLES} is a Threat Hunting/Incident Response Console with Windows Event Forwarding and PowerBI \cite{PowerBI}, coded and published by Microsoft-Security-Employee Jessica Payne. It is built to help set up the Windows Event Forwarding, so that all the collected logs of a system are stored on one centralised server, and afterwards to analyse the collected data. Jessica Payne wrote an installation instruction on the Microsoft TechNet blog \url{https://blogs.technet.microsoft.com/jepayne/2017/12/08/weffles/}. Once the data is collected  the generated weffels.csv file can simply be imported into Excel and start filtering the logs to gain the needed information. Jessica Payne recommends to use PowerBI, a business analytics tool designed by Microsoft. In her published blog she also gives a short introduction on what to look out for, which event ids are important and other useful tips and tricks for detecting suspicious activities in the network.
 \subsubsection{Conclusion}
 WEFFELS will not be the product on which this project is based, but could become an important point of reference. The installation guide and other WEFFELS-related documents collected by Jessica Payne provide a lot of information for reading and understanding logs, which will be very helpful for this project. Also an interesting aspect of WEFFLES and the Jessica Payne article is how she visualised the logs, using Microsoft PowerBI.
 
@@ -42,7 +42,7 @@ The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security admin
 \end{itemize}
 
 \subsubsection{Difficulties}
-The toolkit is very simple and could be understood and used without any difficulties. The handling is very intuitive and does not require much training. Please note, however, that the toolkit cannot be used with Windows 10 Home, since active directory support is not provided with this version.
+The toolkit is very simple and could be understood and used without any difficulties. The handling is very intuitive and does not require much training. Please note, however, that the toolkit cannot be used with Windows 10 Home, since Active Directory support is not provided with this version.
 
 \subsubsection{Conclusion}
 This toolkit can be used for a very baseline GPO in enterprise environment. With the delivered baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit enables the comparison of different local GPO's installed on different Clients or Servers to check their consistency. In addition, the provided baselines can be used for building new GPO's. Furthermore, Microsoft delivers with the SCT a Local Group Policy Object Utility (LGPO.exe) to:
@@ -80,8 +80,7 @@ To use the LogonTracer, only a .evtx-File (Windows Extensible Markup Language (X
 \\\\
 In addition, LogonTracer provides a timeline for all or selected users to show when each user logged in. The timeline can also be displayed as a graph with the LogonTracer, allowing anomalies to be detected more quickly.
 
-\clearpage
-
+\clearpage \ \\
 The test environment showed that this graph can quickly become confusing - especially in a larger corporate environment as depicted in figure \ref{fig:LogonTraceerConfusing} \nameref{fig:LogonTraceerConfusing}. Although only a small environment as described in the section \ref{sec:testenvironment} ''\nameref{sec:testenvironment}'' was used, it turned out that various users wanted to log on to the virtual machines. The reason for this is that the test environment was built in the Microsoft Azure Cloud and is accessible via public IP addresses in the cloud.
 
 \begin{figure}[H]
@@ -127,7 +126,7 @@ This article ''Microsoft Monitoring Active Directory for Signs of Compromise'' \
 In this article Microsoft compiles in Appendix L \cite{MSAppendixL} all important event ids which are necessary for a successful detection of APTs and lateral movements.
 
 \subsubsection{Conclussion}
-Due to the fact that audit policies are an important setting for solid event logging, this article and Appendix L will be a central part of the toolkit to be built. As a next step and part of this study, these event ids have to be correlated with the event ids found in the JPCERT/CC's study "Detecting Lateral Movement through Tracking Event Logs" \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
+Due to the fact that audit policies are an important setting for solid event logging, this article and Appendix L will be a central part of the toolkit to be built. As a next step and part of this study, these event ids have to be correlated with the event ids found in the JPCERT/CC's study ''Detecting Lateral Movement through Tracking Event Logs'' \cite{JPCERTDetectingLateralMovement} to make a clear statement which event ids have to be logged.
 
 \subsection{MITRE Adversarial Tactics, Techniques and Common Knowledge (ATT\&CK)}
 \subsubsection{Description}
@@ -147,7 +146,7 @@ Although many attacks are described and how they can be detected and fended off,
 \begin{quotation}
     \textit{System Monitor (Sysmon) is a Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. It provides detailed information about process creations, network connections, and changes to file creation time.\cite{Sysmon}}
 \end{quotation}
-Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But bad guys want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. Therefore a reference hash value of the executed EXE is required to compare the hash values on its correctness. \cite{Sysmon1}
+Sysmon logs several events on the system which are partly logged by default too. For example, the event ''A new process has been created'' with the identifier (ID) 4688 is logged by Sysmon with the ID 1 ''Process Creation''. The problem is that the default logged event with the ID 4688 logs only the executable file (EXE) name as well as the including path. But attackers want to stay below the radar, so they might replace the original EXE a with malicious one and rename it like the original. Hence, there is no way to determine with the system based event log entry 4688 if the original EXE was executed. Sysmon eliminates exactly this gap by logging not only the name and path of the EXE but also the hash value of the EXE. Ergo Sysmon brings a big advantage to detect if a malicious EXE was executed or not. Therefore a reference hash value of the executed EXE is required to compare the hash values on its correctness. \cite{Sysmon1}
 
 \subsubsection{Conclusion}
 Due to the fact that Sysmon will log not only the name of an executable but also the corresponding hash value, Sysmon is an important tool to be enabled for solid detection of attacks. So Sysmon has to be detected if it is running or not to prepare an environment for a good readiness.
@@ -173,7 +172,7 @@ With sysmon-modular \cite{sysmon-modular} a clean configuration of the Windows s
 \end{figure}
 
 \subsubsection{Conclusion}
-Sysmon-modular offers a very good basic configuration for Sysmon based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately, sysmon-modular was discovered when decisions were made to develop a tool based on the study "Detecting Lateral Movement through Tracking Event Logs" by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will most likely not be included in the tool during this study, unless there are still enough time reserves for such an integration. This tool would better fit the goal to realise a ''Readiness Optimizer'' as initially mentioned in the task definition.
+Sysmon-modular offers a very good basic configuration for Sysmon based on the platform MITRE ATT\&CK which is widely used in the security scene. Unfortunately, sysmon-modular was discovered when decisions were made to develop a tool based on the study ''Detecting Lateral Movement through Tracking Event Logs'' by JPCERT/CC. The readiness of a system with the basis of MITRE ATT\&CK patterns would probably have had an even greater impact. However, Sysmon-modular will most likely not be included in the tool during this study, unless there are still enough time reserves for such an integration. This tool would better fit the goal to realise a ''Readiness Optimizer'' as initially mentioned in the task definition.
 
 
 

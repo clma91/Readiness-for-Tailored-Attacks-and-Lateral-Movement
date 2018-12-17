@@ -173,12 +173,12 @@ Redmine \cite{Redmine} will be used as the project management tool. It will help
 \clearpage
 
 \paragraph{Continuous Integration}\ \\
-Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. Fortunately, the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the developers manual.
+Continuous Integration (CI) for Powershell is unfortunately not very widespread as has been shown after some time of research. One possible reason for this is that no build artifacts occur with PowerShell. Fortunately, the article ''Converting a PowerShell Project to use Azure DevOps Pipelines'' \cite{CI} by Daniel Scott-Raynsford was found, which describes in detail how a CI environment can be set up in Microsoft Azure DevOps. Due to the fact that Azure DevOps offers a very simple and clear handling, as well as supports all common operating systems (Linux, Windows and MacOS), it was decided to set up the CI environment in Azure DevOps. The structure and the important findings are described in the developers manual.
 
 \subsubsection{Rejected Technologies}
 
 \paragraph{Python}\ \\
-The decision to use PowerShell and maybe C\# for a GUI instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft operating system. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
+The decision to use PowerShell instead of Python was made because the developers do not have much experience with Python. Also PowerShell is closer to the Microsoft operating system. With Python there is no guarantee that the libraries which would be used are as powerful to solve the requirements.
 
 
 \subsection{Sequence Diagram}
@@ -205,5 +205,5 @@ This task is responsible for getting the event logs from the system. Therefore, 
 In this task the created command-separated values file (CSV) from GetEventLog() is used to analyse the collected logs. They are compared to a list provided by JPCERT/CC to find out if these events already occurred. The result of this comparison will be stored as a 'XML' file in order to visualise it.
 
 \subsubsection{VisualiseResults()}
-The resulting XML-files from AnalyseEvents() and AnalyseAuditPolicy() are gathered and compared with a checklist, which is based on the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). Incorrect or missing configuration is highlighted in red, correct configurations in green. The event logs are listed as missing or present.
+The resulting XML-files from AnalyseEvents() and AnalyseAuditPolicy() are gathered and compared with a target checklist, which is based on the recommendation from JPCERT/CCs study (see \ref{JPCertStudy} \nameref{JPCertStudy}). Incorrect or missing configuration is highlighted in red, correct configurations in green. The event logs are listed as missing or present.
 

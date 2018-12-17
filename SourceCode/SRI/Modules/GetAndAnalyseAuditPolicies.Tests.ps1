@@ -4,8 +4,6 @@ $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
 $testFilesPath = $currentPath + "\TestFiles"
 Import-Module $modulePath -Force
 
-Write-Host $modulePath
-
 Describe "GetCAPI2" {
     It "should return a XML" {
         $CAPI2 = GetCAPI2
@@ -336,14 +334,14 @@ Describe "GetAuditSettingValues" {
         "AuditUserAccountManagement" = 1
     }
     $ResultCollection = @{
-        "AuditNonSensitivePrivilegeUse" = "SuccessAndFailure"
         "AuditOtherObjectAccessEvents" = "Success"
         "AuditUserAccountManagement" = "Success"
+        "AuditNonSensitivePrivilegeUse" = "SuccessAndFailure"
     }
 
     It "checks if returned result collection is correct" {
         $Result = GetAuditSettingValues $AuditSettings $TargetAuditSettings
-        $ResultCollection.Values.Count | Should -Be $Result.Values.Count
+        $ResultCollection.Count | Should -Be $Result.Count
     }
 
     $AuditSettings = @{}
@@ -382,5 +380,38 @@ Describe "GetAuditPoliciesTargetList" {
     It "checks if returned result collection is correct" {
         $Result = GetAuditPoliciesTargetList
         $Result | Should -Be $ResultCollection
+    }
+}
+
+Describe "CompareToTargetList" {
+    $AuditSettings = @{}
+    $TargetAuditSettings = @("AuditNonSensitivePrivilegeUse", "AuditOtherObjectAccessEvents", "AuditUserAccountManagement", "AuditProcessTermination", "AuditSAM", "AuditKerberosAuthenticationService", "AuditHandleManipulation", "AuditRegistry", "AuditKerberosServiceTicketOperations", "AuditFileSystem", "AuditLogon", "AuditSpecialLogon", "AuditMPSSVCRule-LevelPolicyChange", "AuditLogoff", "AuditDetailedFileShare", "AuditSensitivePrivilegeUse", "AuditKernelObject", "AuditSecurityGroupManagement", "AuditFileShare", "AuditFilteringPlatformConnection", "AuditProcessCreation")
+    $ResultCollection = @{
+        "AuditNonSensitivePrivilegeUse" = "NotConfigured"
+        "AuditOtherObjectAccessEvents" = "NotConfigured"
+        "AuditUserAccountManagement" = "NotConfigured"
+        "AuditProcessTermination" = "NotConfigured"
+        "AuditSAM" = "NotConfigured"
+        "AuditKerberosAuthenticationService" = "NotConfigured"
+        "AuditHandleManipulation" = "NotConfigured"
+        "AuditRegistry"  = "NotConfigured"
+        "AuditKerberosServiceTicketOperations" = "NotConfigured"
+        "AuditFileSystem" = "NotConfigured"
+        "AuditLogon" = "NotConfigured"
+        "AuditSpecialLogon" = "NotConfigured"
+        "AuditMPSSVCRule-LevelPolicyChange" = "NotConfigured"
+        "AuditLogoff"  = "NotConfigured"
+        "AuditDetailedFileShare" = "NotConfigured"
+        "AuditSensitivePrivilegeUse" = "NotConfigured"
+        "AuditKernelObject" = "NotConfigured"
+        "AuditSecurityGroupManagement" = "NotConfigured"
+        "AuditFileShare" = "NotConfigured"
+        "AuditFilteringPlatformConnection" = "NotConfigured"
+        "AuditProcessCreation" = "NotConfigured"
+    }
+
+    It "checks if returned result collection is filled with NotConfigured if an empty hashtable is given" {
+        $Result = CompareToTargetList $AuditSettings $TargetAuditSettings
+        $Result.Count | Should -BeLikeExactly $ResultCollection.Count
     }
 }

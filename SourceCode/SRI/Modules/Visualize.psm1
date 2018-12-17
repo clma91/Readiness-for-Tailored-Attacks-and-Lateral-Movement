@@ -178,7 +178,7 @@ Function ToolCanBeDetected([Array] $IncorrectAudits) {
     Add-Text -Document $Pdf -Text $Text | Out-Null
 }
 
-Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs
+Export-ModuleMember -Function visualizeAll, visualizeAuditPolicies, visualizeEventLogs, GetAuditPoliciesTargetList
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Module PDF.psm1
