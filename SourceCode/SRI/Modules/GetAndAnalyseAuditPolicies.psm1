@@ -242,7 +242,6 @@ Function GetAuditSettingValues ([Hashtable] $AuditSettings, [Array] $TargetAudit
             $Result.Add(($AuditSubcategoryName -replace (" ")), $AuditSettingValueString)
         }    
     }
-    Write-Host $Result.Count
     return $Result
 }
 
