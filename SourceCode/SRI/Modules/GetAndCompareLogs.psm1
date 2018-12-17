@@ -112,7 +112,7 @@ Function ImportCompareExport([String] $ImportPath, [String] $ExportPath){
     return $true
 }
 
-Export-ModuleMember -Function GetEventLogsAndExport, ImportCompareExport, GetApplicationAndServiceLogs
+Export-ModuleMember -Function GetEventLogsAndExport, ImportCompareExport, GetApplicationAndServiceLogs, GetApplicationAndServiceLog
 
 
 

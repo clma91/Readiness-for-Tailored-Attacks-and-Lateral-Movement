@@ -30,6 +30,26 @@ Describe 'read App and Service Logs'{
     }
 }
 
+Describe 'check function GetApplicationAndServiceLog'{
+    $IdsForTaskScheduler = (106, 200, 129, 201, 102)
+    $IdsForWindowsRemoteManagement = (6, 169)
+    $IdsForLocalSessionManager = (21, 24)
+    It 'checks the function for TaskScheduler'{
+        $events = GetApplicationAndServiceLog $IdsForTaskScheduler "TaskScheduler"
+        $events | Should -Not -BeNullOrEmpty
+    }
+    It 'checks the function for WinRM'{
+        $IdsForWindowsRemoteManagement = (6, 169)
+        $events = GetApplicationAndServiceLog $IdsForWindowsRemoteManagement "WinRM"
+        $events | Should -Not -BeNullOrEmpty
+    }
+    It 'checks the function for TerminalServices-LocalSessionManager'{
+        $IdsForLocalSessionManager = (21, 24)
+        $events = GetApplicationAndServiceLog $IdsForLocalSessionManager "TerminalServices-LocalSessionManager"
+        $events | Should -Not -BeNullOrEmpty
+    }
+}
+
 Describe 'check function GetEventLogsAndExport'{
     It 'checks function GetEventLogsAndExport'{
         $exportFolder = "$PSScriptRoot\TestFiles"
