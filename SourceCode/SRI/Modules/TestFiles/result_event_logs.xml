@@ -3,28 +3,28 @@
 	<WindowsLogs>
 		<EventID6>present</EventID6>
 		<EventID21>missing</EventID21>
-		<EventID24>missing</EventID24>
+		<EventID24>present</EventID24>
 		<EventID102>missing</EventID102>
 		<EventID104>missing</EventID104>
 		<EventID106>missing</EventID106>
-		<EventID129>missing</EventID129>
+		<EventID129>present</EventID129>
 		<EventID169>missing</EventID169>
 		<EventID200>missing</EventID200>
 		<EventID201>missing</EventID201>
 		<EventID1102>missing</EventID1102>
 		<EventID4624>present</EventID4624>
-		<EventID4634>present</EventID4634>
-		<EventID4648>present</EventID4648>
-		<EventID4656>missing</EventID4656>
-		<EventID4658>missing</EventID4658>
-		<EventID4660>missing</EventID4660>
+		<EventID4634>missing</EventID4634>
+		<EventID4648>missing</EventID4648>
+		<EventID4656>present</EventID4656>
+		<EventID4658>present</EventID4658>
+		<EventID4660>present</EventID4660>
 		<EventID4661>missing</EventID4661>
-		<EventID4663>missing</EventID4663>
+		<EventID4663>present</EventID4663>
 		<EventID4672>present</EventID4672>
-		<EventID4673>missing</EventID4673>
+		<EventID4673>present</EventID4673>
 		<EventID4688>present</EventID4688>
-		<EventID4689>missing</EventID4689>
-		<EventID4690>missing</EventID4690>
+		<EventID4689>present</EventID4689>
+		<EventID4690>present</EventID4690>
 		<EventID4720>missing</EventID4720>
 		<EventID4726>missing</EventID4726>
 		<EventID4728>missing</EventID4728>
@@ -34,10 +34,10 @@
 		<EventID4946>missing</EventID4946>
 		<EventID5140>missing</EventID5140>
 		<EventID5142>missing</EventID5142>
-		<EventID5144>present</EventID5144>
+		<EventID5144>missing</EventID5144>
 		<EventID5145>missing</EventID5145>
 		<EventID5154>missing</EventID5154>
-		<EventID5156>missing</EventID5156>
+		<EventID5156>present</EventID5156>
 		<EventID7036>present</EventID7036>
 		<EventID7045>present</EventID7045>
 		<EventID8222>missing</EventID8222>
