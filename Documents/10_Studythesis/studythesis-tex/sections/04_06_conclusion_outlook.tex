@@ -7,7 +7,7 @@ All requirements set at the beginning of the thesis, use cases and non functiona
 \subsection{Conclusion Technologies and Frameworks}
 The chosen technology PowerShell offered a simple implementation of the problem. However, an object-oriented approach and the realization of a classic software project is not ideal with PowerShell. It is noticeable that the language was originally a scripting language.
 \\\\
-The test framework used, Pester, also does not offer the desired level of functionality. Although there is the possibility to mock functions, it is not implemented in such a way that system internal functions can be mocked with it. Due to the fact that the SRI tool has strong dependencies on system internal functions, it was difficult to write suitable tests for the implemented functions. For this reason, many system tests were performed manually as systemtests to test the correct flow of the tool.
+Additionally, the test framework used, Pester, does not offer the desired level of functionality. Although there is the possibility to mock functions, it is not implemented in such a way that system internal functions can be mocked with it. Due to the fact that the SRI tool has strong dependencies on system internal functions, it was difficult to write suitable tests for the implemented functions. For this reason, many system tests were performed manually as systemtests to test the correct flow of the tool.
 \\\\
 With the PSCodeHealth framework, the code developed could be checked for best practices and code smells. This was extremely helpful as there was little experience with PowerShell at the beginning of the thesis. 
 \\\\
@@ -16,7 +16,7 @@ Furthermore, it was very easy and practical to have a test environment with the 
 \clearpage
 
 \subsection{Outlook}
-Even if all requirements were fulfilled, further wishes and requirements for a tool to recognize the readiness of a system arose during this thesis. 
+Even if all requirements were fulfilled, further wishes and requirements for a tool to recognise the readiness of a system arose during this thesis. 
 
 \paragraph{Fleet Check}
 The review of a fleet was covered only minimally, limited to exactly one domain. Therefore the extension to a complete fleet, which is divided into forests, domains and organisation units, would be quite desirable in this area. 
@@ -25,7 +25,7 @@ The review of a fleet was covered only minimally, limited to exactly one domain.
 The representation as PDF is absolutely practicable, could however still take place in other forms. For example, it would be possible to provide a GUI for the user instead of a PDF. The GUI could represent the complete fleet as a kind of tree, whereby one can navigate interactively through the tree and thus evaluate the readiness of individual parts. 
 
 \paragraph{Technology}
-However, the chosen technology PowerShell, as described in the upper part, is not very suitable to realize such a representation. In order to stay close to the operating system, the .NET technology C\# would be suitable. This raises the question whether it would be possible to port the existing code easily and quickly to C\#. 
+However, the chosen technology PowerShell, as described in the conclusion, is not very suitable to realise such a representation. In order to stay close to the operating system, the .NET technology C\# would be suitable. This raises the question whether it would be possible to port the existing code easily and quickly to C\#. 
 
 \paragraph{GPO templates}
 An evaluation of the system is a good start, but it would be a great benefit if a template for the group policies could be created at the same time. This would ensure that IT administrators with little knowledge of Active Directory environments would only have to import a template. Ideally, such a template would be based on the existing group policy. Thus, no differences would have to be derived from the current group policy and the recommendation from the SRI, but the current group policy could simply be overwritten.
