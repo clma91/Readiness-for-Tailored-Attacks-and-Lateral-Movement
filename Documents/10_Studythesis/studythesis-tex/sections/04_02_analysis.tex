@@ -45,7 +45,13 @@ The Microsoft Security Compliance Toolkit (SCT) \cite{SCT} allows security admin
 The toolkit is very simple and could be understood and used without any difficulties. The handling is very intuitive and does not require much training. Please note, however, that the toolkit cannot be used with Windows 10 Home, since Active Directory support is not provided with this version.
 
 \subsubsection{Conclusion}
-This toolkit can be used for a very baseline GPO in enterprise environment. With the delivered baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit enables the comparison of different local GPO's installed on different Clients or Servers to check their consistency. In addition, the provided baselines can be used for building new GPO's. Furthermore, Microsoft delivers with the SCT a Local Group Policy Object Utility (LGPO.exe) to:
+This toolkit can be used for a very baseline GPO in enterprise environment. With the delivered baselines it is easy to compare the configured GPO and to see the readiness of the enterprise GPO. The toolkit enables the comparison of different local GPO's with the policy viewer (see figure \ref{fig:policy_viewer} \nameref{fig:policy_viewer}) which are installed on different Clients or Servers to check their consistency. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/SCT/policy_viewer.png}
+    \caption{SCT: Policy Viewer}\label{fig:policy_viewer}
+\end{figure} \ \\
+In addition, the provided baselines can be used for building new GPO's. Furthermore, Microsoft delivers with the SCT a Local Group Policy Object Utility (LGPO.exe) to:
 \begin{itemize}
     \item Import and apply policy settings
     \item Export local policy to a GPO backup
@@ -53,6 +59,8 @@ This toolkit can be used for a very baseline GPO in enterprise environment. With
     \item Build a registry.pol file from "LGPO text"
 \end{itemize}
 This toolkit is very interesting, but cannot be used to build on it. The reason for this is that the source code of the complete toolkit is not available. However, it can be used as additional help for checking the readiness of a system and comparing the local policies against templates or other local policies.
+
+\clearpage
 
 \subsection{LogonTracer}
 \subsubsection{Description}
