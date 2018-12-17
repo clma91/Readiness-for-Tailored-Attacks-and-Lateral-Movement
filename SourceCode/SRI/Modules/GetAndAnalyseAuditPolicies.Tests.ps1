@@ -4,8 +4,6 @@ $modulePath = $currentPath + "\GetAndAnalyseAuditPolicies.psm1"
 $testFilesPath = $currentPath + "\TestFiles"
 Import-Module $modulePath -Force
 
-Write-Host $modulePath
-
 Describe "GetCAPI2" {
     It "should return a XML" {
         $CAPI2 = GetCAPI2
