@@ -25,13 +25,13 @@ The review of a fleet was covered only minimally, limited to exactly one domain.
 The representation as PDF is absolutely practicable, could however still take place in other forms. For example, it would be possible to provide a GUI for the user instead of a PDF. The GUI could represent the complete fleet as a kind of tree, whereby one can navigate interactively through the tree and thus evaluate the readiness of individual parts. 
 
 \paragraph{Technology}
-However, the chosen PowerShell technology, as described in the upper part, is not very suitable to realize such a representation. In order to stay close to the operating system, the .NET technology C\# would be suitable. This raises the question whether it would be possible to port the existing code easily and quickly to C\#. 
+However, the chosen technology PowerShell, as described in the upper part, is not very suitable to realize such a representation. In order to stay close to the operating system, the .NET technology C\# would be suitable. This raises the question whether it would be possible to port the existing code easily and quickly to C\#. 
 
-\paragraph{GPO Templates}
-An evaluation of the system is a good start, but it would be a great benefit if a template for the group policies could be created at the same time. This would ensure that IT administrators with little knowledge of active directory environments would only have to import a template. Ideally, such a template would be based on the existing group policy. Thus, no differences would have to be derived from the current group policy and the recommendation from the SRI, but the current group policy could simply be overwritten.
+\paragraph{GPO templates}
+An evaluation of the system is a good start, but it would be a great benefit if a template for the group policies could be created at the same time. This would ensure that IT administrators with little knowledge of Active Directory environments would only have to import a template. Ideally, such a template would be based on the existing group policy. Thus, no differences would have to be derived from the current group policy and the recommendation from the SRI, but the current group policy could simply be overwritten.
 
 
-\paragraph{Sysmon on the Fleet}
+\paragraph{Sysmon on the fleet}
 As mentioned in the analysis (see ''\ref{Sysmon} \nameref{Sysmon}''), Sysmon offers a clear advantage over Microsoft's integrated event logging. It would therefore be interesting to develop a process that would allow a simple rollout of Sysmon to an entire fleet.
 
 \paragraph{Central event logging}

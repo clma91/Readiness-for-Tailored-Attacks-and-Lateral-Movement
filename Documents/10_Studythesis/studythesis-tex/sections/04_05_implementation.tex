@@ -1,5 +1,182 @@
 \section{Implementation}
 This sections shows the implementation of the logic. Divided according to the script and its activities, the results of the script are shown first. The second part describes the approach which was taken, which ideas were not implemented and why not. In the third part, the implementation part, the used code is described and explained. The code shown may differ from the original code for reasons of legibility or comprehensibility, but reflects the implementation as intended.
+
+
+\subsection{Main Script: SRI}
+The aim of the main script is to supply the user with various procedures to evaluate the readiness of audit policies and/or event logs. However, the user is not meant to use single functions provided by the modules because most function provide just a metaset of data in order to make a statement of the readiness. For this reason, the main script is able to be called with various parameter for the diffrent procedures. Moreover, the user gets a help functionality (via PowerShells common \lstinline|Get-Help|) to provide an overview of parameter combinations.
+\subsubsection{Result}
+The various procedures/modes provided by the main script, with eventual additional parameter, are:
+\begin{itemize}
+    \item \textbf{\textit{-Online, -Offline, -GroupPolicy and -AllGroupPolicies}}
+\end{itemize}
+\begin{lstlisting}[caption=SRI Main Script Parameter Combinations]
+PS C:\>./sri.ps1 [-Online] [-OnlineExportPath <String>] [-CAPI2LogSize <Int32>]
+
+PS C:\>./sri.ps1 [-Offline] [[-AuditPolicies]] [[-EventLogs]] [-ImportPath] <String> 
+                       [[-ExportPath] <String>] [-CAPI2LogSize <Int32>]
+
+PS C:\>./sri.ps1 [-GroupPolicy] [-GroupPolicyName] <String>
+
+PS C:\>./sri.ps1 [-AllGroupPolicies]
+\end{lstlisting}
+\vspace{0.5cm}
+\textsc{\textbf{Note:}}\textit{ Mandatory parameter are \underline{underlined}.}
+\vspace{0.5cm}
+\begin{tcolorbox}
+    \paragraph{\underline{-Online}} \ \\\\
+    The current system which is calling the script will be checked on its readiness.
+    \vspace{0.3cm}
+    \begin{center}
+        \textsc{Parameter}
+    \end{center}
+    \vspace{-0.5cm}
+    \begin{table}[H]
+        \def\arraystretch{2}
+        \centering
+        \begin{tabular}{ p{4cm}  p{10cm} }  \hline
+            \textbf{No parameter} & The result PDF will be saved to the current path \\ \hline
+            \textbf{-OnlineExportPath} & The result PDF will be saved to this path \\ \hline
+            \textbf{-CAPI2LogSize} & Definition of the CAPI2 log size suitable for the environment. By default this value is set to 4MB as recommended from Microsoft \cite{CAPI2} \\ \hline
+        \end{tabular}
+    \end{table}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \paragraph{\underline{-Offline}} \ \\\\ Some system will be checked on its readiness - by default audit policies and event log are analysed. Export files of this system are required.
+    \vspace{0.3cm}
+    \begin{center}
+        \textsc{Parameter}
+    \end{center}
+    \vspace{-0.5cm}
+    \begin{table}[H]
+        \def\arraystretch{2}
+        \centering
+        \begin{tabular}{ p{4cm}  p{10cm} }  \hline
+            \textbf{\underline{-ImportPath}} & Defines where the required files rsop.xml\footnote{XML-Export of Resultant Set of Policy \cite{RSoP}}, windowslogs.csv\footnote{Export of Windows logs ''System'' \& ''Security'' from EventViewer, check example\_windowslogs.csv}, appandservlogs.csv\footnote{Export of Application and Service logs ''TaskScheduler'', ''WindowsRemoteManagement''and \ \\ ''LocalSessionManager'' from EventViewer, check example\_appandservlogs.csv} remain for analysis. \\ 
+            & The result PDF will be saved to the current path \\ \hline
+            \textbf{-AuditPolicies} & Checks only the audit policies. \\
+            & The result PDF will be saved to the current path \\ 
+            & \textbf{\underline{-ImportPath}} requires rsop.xml \\\hline
+            \textbf{-EventLogs} & Checks only the event logs \\
+            & The result PDF will be saved to the current path \\ 
+            & \textbf{\underline{-ImportPath}} requires windowslogs.csv and appandservlogs.csv\\\hline
+            \textbf{-ExportPath} & The result PDF will be saved to this path \\ \hline
+            \textbf{-CAPI2LogSize} & Definition of the CAPI2 log size suitable for the environment. By default this value is set to 4MB as recommended from Microsoft \cite{CAPI2} \\ \hline
+        \end{tabular}
+    \end{table}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \paragraph{\underline{-GroupPolicy}} \ \\\\ Audit policies from a specific group policy are analysed.
+    \vspace{0.3cm}
+    \begin{center}
+        \textsc{Parameter}
+    \end{center}
+    \vspace{-0.5cm}
+    \begin{table}[H]
+        \def\arraystretch{2}
+        \centering
+        \begin{tabular}{ p{4cm}  p{10cm} } \hline
+            \textbf{\underline{-GroupPolicyName}} & The name of the group policy to be analysed \\ \hline
+        \end{tabular}
+    \end{table}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \paragraph{\underline{-AllGroupPolicies}} \ \\\\
+    All audit policies from every group policy in the current domain are analysed.\\
+    The result PDF will be saved to the current path
+\end{tcolorbox}
+
+\subsubsection{Approach}
+Users should not have to call the individual functions from the PowerShell modules. For this reason, the idea was to provide a main script which defines several modes to call with appropriate parameter. Each mode has a predefined procedure of function calls which will create a result PDF. In addition, the script should be delivered with a integrated help functionality to supply a on-demand overview of all possible script modes and its parameter. 
+
+\subsubsection{Implementation}
+To get a better understanding how each mode proceeds, this section describes the source code in form of activity diagrams. The activity diagrams are an overview and contain the core of each mode.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/modes/online.png}
+    \caption{Online Mode}
+\end{figure}
+\begin{enumerate}
+    \item Get the audit policies from RSoP
+    \item Analyse the audit policies
+    \item Get the registry value of the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' and check if it is enabled
+    \item Check if sysmon is installed and running
+    \item Check if CAPI2 is enabled and has a minimum log size of 4MB
+    \item Merge all returned hashtables from step 2-5 to one hashtable
+    \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+    \item Get all events from ''System'' and ''Security'' event logs and write it uniquely to a temporary CSV
+    \item Get all events from ''Application and Service'' event log and write it uniquely to a temporary CSV
+    \item Compare the gathered events with the target lists of events (see ''\ref{MandatoryLogs} \nameref{MandatoryLogs}'')
+    \item Create the result PDF
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/modes/offline.png}
+    \caption{Offline Mode}
+\end{figure}
+\begin{enumerate}
+    \item The offline mode without parameter will check the audit policies and event logs with the supplied export files\footnote{All export files required must remain at the \textbf{-ImportPath}}
+    \begin{enumerate}
+        \item Get the audit policies from the supplied rsop.xml
+        \item Analyse the audit policies
+        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+        \item Compare the events form the supplied windowslogs.csv and appandservlogs.csv with the target lists of events
+        \item Create the result PDF
+    \end{enumerate}
+    \item The offline mode with the parameter \lstinline|-AuditPolicies| will check the audit policies with the supplied export file
+    \begin{enumerate}
+        \item Get the audit policies from the supplied rsop.xml
+        \item Analyse the audit policies
+        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+        \item Create the result PDF
+    \end{enumerate}
+    \item The offline mode with the parameter \lstinline|-EventLogs| will check the event logs with the supplied files
+    \begin{enumerate}
+        \item Compare the events form the supplied windowslogs.csv and appandservlogs.csv with the target lists of events
+        \item Create the result PDF
+    \end{enumerate}
+\end{enumerate}
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/modes/grouppolicy.png}
+    \caption{GroupPolicy Mode}
+\end{figure}
+\begin{enumerate}
+    \item Get the audit policies from defined group policy which is stored in SYSVOL
+    \item Analyse the audit policies
+    \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
+    \item Merge the returned hashtables from step 2 and 3 to one hashtable
+    \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+    \item Create the result PDF and store it in the current path
+\end{enumerate}
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{assets/modes/allgrouppolicies.png}
+    \caption{AllGroupPolicies Mode}
+\end{figure}
+\begin{enumerate}
+    \item Get all audit policies from all group policies, which are stored in SYSVOL, and loop for each through the following procedure:
+    \begin{enumerate}
+        \item Analyse the audit policies
+        \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
+        \item Merge the returned hashtables from step 2 and 3 to one hashtable
+        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
+        \item Create the result PDF and store it in the current path
+        \item Rename the created PDF- and XML-Files to its group policy name (e.g. \lstinline|results_TestPolicy.pdf| and \lstinline|result_audit_policies_TestPolicy.xml|)
+    \end{enumerate}
+\end{enumerate}
+
+\clearpage
+
 \subsection{Module: GetAndAnalyseAuditPolicies}
 The basic idea was to implement the use case ''\nameref{UC01}'' separately from the use case ''\nameref{UC02}''. However, during the implementation it quickly became clear that these two use cases could be merged and did not have to be implemented separately. Therefore, both use cases were integrated into one script module. The following, describes how the two use cases were implemented.
 
@@ -239,7 +416,7 @@ Function IsCAPI2Enabled([xml] $capi2, [uint32] $requiredLogSize) {
 \end{lstlisting}
 All temporary files are removed at the end of this script.
 \clearpage \ \\
-To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy (\lstinline|GetDomainAuditPolicy|) and the other for all group policies (\lstinline|GetAllDomainAuditPolicies|). To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies remain in an active directory network. The audit settings of each group policy, remaining in SYSVOL, are stored as a CSV. This CSV is imported and each setting is gathered for further analysis. Like within the online mode, after doing so the hashtable is returned and filled with the missing audit settings. 
+To fulfill \nameref{UC08} (see section \ref{UC08}) two functions where created to gather the advanced audit settings from group policies. One for gathering information about a specific group policy (\lstinline|GetDomainAuditPolicy|) and the other for all group policies (\lstinline|GetAllDomainAuditPolicies|). To achieve this, the information is gathered from the System Volume (SYSVOL) where all group policies remain in an Active Directory network. The audit settings of each group policy, remaining in SYSVOL, are stored as a CSV. This CSV is imported and each setting is gathered for further analysis. Like within the online mode, after doing so the hashtable is returned and filled with the missing audit settings. 
 
 \begin{lstlisting}[caption=Function GetDomainAuditPolicy, language=PowerShell]
 Function GetDomainAuditPolicy ([String] $PolicyName) {
@@ -322,13 +499,13 @@ This section describes the implementation of the ''\nameref{UC03}'' as well as '
 \subsubsection{Result} \label{ResultSetGetAndCompareLogs}
 The script ''GetAndCompareLogs'', where both use cases were implemented, runs as follows:
 \begin{itemize}
-    \item Reading and caching the Event logs ''System'' \& ''Security''
+    \item Reading and caching the event logs ''System'' \& ''Security''
     \item Filter cached logs by EventID, group EventIDs that occur more than once. Found EventIDs are exported as ''CSV''
     \item Checking and caching whether a list of EventIDs from ''Application and Service'' logs can be read out
     \item Export result set of found EventIDs as ''CSV''
-    \item Import list of found Event logs and compare it with the predefined checklist
+    \item Import list of found event logs and compare it with the predefined checklist
     \item Result of the comparison is written into an ''XML'' file
-    \item Import and compare found Application and Service logs with predefined checklist
+    \item Import and compare found application and service logs with predefined checklist
     \item Result of the comparison is written into the same ''XML'' as before
 \end{itemize}
 The now no longer needed CSV files are deleted. The XML with the result set is now available for any further processing.  A result could possibly look like the following listing:
@@ -366,10 +543,10 @@ The now no longer needed CSV files are deleted. The XML with the result set is n
 
 \subsubsection{Approach}
 \paragraph{Get Event Logs}\ \\
-After research was done on how to read out the Event logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking Event logs'' report. \cite{JPCERTDetectingLateralMovement}. The script ran successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario,  none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in \textit{O(n $\cdot$ m)}. The developers decided to cache the Event logs, reducing the runtime to \textit{O(m)}. The cached logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
+After research was done on how to read out the event logs ''System'' and ''Security'' the desicon was made to use to PowerShell command \lstinline|Get-EventLog| \cite{Get-EventLogs}. This command allows to read out the whole EventLog by the LogName or also to search after a specific EventID. The first approach was to search for each EventID individually. The EventIDs to search for were taken from the JPCERT/CC Appendix B in the ''Detecting Lateral Movement through Tracking event logs'' report. \cite{JPCERTDetectingLateralMovement}. The script ran successfully, but the runtime was not practicable. It took over 5 minutes to search for all EventIDs in an Event Log of the size of about 37 000 logs, or  in other words 300 Kilobyte (KB). The developers than started to calculate the worst case scenario,  none of the searched EventIDs is found in the EventLog. There are \textit{n} EventIDs in the checklist and \textit{m} entries in the EventLogs, if no EventID is found, every entry is called \textit{m} times. That results in \textit{O(n $\cdot$ m)}. The developers decided to cache the event logs, reducing the runtime to \textit{O(m)}. The cached logs are then grouped into EventIDs and export into a ''CSV'' file. \ \\
 \ \\
 To read out the ''Application and Service'' logs we can not use Get-EventLog. The first approach used the \lstinline|Get-WinEvent| \cite{Get-WinEvent} command. The logic stayed the same, read out all events, group and export them into a 'CSV' file. Unfortunately the Get-WinEvent is very slow, it took over 10 minutes to read out just under 6000 logs.
-The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of logs is smaller. On the testing environment with a machine with 4 Gigabyte (GB) Ram and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
+The developers found an other, much quicker command called \lstinline|wevtutil| \cite{wevtutil}. Unfortunately it is not quite simple to read out all logs, for that reason each EventID will be searched if it appeared. Unlike Get-EventLog, this is not a problem because the command is faster, the EventIDs are more likely to occur and the amount of logs is smaller. On the testing environment with a machine with 4 Gigabyte (GB) memory and an Intel Xeon E5 with 2 cores it took about 10 seconds to check for 9 EventIDs in 15 000 Log entries. If and EventID was found it was added to an ArrayList, after all IDs are checked the file is exported as a 'CSV'.
 \paragraph{Analyse Found Event logs} \ \\
 To analyse the occurred EventIDs the two generated ''CSV'' files are imported into the PowerShell script. The respective checklists, which are based on the \nameref{JPCertStudy}, are embedded in the script. Each id from the checklist is checked if it is present in the respective CSV file. Is this the case, the id is added to the XML-file and marked as present. Did the id no occur in the it will be added and marked as missing. The file looks like the example in ''\nameref{ResultSetGetAndCompareLogs}'' shown.
 \clearpage
@@ -472,6 +649,7 @@ The resulting PDF looks something like this: \ \\
 \end{table}\ \\
 With this policies it is possible to detect X out of 14 attack categories \ \\
 The following attack categories cannot be detected with certainty: \\
+- CommandExecution (AuditLogoff, AuditLogon, AuditRegistry) \\
 ... \ \\
 \ \\
 \textbf{WindowsLogs}
@@ -593,178 +771,3 @@ function VisualizeAll {
     $Pdf.Close()
 }
 \end{lstlisting}
-
-\clearpage
-
-\subsection{Main Script: SRI}
-The aim of the main script is to supply the user with various procedures to evaluate the readiness of audit policies and/or event logs. However, the user is not meant to use single functions provided by the modules because most function provide just a metaset of data in order to make a statement of the readiness. For this reason, the main script is able to be called with various parameter for the diffrent procedures. Moreover, the user gets a help functionality (via PowerShells common \lstinline|Get-Help|) to provide an overview of parameter combinations.
-\subsubsection{Result}
-The various procedures/modes provided by the main script, with eventual additional parameter, are:
-\begin{itemize}
-    \item \textbf{\textit{-Online, -Offline, -GroupPolicy and -AllGroupPolicies}}
-\end{itemize}
-\begin{lstlisting}[caption=SRI Main Script Parameter Combinations]
-PS C:\>./sri.ps1 [-Online] [-OnlineExportPath <String>] [-CAPI2LogSize <Int32>]
-
-PS C:\>./sri.ps1 [-Offline] [[-AuditPolicies]] [[-EventLogs]] [-ImportPath] <String> 
-                       [[-ExportPath] <String>] [-CAPI2LogSize <Int32>]
-
-PS C:\>./sri.ps1 [-GroupPolicy] [-GroupPolicyName] <String>
-
-PS C:\>./sri.ps1 [-AllGroupPolicies]
-\end{lstlisting}
-\vspace{0.5cm}
-\textsc{\textbf{Note:}}\textit{ Mandatory parameter are \underline{underlined}.}
-\vspace{0.5cm}
-\begin{tcolorbox}
-    \paragraph{\underline{-Online}} \ \\\\
-    The current system which is calling the script will be checked on its readiness.
-    \vspace{0.3cm}
-    \begin{center}
-        \textsc{Parameter}
-    \end{center}
-    \vspace{-0.5cm}
-    \begin{table}[H]
-        \def\arraystretch{2}
-        \centering
-        \begin{tabular}{ p{4cm}  p{10cm} }  \hline
-            \textbf{No parameter} & The result PDF will be saved to the current path \\ \hline
-            \textbf{-OnlineExportPath} & The result PDF will be saved to this path \\ \hline
-            \textbf{-CAPI2LogSize} & Definition of the CAPI2 log size suitable for the environment. By default this value is set to 4MB as recommended from Microsoft \cite{CAPI2} \\ \hline
-        \end{tabular}
-    \end{table}
-\end{tcolorbox}
-
-\begin{tcolorbox}
-    \paragraph{\underline{-Offline}} \ \\\\ Some system will be checked on its readiness - by default audit policies and event log are analysed. Export files of this system are required.
-    \vspace{0.3cm}
-    \begin{center}
-        \textsc{Parameter}
-    \end{center}
-    \vspace{-0.5cm}
-    \begin{table}[H]
-        \def\arraystretch{2}
-        \centering
-        \begin{tabular}{ p{4cm}  p{10cm} }  \hline
-            \textbf{\underline{-ImportPath}} & Defines where the required files rsop.xml\footnote{XML-Export of Resultant Set of Policy \cite{RSoP}}, windowslogs.csv\footnote{Export of Windows logs ''System'' \& ''Security'' from EventViewer, check example\_windowslogs.csv}, appandservlogs.csv\footnote{Export of Application and Service logs ''TaskScheduler'', ''WindowsRemoteManagement''and \ \\ ''LocalSessionManager'' from EventViewer, check example\_appandservlogs.csv} remain for analysis. \\ 
-            & The result PDF will be saved to the current path \\ \hline
-            \textbf{-AuditPolicies} & Checks only the audit policies. \\
-            & The result PDF will be saved to the current path \\ 
-            & \textbf{\underline{-ImportPath}} requires rsop.xml \\\hline
-            \textbf{-EventLogs} & Checks only the event logs \\
-            & The result PDF will be saved to the current path \\ 
-            & \textbf{\underline{-ImportPath}} requires windowslogs.csv and appandservlogs.csv\\\hline
-            \textbf{-ExportPath} & The result PDF will be saved to this path \\ \hline
-            \textbf{-CAPI2LogSize} & Definition of the CAPI2 log size suitable for the environment. By default this value is set to 4MB as recommended from Microsoft \cite{CAPI2} \\ \hline
-        \end{tabular}
-    \end{table}
-\end{tcolorbox}
-
-\begin{tcolorbox}
-    \paragraph{\underline{-GroupPolicy}} \ \\\\ Audit policies from a specific group policy are analysed.
-    \vspace{0.3cm}
-    \begin{center}
-        \textsc{Parameter}
-    \end{center}
-    \vspace{-0.5cm}
-    \begin{table}[H]
-        \def\arraystretch{2}
-        \centering
-        \begin{tabular}{ p{4cm}  p{10cm} } \hline
-            \textbf{\underline{-GroupPolicyName}} & The name of the group policy to be analysed \\ \hline
-        \end{tabular}
-    \end{table}
-\end{tcolorbox}
-
-\begin{tcolorbox}
-    \paragraph{\underline{-AllGroupPolicies}} \ \\\\
-    All audit policies from every group policy in the current domain are analysed.\\
-    The result PDF will be saved to the current path
-\end{tcolorbox}
-
-\subsubsection{Approach}
-Users should not have to call the individual functions from the PowerShell modules. For this reason, the idea was to provide a main script which defines several modes to call with appropriate parameter. Each mode has a predefined procedure of function calls which will create a result PDF. In addition, the script should be delivered with a integrated help functionality to supply a on-demand overview of all possible script modes and its parameter. 
-
-\subsubsection{Implementation}
-To get a better understanding how each mode proceeds, this section describes the source code in form of activity diagrams. The activity diagrams are an overview and contain the core of each mode.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{assets/modes/online.png}
-    \caption{Online Mode}
-\end{figure}
-\begin{enumerate}
-    \item Get the audit policies from RSoP
-    \item Analyse the audit policies
-    \item Get the registry value of the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' and check if it is enabled
-    \item Check if sysmon is installed and running
-    \item Check if CAPI2 is enabled and has a minimum log size of 4MB
-    \item Merge all returned hashtables from step 2-5 to one hashtable
-    \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
-    \item Get all events from ''System'' and ''Security'' event logs and write it uniquely to a temporary CSV
-    \item Get all events from ''Application and Service'' event log and write it uniquely to a temporary CSV
-    \item Compare the gathered events with the target lists of events (see ''\ref{MandatoryLogs} \nameref{MandatoryLogs}'')
-    \item Create the result PDF
-\end{enumerate}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{assets/modes/offline.png}
-    \caption{Offline Mode}
-\end{figure}
-\begin{enumerate}
-    \item The offline mode without parameter will check the audit policies and event logs with the supplied export files\footnote{All export files required must remain at the \textbf{-ImportPath}}
-    \begin{enumerate}
-        \item Get the audit policies from the supplied rsop.xml
-        \item Analyse the audit policies
-        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
-        \item Compare the events form the supplied windowslogs.csv and appandservlogs.csv with the target lists of events
-        \item Create the result PDF
-    \end{enumerate}
-    \item The offline mode with the parameter \lstinline|-AuditPolicies| will check the audit policies with the supplied export file
-    \begin{enumerate}
-        \item Get the audit policies from the supplied rsop.xml
-        \item Analyse the audit policies
-        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
-        \item Create the result PDF
-    \end{enumerate}
-    \item The offline mode with the parameter \lstinline|-EventLogs| will check the event logs with the supplied files
-    \begin{enumerate}
-        \item Compare the events form the supplied windowslogs.csv and appandservlogs.csv with the target lists of events
-        \item Create the result PDF
-    \end{enumerate}
-\end{enumerate}
-
-\clearpage
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{assets/modes/grouppolicy.png}
-    \caption{GroupPolicy Mode}
-\end{figure}
-\begin{enumerate}
-    \item Get the audit policies from defined group policy which is stored in SYSVOL
-    \item Analyse the audit policies
-    \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
-    \item Merge the returned hashtables from step 2 and 3 to one hashtable
-    \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
-    \item Create the result PDF and store it in the current path
-\end{enumerate}
-
-\clearpage
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{assets/modes/allgrouppolicies.png}
-    \caption{AllGroupPolicies Mode}
-\end{figure}
-\begin{enumerate}
-    \item Get all audit policies from all group policies, which are stored in SYSVOL, and loop for each through the following procedure:
-    \begin{enumerate}
-        \item Analyse the audit policies
-        \item Check if the audit setting ''Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings'' is enabled
-        \item Merge the returned hashtables from step 2 and 3 to one hashtable
-        \item Write the ''result\_audit\_policy.xml'' for further processing to PDF
-        \item Create the result PDF and store it in the current path
-        \item Rename the created PDF- and XML-Files to its group policy name (e.g. \lstinline|results_TestPolicy.pdf| and \lstinline|result_audit_policies_TestPolicy.xml|)
-    \end{enumerate}
-\end{enumerate}

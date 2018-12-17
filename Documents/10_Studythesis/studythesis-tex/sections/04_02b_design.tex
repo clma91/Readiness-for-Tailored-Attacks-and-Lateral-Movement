@@ -261,7 +261,7 @@ In this section, the ''Advanced Audit Policies'' required to trigger the corresp
 \clearpage
 
 \subsection{Attack Categories}\label{AttackCategories}
-JPCERT/CC has divided the attack tool examined in their report \nameref{JPCertStudy} into several attack categories. When developing the tool, the developers relied on this list:
+JPCERT/CC has divided the attack tool examined in their report ''\nameref{JPCertStudy}'' into several attack categories. When developing the tool, the developers relied on this list and the result visualization will show them as well for sensitization:
 \def\arraystretch{1.5}
 \begin{longtable}{| p{7.5cm} | p{8.5cm} |}\hline
         \textbf{Attack category} & \textbf{Tools}  \\ \hline
@@ -277,7 +277,7 @@ JPCERT/CC has divided the attack tool examined in their report \nameref{JPCertSt
         Adding or Deleting a Local User/Group & net user \\ \hline
         \multirow{3}{*}{File Sharing} & netuse \\ & net share\\ & icacls\\ \hline
 
-        \multirow{4}{*}{\shortstack[l]{Capturing Active DirectoryDatabase\\(Creation of Domain Administrator or \\ Addition of a User to Administrator Group)}} & \\ & ntdsutil \\ & vssadmin \\ & \\ \hline
+        \multirow{4}{*}{\shortstack[l]{Capturing Active Directory Database\\(Creation of Domain Administrator or \\ Addition of a User to Administrator Group)}} & \\ & ntdsutil \\ & vssadmin \\ & \\ \hline
         \multirow{2}{*}{Deleting Evidence} & sdelete \\ & timestomp\\ \hline
         Deleting Eventlog & wevutil \\ \hline
         \multirow{2}{*}{Acquisition of Account Information} & csde \\ & ldifde\\ & dsquery \\ \hline
